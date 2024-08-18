@@ -25,7 +25,7 @@ import org.hibernate.validator.constraints.Length;
 @Entity
 @Getter
 @ToString
-@Table(name = "users")
+@Table(name = "user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserEntity extends BaseEntity {
 

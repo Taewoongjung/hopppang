@@ -8,8 +8,6 @@ public interface UserRepository {
 
     void checkIfExistUserByEmail(final String email);
 
-    void checkIfExistUserByPhoneNumber(final String tel);
-
     User save(final User user);
 
     User findById(final Long id);

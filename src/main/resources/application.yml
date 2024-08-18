@@ -1,3 +1,6 @@
+server:
+  port: 7070
+
 spring:
   application:
     name: hoppang
@@ -18,3 +21,19 @@ spring:
           merge:
             entity_copy_observer: allow
     database: mysql
+  datasource:
+    url: jdbc:mysql://localhost:3307/hoppang?useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 1234567
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 20
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  flyway:
+    user: root
+    password: 1234567
+    url: jdbc:mysql://localhost:3307/hoppang?useSSL=false&allowPublicKeyRetrieval=true
+    driver-class-name: com.mysql.cj.jdbc.Driver

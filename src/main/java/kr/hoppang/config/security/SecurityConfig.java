@@ -33,8 +33,8 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
 
-    @Value("${server.front.origin-url}")
-    private String frontOriginUrl;
+//    @Value("${server.front.origin-url}")
+//    private String frontOriginUrl;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -49,7 +49,7 @@ public class SecurityConfig {
 
                                 CorsConfiguration configuration = new CorsConfiguration();
 
-                                configuration.setAllowedOrigins(Arrays.asList(frontOriginUrl));
+//                                configuration.setAllowedOrigins(Arrays.asList(frontOriginUrl));
                                 configuration.setAllowedMethods(Collections.singletonList("*"));
                                 configuration.setAllowCredentials(true);
                                 configuration.setAllowedHeaders(Collections.singletonList("*"));
