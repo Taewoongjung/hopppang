@@ -1,7 +1,5 @@
 package kr.hoppang.domain.user;
 
-import static kr.hoppang.adapter.common.util.CheckUtil.require;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.LocalDateTime;
@@ -26,7 +24,7 @@ public class User extends Throwable implements UserDetails {
     private String password;
     private String tel;
     private UserRole userRole;
-    private SsoType ssoType;
+    private OauthType oauthType;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime lastModified;
@@ -41,7 +39,7 @@ public class User extends Throwable implements UserDetails {
             final String password,
             final String tel,
             final UserRole userRole,
-            final SsoType ssoType,
+            final OauthType oauthType,
             final LocalDateTime lastModified,
             final LocalDateTime createdAt
     ) {
@@ -51,7 +49,7 @@ public class User extends Throwable implements UserDetails {
         this.password = password;
         this.tel = tel;
         this.userRole = userRole;
-        this.ssoType = ssoType;
+        this.oauthType = oauthType;
         this.lastModified = lastModified;
         this.createdAt = createdAt;
     }
@@ -62,12 +60,12 @@ public class User extends Throwable implements UserDetails {
             final String password,
             final String tel,
             final UserRole userRole,
-            final SsoType ssoType,
+            final OauthType oauthType,
             final LocalDateTime lastModified,
             final LocalDateTime createdAt
     ) {
 
-        return new User(null, name, email, password, tel, userRole, ssoType, lastModified, createdAt);
+        return new User(null, name, email, password, tel, userRole, oauthType, lastModified, createdAt);
     }
 
     public static User of(
@@ -77,12 +75,12 @@ public class User extends Throwable implements UserDetails {
             final String password,
             final String tel,
             final UserRole userRole,
-            final SsoType ssoType,
+            final OauthType oauthType,
             final LocalDateTime lastModified,
             final LocalDateTime createdAt
     ) {
 
-        return new User(id, name, email, password, tel, userRole, ssoType, lastModified, createdAt);
+        return new User(id, name, email, password, tel, userRole, oauthType, lastModified, createdAt);
     }
 
     public static User of(

@@ -1,6 +1,6 @@
 package kr.hoppang.domain.user;
 
-public enum SsoType {
+public enum OauthType {
 
     KKO, // 카카오
     APL, // 애플

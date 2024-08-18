@@ -13,7 +13,7 @@ public class UserEntityConverter {
                 user.getPassword(),
                 user.getTel(),
                 user.getUserRole(),
-                user.getSsoType()
+                user.getOauthType()
         );
     }
 }

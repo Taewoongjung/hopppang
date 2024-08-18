@@ -6,7 +6,7 @@ CREATE TABLE user
     password      VARCHAR(100)        NOT NULL COMMENT '유저 비밀번호',
     tel           VARCHAR(20)         NOT NULL COMMENT '유저 전화번호',
     role          VARCHAR(20)         NOT NULL COMMENT '유저 역할',
-    sso_type      CHAR(3)             NOT NULL COMMENT '소셜로그인 타입',
+    oauth_type    CHAR(3)             NOT NULL COMMENT '소셜로그인 타입',
     device_id     VARCHAR(100)        NOT NULL COMMENT '디바이스 id',
     created_at    DATETIME(6) DEFAULT CURRENT_TIMESTAMP(6) NOT NULL,
     last_modified DATETIME(6) DEFAULT CURRENT_TIMESTAMP(6) NOT NULL ON UPDATE CURRENT_TIMESTAMP(6),

@@ -1,7 +1,7 @@
 package kr.hoppang.application.command.user.commands;
 
 import kr.hoppang.abstraction.domain.ICommand;
-import kr.hoppang.domain.user.SsoType;
+import kr.hoppang.domain.user.OauthType;
 import kr.hoppang.domain.user.UserRole;
 
 public record SignUpCommand(String name,
@@ -9,7 +9,7 @@ public record SignUpCommand(String name,
                             String email,
                             String tel,
                             UserRole role,
-                            SsoType ssoType)
+                            OauthType oauthType)
         implements ICommand {
 
 }

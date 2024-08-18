@@ -2,7 +2,7 @@ package kr.hoppang.adapter.inbound.user.webdto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import kr.hoppang.domain.user.SsoType;
+import kr.hoppang.domain.user.OauthType;
 import kr.hoppang.domain.user.UserRole;
 
 public class SignUpDtoWebDtoV1 {
@@ -25,7 +25,7 @@ public class SignUpDtoWebDtoV1 {
             UserRole role,
 
             @NotNull
-            SsoType ssoType
+            OauthType oauthType
     ) {
 
     }
