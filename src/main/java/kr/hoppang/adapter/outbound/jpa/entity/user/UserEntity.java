@@ -3,17 +3,22 @@ package kr.hoppang.adapter.outbound.jpa.entity.user;
 import static kr.hoppang.adapter.common.exception.ErrorType.INVALID_USER_INFO;
 import static kr.hoppang.adapter.common.util.CheckUtil.require;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import java.time.LocalDateTime;
 import kr.hoppang.adapter.outbound.jpa.entity.BaseEntity;
+import kr.hoppang.domain.user.SsoType;
 import kr.hoppang.domain.user.User;
 import kr.hoppang.domain.user.UserRole;
 import lombok.AccessLevel;
@@ -51,8 +56,14 @@ public class UserEntity extends BaseEntity {
     @Column(name = "role", nullable = false, columnDefinition = "varchar")
     private UserRole role;
 
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<CompanyEntity> companyEntityList;
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "sso_type", nullable = false, columnDefinition = "char(3)")
+    private SsoType ssoType;
+
+    private String deviceId;
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private UserAddressEntity userAddress;
 
     private UserEntity(
             final Long id,
@@ -60,7 +71,8 @@ public class UserEntity extends BaseEntity {
             final String email,
             final String password,
             final String tel,
-            final UserRole role
+            final UserRole role,
+            final SsoType ssoType
     ) {
         super(LocalDateTime.now(), LocalDateTime.now());
 
@@ -70,6 +82,7 @@ public class UserEntity extends BaseEntity {
         this.password = password;
         this.tel = tel;
         this.role = role;
+        this.ssoType = ssoType;
     }
 
     public static UserEntity of(
@@ -78,10 +91,11 @@ public class UserEntity extends BaseEntity {
             final String email,
             final String password,
             final String tel,
-            final UserRole userRole
+            final UserRole userRole,
+            final SsoType ssoType
     ) {
 
-        return new UserEntity(id, name, email, password, tel, userRole);
+        return new UserEntity(id, name, email, password, tel, userRole, ssoType);
     }
 
     public static UserEntity of(
@@ -89,12 +103,13 @@ public class UserEntity extends BaseEntity {
             final String email,
             final String password,
             final String tel,
-            final UserRole userRole
+            final UserRole userRole,
+            final SsoType ssoType
     ) {
 
         require(o -> name == null, name, INVALID_USER_INFO);
 
-        return new UserEntity(null, name, email, password, tel, userRole);
+        return new UserEntity(null, name, email, password, tel, userRole, ssoType);
     }
 
     // 모든 연관 관계 제외 한 POJO 객체 리턴
@@ -106,6 +121,7 @@ public class UserEntity extends BaseEntity {
                 getPassword(),
                 getTel(),
                 getRole(),
+                getSsoType(),
                 getLastModified(),
                 getCreatedAt()
         );
@@ -120,6 +136,7 @@ public class UserEntity extends BaseEntity {
                 getPassword(),
                 getTel(),
                 getRole(),
+                getSsoType(),
                 getLastModified(),
                 getCreatedAt()
         );
