@@ -9,7 +9,9 @@ public record SignUpCommand(String name,
                             String email,
                             String tel,
                             UserRole role,
-                            OauthType oauthType)
+                            OauthType oauthType,
+                            String token,
+                            String deviceId)
         implements ICommand {
 
 }

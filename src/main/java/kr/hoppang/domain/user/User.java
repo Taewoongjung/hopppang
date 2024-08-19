@@ -25,6 +25,8 @@ public class User extends Throwable implements UserDetails {
     private String tel;
     private UserRole userRole;
     private OauthType oauthType;
+    private String token;
+    private String deviceId;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime lastModified;
@@ -40,6 +42,8 @@ public class User extends Throwable implements UserDetails {
             final String tel,
             final UserRole userRole,
             final OauthType oauthType,
+            final String token,
+            final String deviceId,
             final LocalDateTime lastModified,
             final LocalDateTime createdAt
     ) {
@@ -50,6 +54,8 @@ public class User extends Throwable implements UserDetails {
         this.tel = tel;
         this.userRole = userRole;
         this.oauthType = oauthType;
+        this.token = token;
+        this.deviceId = deviceId;
         this.lastModified = lastModified;
         this.createdAt = createdAt;
     }
@@ -61,11 +67,13 @@ public class User extends Throwable implements UserDetails {
             final String tel,
             final UserRole userRole,
             final OauthType oauthType,
+            final String token,
+            final String deviceId,
             final LocalDateTime lastModified,
             final LocalDateTime createdAt
     ) {
 
-        return new User(null, name, email, password, tel, userRole, oauthType, lastModified, createdAt);
+        return new User(null, name, email, password, tel, userRole, oauthType, token, deviceId, lastModified, createdAt);
     }
 
     public static User of(
@@ -76,11 +84,13 @@ public class User extends Throwable implements UserDetails {
             final String tel,
             final UserRole userRole,
             final OauthType oauthType,
+            final String token,
+            final String deviceId,
             final LocalDateTime lastModified,
             final LocalDateTime createdAt
     ) {
 
-        return new User(id, name, email, password, tel, userRole, oauthType, lastModified, createdAt);
+        return new User(id, name, email, password, tel, userRole, oauthType, token, deviceId, lastModified, createdAt);
     }
 
     public static User of(
@@ -88,7 +98,7 @@ public class User extends Throwable implements UserDetails {
             final String userRole
     ) {
 
-        return new User(null, null, email, null, null, UserRole.from(userRole), null, null, null);
+        return new User(null, null, email, null, null, UserRole.from(userRole), null,null,null, null, null);
     }
 
     @Override

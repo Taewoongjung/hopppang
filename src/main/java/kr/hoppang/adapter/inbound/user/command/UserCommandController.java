@@ -33,7 +33,9 @@ public class UserCommandController {
                                         req.email(),
                                         req.tel(),
                                         req.role(),
-                                        req.oauthType()
+                                        req.oauthType(),
+                                        req.token(),
+                                        req.deviceId()
                                 )
                         )));
     }

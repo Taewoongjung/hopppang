@@ -35,6 +35,8 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, Stri
                 event.name(), event.email(), bCryptPasswordEncoder.encode(event.password()),
                 event.tel(),
                 event.role(), event.oauthType(),
+                event.token(),
+                event.deviceId(),
                 LocalDateTime.now(), LocalDateTime.now());
 
         User newUser = userRepository.save(user);

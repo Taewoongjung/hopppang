@@ -25,7 +25,11 @@ public class SignUpDtoWebDtoV1 {
             UserRole role,
 
             @NotNull
-            OauthType oauthType
+            OauthType oauthType,
+
+            String token,
+
+            String deviceId
     ) {
 
     }

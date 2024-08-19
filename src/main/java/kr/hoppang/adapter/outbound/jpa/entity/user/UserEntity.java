@@ -44,7 +44,7 @@ public class UserEntity extends BaseEntity {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password")
     private String password;
 
     @Length(min = 10, max = 11)
@@ -59,6 +59,8 @@ public class UserEntity extends BaseEntity {
     @Column(name = "oauth_type", nullable = false, columnDefinition = "char(3)")
     private OauthType oauthType;
 
+    private String token;
+
     private String deviceId;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -71,7 +73,9 @@ public class UserEntity extends BaseEntity {
             final String password,
             final String tel,
             final UserRole role,
-            final OauthType oauthType
+            final OauthType oauthType,
+            final String token,
+            final String deviceId
     ) {
         super(LocalDateTime.now(), LocalDateTime.now());
 
@@ -82,6 +86,8 @@ public class UserEntity extends BaseEntity {
         this.tel = tel;
         this.role = role;
         this.oauthType = oauthType;
+        this.token = token;
+        this.deviceId = deviceId;
     }
 
     public static UserEntity of(
@@ -91,10 +97,12 @@ public class UserEntity extends BaseEntity {
             final String password,
             final String tel,
             final UserRole userRole,
-            final OauthType oauthType
+            final OauthType oauthType,
+            final String token,
+            final String deviceId
     ) {
 
-        return new UserEntity(id, name, email, password, tel, userRole, oauthType);
+        return new UserEntity(id, name, email, password, tel, userRole, oauthType, token, deviceId);
     }
 
     public static UserEntity of(
@@ -103,12 +111,14 @@ public class UserEntity extends BaseEntity {
             final String password,
             final String tel,
             final UserRole userRole,
-            final OauthType oauthType
+            final OauthType oauthType,
+            final String token,
+            final String deviceId
     ) {
 
         require(o -> name == null, name, INVALID_USER_INFO);
 
-        return new UserEntity(null, name, email, password, tel, userRole, oauthType);
+        return new UserEntity(null, name, email, password, tel, userRole, oauthType, token, deviceId);
     }
 
     // 모든 연관 관계 제외 한 POJO 객체 리턴
@@ -121,6 +131,8 @@ public class UserEntity extends BaseEntity {
                 getTel(),
                 getRole(),
                 getOauthType(),
+                getToken(),
+                getDeviceId(),
                 getLastModified(),
                 getCreatedAt()
         );
@@ -136,6 +148,8 @@ public class UserEntity extends BaseEntity {
                 getTel(),
                 getRole(),
                 getOauthType(),
+                getToken(),
+                getDeviceId(),
                 getLastModified(),
                 getCreatedAt()
         );
