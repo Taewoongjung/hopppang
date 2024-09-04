@@ -93,17 +93,9 @@ public class User extends Throwable implements UserDetails {
         return new User(id, name, email, password, tel, userRole, oauthType, token, deviceId, lastModified, createdAt);
     }
 
-    public static User of(
-            final String email,
-            final String userRole
-    ) {
-
-        return new User(null, null, email, null, null, UserRole.from(userRole), null,null,null, null, null);
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("CUSTOMER"));
+        return List.of(new SimpleGrantedAuthority(userRole.name()));
     }
 
     @Override

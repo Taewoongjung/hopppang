@@ -1,6 +1,25 @@
 version: "3.7"
 
+networks:
+  server-connection:
+    driver: bridge
+
 services:
+  nginx:
+    container_name: nginx_tws_back
+    image: nginx
+    restart: always
+    ports:
+      - '25640:25640'
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - server-connection
+    environment:
+      - TZ=Asia/Seoul
+    depends_on:
+      - app
+
   database:
     image: mysql:8.0.33
     restart: unless-stopped
@@ -11,7 +30,7 @@ services:
       MYSQL_ROOT_PASSWORD: 1234567
       TZ: 'Asia/Seoul'
     ports:
-      - "3307:3306"
+      - "3308:3306"
     healthcheck:
       test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
       interval: 3s
@@ -21,3 +40,30 @@ services:
       - "mysqld"
       - "--character-set-server=utf8mb4"
       - "--collation-server=utf8mb4_unicode_ci"
+
+  app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: twj_spring_hoppang
+    restart: on-failure
+    expose:
+      - "8080"
+    depends_on:
+      - database
+    command:
+      - ./gradlew bootRun
+      - chmod 777 /app/logs
+      - chown root:root /app/logs
+    environment:
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - TZ=Asia/Seoul
+    networks:
+      - server-connection
+    volumes:
+      - /home/twj/hoppang-app/logs:/app/logs
+    user: root
+
+volumes:
+  dev-log:
+    external: true

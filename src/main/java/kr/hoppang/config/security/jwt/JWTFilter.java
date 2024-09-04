@@ -1,5 +1,9 @@
 package kr.hoppang.config.security.jwt;
 
+import static kr.hoppang.adapter.common.exception.ErrorType.NOT_AUTHORIZED_USER;
+import static kr.hoppang.adapter.common.util.CheckUtil.check;
+import static kr.hoppang.domain.user.UserRole.ROLE_ADMIN;
+
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -34,12 +38,16 @@ public class JWTFilter extends OncePerRequestFilter {
 //            , "/api/users/passwords"
     };
 
+    private static final String[] API_ONLY_FOR_ADMIN = {
+            "/api/chassis/prices"
+    };
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        for (String pattern : EXCLUDED_PATH) {
-            if (antPathMatcher.match(pattern, request.getServletPath())) {
+        for (String api : EXCLUDED_PATH) {
+            if (antPathMatcher.match(api, request.getServletPath())) {
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -59,6 +67,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
         String token = jwtUtil.getTokenWithoutBearer(authorization);
 
+        // 토큰 소멸 시간 검증
         try {
             jwtUtil.isExpired(token);
         } catch (ExpiredJwtException jwtException) {
@@ -67,21 +76,18 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
 
-        // 토큰 소멸 시간 검증
-        if (jwtUtil.isExpired(token)) {
-
-            log.info("token expired");
-            filterChain.doFilter(request, response);
-
-            // 이 조건에 해당되면 메소드 종료
-            return;
-        }
-
         // 토큰에서 email, role 값 획득
         String email = jwtUtil.getEmail(token);
 
         // 토큰으로 User 객체 생성
         UserDetails user = loadUserByUsernameQueryHandler.loadUserByUsername(email);
+
+        // 어드민 전용 API 검증
+        for (String api : API_ONLY_FOR_ADMIN) {
+            if (antPathMatcher.match(api, request.getServletPath())) {
+                check(user.getAuthorities().stream().noneMatch(e-> e.getAuthority().equals(ROLE_ADMIN.name())), NOT_AUTHORIZED_USER);
+            }
+        }
 
         // 스프링 시큐리티 인증 토큰 생성
         Authentication authToken = new UsernamePasswordAuthenticationToken(user, null,

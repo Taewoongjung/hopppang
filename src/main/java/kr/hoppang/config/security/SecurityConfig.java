@@ -3,6 +3,7 @@ package kr.hoppang.config.security;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.Collections;
+import kr.hoppang.application.readmodel.user.handlers.LoadUserByUsernameQueryHandler;
 import kr.hoppang.config.security.jwt.JWTFilter;
 import kr.hoppang.config.security.jwt.JWTUtil;
 import kr.hoppang.config.security.jwt.LoginFilter;
@@ -29,12 +30,12 @@ import org.springframework.web.cors.CorsConfigurationSource;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-//    private final LoadUserByUsernameQueryHandler loadUserByUsernameQueryHandler;
+    private final LoadUserByUsernameQueryHandler loadUserByUsernameQueryHandler;
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
 
-//    @Value("${server.front.origin-url}")
-//    private String frontOriginUrl;
+    @Value("${server.front.origin-url}")
+    private String frontOriginUrl;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -49,7 +50,7 @@ public class SecurityConfig {
 
                                 CorsConfiguration configuration = new CorsConfiguration();
 
-//                                configuration.setAllowedOrigins(Arrays.asList(frontOriginUrl));
+                                configuration.setAllowedOrigins(Arrays.asList(frontOriginUrl));
                                 configuration.setAllowedMethods(Collections.singletonList("*"));
                                 configuration.setAllowCredentials(true);
                                 configuration.setAllowedHeaders(Collections.singletonList("*"));
@@ -85,10 +86,15 @@ public class SecurityConfig {
                                 "/actuator/health"
                                 , "/api/me"
                                 , "/api/companies"
+                                , "/api/chassis/prices"
                                 , "/api/businesses/{businessId}"
                                 , "/api/companies/{companyId}/businesses"
                                 , "/api/businesses/{businessId}/usage-categories"
                                 , "/api/excels/companies/{companyId}/businesses/{businessId}"
+                        ).authenticated()
+
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/chassis/prices"
                         ).authenticated()
 
                         .requestMatchers(HttpMethod.PUT,
@@ -112,8 +118,8 @@ public class SecurityConfig {
                         .requestMatchers("/admin").hasRole("CUSTOMER")
                         .requestMatchers("/login").permitAll()
                         .anyRequest().authenticated())
-//                .addFilterBefore(new JWTFilter(jwtUtil, loadUserByUsernameQueryHandler),
-//                        LoginFilter.class)
+                .addFilterBefore(new JWTFilter(jwtUtil, loadUserByUsernameQueryHandler),
+                        LoginFilter.class)
 
                 // 로그인 필터 앞에서 JWTFilter 검증
                 .addFilterAt(

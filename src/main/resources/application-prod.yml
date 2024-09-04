@@ -1,12 +1,12 @@
 server:
   port: 7070
   front:
-    origin-url: ${FRONT_ORIGIN_URL}
+    origin-url: http://59.6.25.248:10234
 
 spring:
   config:
     activate:
-      on-profile: default
+      on-profile: prod
   application:
     name: hoppang
 
@@ -27,7 +27,7 @@ spring:
             entity_copy_observer: allow
     database: mysql
   datasource:
-    url: jdbc:mysql://localhost:3307/hoppang?useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://database:3308/hoppang?useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: 1234567
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -40,7 +40,7 @@ spring:
   flyway:
     user: root
     password: 1234567
-    url: jdbc:mysql://localhost:3307/hoppang?useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://database:3308/hoppang?useSSL=false&allowPublicKeyRetrieval=true
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 jwt:
