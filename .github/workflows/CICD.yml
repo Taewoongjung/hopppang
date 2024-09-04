@@ -38,6 +38,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT }}
           script: |
+            whoami
             cd /home/twj/hopppang
             git pull
             sleep 3
