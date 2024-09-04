@@ -6,7 +6,7 @@ networks:
 
 services:
   nginx:
-    container_name: nginx_tws_back
+    container_name: nginx_tws_back_hoppang
     image: nginx
     restart: always
     ports:
