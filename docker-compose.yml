@@ -50,8 +50,8 @@ services:
       dockerfile: Dockerfile
     container_name: twj_spring_hoppang
     restart: on-failure
-    ports:
-      - "8080:8080"
+    expose:
+      - "9090"
     depends_on:
       - database
     command:
