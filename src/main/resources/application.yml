@@ -47,7 +47,7 @@ jwt:
 ---
 
 server:
-  port: 9090
+  port: 7070
   front:
     origin-url: http://59.6.25.248:10234
 

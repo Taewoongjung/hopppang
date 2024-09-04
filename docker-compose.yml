@@ -51,7 +51,7 @@ services:
     container_name: twj_spring_hoppang
     restart: on-failure
     expose:
-      - "9090"
+      - "7070"
     depends_on:
       - database
     command:
