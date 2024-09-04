@@ -21,6 +21,7 @@ services:
       - app
 
   database:
+    container_name: hoppang_database
     image: mysql:8.0.33
     restart: unless-stopped
     platform: linux/amd64
