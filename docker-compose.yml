@@ -31,7 +31,7 @@ services:
       MYSQL_ROOT_PASSWORD: 1234567
       TZ: 'Asia/Seoul'
     ports:
-      - "3306:3308"
+      - "3307:3308"
     healthcheck:
       test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
       interval: 3s
