@@ -39,10 +39,10 @@ jobs:
           port: ${{ secrets.SERVER_PORT }}
           script: |
             whoami
-            cd /home/twj/hopppang
-            git pull
-            sleep 3
-            docker compose up -d --build 
+#            cd /home/twj/hopppang
+#            git pull
+#            sleep 3
+#            docker compose up -d --build
 
   # test:
   #     needs: build
