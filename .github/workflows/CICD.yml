@@ -31,7 +31,7 @@ jobs:
         run: docker ps
 
       - name: execute remote ssh & deploy
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/scp-action@v0.1.3
         with:
           host: ${{ secrets.SERVER_HOST }}
           port: ${{ secrets.SERVER_PORT }}
