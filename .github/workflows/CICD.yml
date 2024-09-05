@@ -15,10 +15,10 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - uses: actions/checkout@v4
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
 
       - name: Setup Gradle
@@ -27,8 +27,8 @@ jobs:
       - name: Build with Gradle Wrapper
         run: ./gradlew build
 
-#      - name: Verify Docker
-#        run: docker ps
+      - name: Verify Docker
+        run: docker ps
 
       - name: execute remote ssh & deploy
         uses: appleboy/ssh-action@v1.0.3
