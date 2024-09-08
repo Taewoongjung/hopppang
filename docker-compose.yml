@@ -5,22 +5,9 @@ networks:
     driver: bridge
 
 services:
-#  nginx:
-#    container_name: nginx_tws_back_hoppang
-#    image: nginx
-#    restart: always
-#    ports:
-#      - '25640:25640'
-#    volumes:
-#      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-#      - /etc/letsencrypt/live/api-hoppang.shop/fullchain.pem:/etc/nginx/ssl/certificate.crt:ro
-#      - /etc/letsencrypt/live/api-hoppang.shop/privkey.pem:/etc/nginx/ssl/private.key:ro
-#    networks:
-#      - server-connection
-#    environment:
-#      - TZ=Asia/Seoul
-#    depends_on:
-#      - app
+  nginx:
+    networks:
+      - server-connection
 
   database:
     container_name: hoppang_database
