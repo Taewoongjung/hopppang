@@ -1,7 +1,8 @@
 server:
   port: 7070
   front:
-    origin-url: ${FRONT_ORIGIN_URL}
+    admin-page-origin-url: ${FRONT_ORIGIN_URL}
+    web-page-origin-url: ${FRONT_ORIGIN_URL}
 
 spring:
   config:
@@ -49,7 +50,8 @@ jwt:
 server:
   port: 9090
   front:
-    origin-url: https://59.6.25.248
+    admin-page-origin-url: http://hoppang.store:88
+    web-page-origin-url: https://www.hoppang.store
 
 spring:
   config:

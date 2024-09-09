@@ -34,8 +34,11 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
 
-    @Value("${server.front.origin-url}")
-    private String frontOriginUrl;
+    @Value("${server.front.admin-page-origin-url}")
+    private String adminPageOriginUrl;
+
+    @Value("${server.front.web-page-origin-url}")
+    private String webPageOriginUrl;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -50,7 +53,8 @@ public class SecurityConfig {
 
                                 CorsConfiguration configuration = new CorsConfiguration();
 
-                                configuration.setAllowedOrigins(Arrays.asList(frontOriginUrl));
+                                configuration.setAllowedOrigins(Arrays
+                                        .asList(adminPageOriginUrl, webPageOriginUrl));
                                 configuration.setAllowedMethods(Collections.singletonList("*"));
                                 configuration.setAllowCredentials(true);
                                 configuration.setAllowedHeaders(Collections.singletonList("*"));
@@ -85,12 +89,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,
                                 "/actuator/health"
                                 , "/api/me"
-                                , "/api/companies"
-                                , "/api/chassis/prices"
-                                , "/api/businesses/{businessId}"
-                                , "/api/companies/{companyId}/businesses"
-                                , "/api/businesses/{businessId}/usage-categories"
-                                , "/api/excels/companies/{companyId}/businesses/{businessId}"
                         ).authenticated()
 
                         .requestMatchers(HttpMethod.GET,
@@ -102,19 +100,15 @@ public class SecurityConfig {
                                 , "/api/businesses/{businessId}/materials/{materialId}"
                         ).authenticated()
 
-                        .requestMatchers(HttpMethod.POST,
-                                "/api/login"
-                                , "/api/signup"
-                                , "/api/companies"
-                                , "/api/businesses"
-                                , "/api/companies/{companyId}/businesses"
-                                , "/api/businesses/{businessId}/quotations/draft/completions"
-                                , "/api/businesses/schedules"
+                        .requestMatchers(HttpMethod.POST
+                                , "/api/chassis/prices"
                         ).authenticated()
+
                         .requestMatchers(HttpMethod.PATCH,
                                 "/api/businesses/{businessId}/usages/categories",
                                 "/api/businesses/{businessId}/progresses"
                         ).authenticated()
+
                         .requestMatchers("/admin").hasRole("CUSTOMER")
                         .requestMatchers("/login").permitAll()
                         .anyRequest().authenticated())
