@@ -12,7 +12,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "88:25640"
+      - "25640:25640"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - /etc/letsencrypt/live/api-hoppang.shop/fullchain.pem:/etc/nginx/ssl/certificate.crt:ro
