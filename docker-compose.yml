@@ -6,8 +6,23 @@ networks:
 
 services:
   nginx:
+    container_name: nginx-proxy_hoppang
+    image: nginx:latest
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+#      - /etc/letsencrypt/live/api-hoppang.shop/fullchain.pem:/etc/nginx/ssl/certificate.crt:ro
+#      - /etc/letsencrypt/live/api-hoppang.shop/privkey.pem:/etc/nginx/ssl/private.key:ro
     networks:
       - server-connection
+    environment:
+      - TZ=Asia/Seoul
+    depends_on:
+      - back-end-app
+      - admin-front-end-app
 
   database:
     container_name: hoppang_database
@@ -33,11 +48,11 @@ services:
     networks:
       - server-connection
 
-  app:
+  back-end-app:
     build:
       context: ./
       dockerfile: Dockerfile
-    container_name: twj_spring_hoppang
+    container_name: hoppang_main_back
     restart: on-failure
     expose:
       - "9090"
@@ -45,16 +60,25 @@ services:
       - database
     command:
       - ./gradlew bootRun
-      - chmod 777 /app/logs
-      - chown root:root /app/logs
+      - chmod 777 /be-app/logs
+      - chown root:root /be-app/logs
     environment:
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
       - TZ=Asia/Seoul
     networks:
       - server-connection
     volumes:
-      - /home/twj/hoppang-app/logs:/app/logs
+      - /home/twj/hoppang-app/logs:/be-app/logs
     user: root
+
+  admin-front-end-app:
+    container_name: hoppang_admin_front
+    image: dndxowjd/hoppang-admin-fe:0.01
+    restart: always
+    expose:
+      - "10234"
+    networks:
+      - server-connection
 
 volumes:
   dev-log:
