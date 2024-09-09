@@ -22,6 +22,7 @@ services:
       - TZ=Asia/Seoul
     depends_on:
       - back-end-app
+      - web-front-end-app
       - admin-front-end-app
 
   database:
