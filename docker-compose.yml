@@ -80,6 +80,15 @@ services:
     networks:
       - server-connection
 
+  web-front-end-app:
+    container_name: hoppang_web_front
+    image: dndxowjd/hoppang-web-fe:0.01
+    restart: always
+    expose:
+      - "10244"
+    networks:
+      - server-connection
+
 volumes:
   dev-log:
     external: true
