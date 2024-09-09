@@ -38,7 +38,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           username: ${{ secrets.SERVER_USERNAME }}
           script: |
-            cd /home/twj/hoppang
+            cd /home/twj/hopppang
             git pull
             sleep 3
             docker compose up -d --build
