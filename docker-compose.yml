@@ -15,8 +15,10 @@ services:
       - "25640:25640"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - /etc/letsencrypt/live/api-hoppang.shop/fullchain.pem:/etc/nginx/ssl/certificate.crt:ro
-      - /etc/letsencrypt/live/api-hoppang.shop/privkey.pem:/etc/nginx/ssl/private.key:ro
+      - /etc/letsencrypt/live/api-hoppang.shop/fullchain.pem:/etc/nginx/ssl/api-hoppang-shop-certificate.crt:ro # api-hoppang.shop 인증서
+      - /etc/letsencrypt/live/api-hoppang.shop/privkey.pem:/etc/nginx/ssl/api-hoppang-shop-private.key:ro # api-hoppang.shop 인증서
+      - /etc/letsencrypt/live/hoppang.store/fullchain.pem:/etc/nginx/ssl/hoppang-store-certificate.crt:ro # hoppang.store 인증서
+      - /etc/letsencrypt/live/hoppang.store/privkey.pem:/etc/nginx/ssl/hoppang-store-private.key:ro # hoppang.store 인증서
     networks:
       - server-connection
     environment:
