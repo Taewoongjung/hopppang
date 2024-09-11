@@ -10,4 +10,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ChassisPriceInfoJpaRepository extends JpaRepository<ChassisPriceInfoEntity, ChassisPriceInfoId> {
 
     List<ChassisPriceInfoEntity> findAllByTypeAndCompanyType(final ChassisType type, final CompanyType companyType);
+
+    ChassisPriceInfoEntity findAllByTypeAndCompanyTypeAndWidthAndHeight(final ChassisType type,
+            final CompanyType companyType,
+            final int width,
+            final int height);
 }

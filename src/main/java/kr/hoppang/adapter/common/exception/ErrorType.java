@@ -16,7 +16,11 @@ public enum ErrorType {
     EXPIRED_ACCESS_TOKEN(101, "만료 된 토큰입니다."),
     INVALID_SIGNUP_REQUEST_DUPLICATE_EMAIL(102, "이미 존재하는 이메일 입니다."),
 
-    NOT_EXIST_CHASSIS_PRICE_INFO(200, "샤시 가격 정보가 존재하지않습니다.")
+    NOT_EXIST_CHASSIS_PRICE_INFO(200, "샤시 가격 정보가 존재하지않습니다."),
+    NOT_EXIST_ADDITIONAL_CRITERIA_PRICE_INFO(201, "가격 필수 참고 기준값이 존재하지않습니다."),
+    NOT_AVAILABLE_MANUFACTURE(202, "너비/높이 최소 단위가 있으므로 제작이 불가합니다."),
+    CHASSIS_TYPE_IS_MANDATORY(203, "샤시 종류 정보는 필수값 입니다."),
+    COMPANY_TYPE_IS_MANDATORY(204, "샤시 회사 정보는 필수값 입니다.")
     ;
 
     private final int code;

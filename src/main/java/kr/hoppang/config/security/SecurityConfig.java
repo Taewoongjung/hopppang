@@ -80,6 +80,7 @@ public class SecurityConfig {
                                 , "/api/users/verify"
                                 , "/api/emails/validations"
                                 , "/api/phones/validations"
+                                , "/api/chassis/calculations/prices"
                         ).permitAll()
                         .requestMatchers(HttpMethod.PATCH,
                                 "/api/users/passwords"
@@ -102,6 +103,7 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.POST
                                 , "/api/chassis/prices"
+//                                , "/api/chassis/calculations/prices"
                         ).authenticated()
 
                         .requestMatchers(HttpMethod.PATCH,

@@ -9,4 +9,6 @@ public interface ChassisPriceInfoRepository {
 
     List<ChassisPriceInfo> findByTypeAndCompanyType(final ChassisType type, final CompanyType companyType);
 
+    ChassisPriceInfo findByTypeAndCompanyTypeAndWidthAndHeight(
+            final ChassisType type, final CompanyType companyType, final int width, final int height);
 }

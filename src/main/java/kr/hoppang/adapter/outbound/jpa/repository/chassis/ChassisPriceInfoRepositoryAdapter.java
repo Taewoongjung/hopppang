@@ -37,4 +37,21 @@ public class ChassisPriceInfoRepositoryAdapter implements ChassisPriceInfoReposi
         return chassisPriceInfoEntityList.stream().map(ChassisPriceInfoEntity::toPojo)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ChassisPriceInfo findByTypeAndCompanyTypeAndWidthAndHeight(
+            final ChassisType type,
+            final CompanyType companyType,
+            final int width,
+            final int height
+    ) {
+        ChassisPriceInfoEntity chassisPriceInfoEntity =
+                chassisPriceInfoJpaRepository.findAllByTypeAndCompanyTypeAndWidthAndHeight(
+                        type, companyType, width, height);
+
+        check(chassisPriceInfoEntity == null, NOT_EXIST_CHASSIS_PRICE_INFO);
+
+        return chassisPriceInfoEntity.toPojo();
+    }
 }
