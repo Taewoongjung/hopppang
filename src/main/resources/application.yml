@@ -50,7 +50,7 @@ jwt:
 server:
   port: 9090
   front:
-    admin-page-origin-url: http://hoppang.store:88
+    admin-page-origin-url: http://www.hoppang.store:88
     web-page-origin-url: https://www.hoppang.store
 
 spring:
