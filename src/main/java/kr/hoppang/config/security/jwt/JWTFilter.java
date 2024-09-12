@@ -41,6 +41,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
     private static final String[] API_ONLY_FOR_ADMIN = {
             "/api/chassis/prices"
+            , "/api/chassis/prices/additions/criteria"
     };
 
     @Override

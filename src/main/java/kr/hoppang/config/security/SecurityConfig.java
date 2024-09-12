@@ -94,6 +94,7 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.GET,
                                 "/api/chassis/prices"
+                                , "/api/chassis/prices/additions/criteria"
                         ).authenticated()
 
                         .requestMatchers(HttpMethod.PUT,

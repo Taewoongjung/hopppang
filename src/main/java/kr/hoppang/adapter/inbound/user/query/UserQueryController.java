@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.stream.Collectors;
 import kr.hoppang.adapter.inbound.user.webdto.LoadUserWebDtoV1;
 import kr.hoppang.application.readmodel.user.handlers.LoadUserByTokenQueryHandler;
+import kr.hoppang.application.readmodel.user.queries.LoadUserByTokenQuery;
 import kr.hoppang.domain.user.User;
 import kr.hoppang.domain.user.UserRole;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +40,9 @@ public class UserQueryController {
             final HttpServletRequest request
     ) {
 
-        User foundUser = loadUserByTokenCommandHandler.handle(request.getHeader("authorization"));
+        User foundUser = loadUserByTokenCommandHandler.handle(
+                new LoadUserByTokenQuery(request.getHeader("authorization"))
+        );
 
         log.info("{} 고객님 접속 중", foundUser.getName());
 

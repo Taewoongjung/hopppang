@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public class GetChassisPriceAdditionalCriteriaWebDtoV1 {
 
-    public record Req(String type,
+    public record Res(String type,
                       int price,
                       LocalDateTime lastModified) {
 
