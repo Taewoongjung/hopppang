@@ -5,11 +5,11 @@ import static kr.hoppang.adapter.common.util.CheckUtil.check;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import kr.hoppang.abstraction.domain.ICommandHandler;
 import kr.hoppang.application.command.chassis.commands.CalculateChassisPriceCommand;
 import kr.hoppang.application.command.chassis.commands.CalculateChassisPriceCommand.CalculateChassisPrice;
 import kr.hoppang.domain.chassis.ChassisPriceInfo;
-import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.repository.ChassisPriceInfoRepository;
 import kr.hoppang.util.calculator.ApproximateCalculator;
 import kr.hoppang.util.calculator.ChassisPriceCalculator;
@@ -45,12 +45,12 @@ public class CalculateChassisPriceCommandHandler implements
         List<Integer> calculatedResultList = new ArrayList<>();
 
         // 인건비를 위한 이중창 가로 세로 길이 저장 변수
-        int widthForSingleWindow = 0;
-        int heightForSingleWindow = 0;
+        AtomicInteger widthForSingleWindow = new AtomicInteger(0);
+        AtomicInteger heightForSingleWindow = new AtomicInteger(0);
 
         // 인건비를 위한 이중창 가로 세로 길이 저장 변수
-        int widthForDoubleWindow = 0;
-        int heightForDoubleWindow = 0;
+        AtomicInteger widthForDoubleWindow = new AtomicInteger(0);
+        AtomicInteger heightForDoubleWindow = new AtomicInteger(0);
 
         // 자재비를 계산한다.
         reqList.forEach(chassis -> {
@@ -62,13 +62,13 @@ public class CalculateChassisPriceCommandHandler implements
             int approxWidth = ApproximateCalculator.getApproximateWidth(chassis.width());
             int approxHeight = ApproximateCalculator.getApproximateHeight(chassis.height());
 
-            assignDimensionsByWindowType(chassis.chassisType(),
-                    approxWidth, approxHeight,
-                    widthForSingleWindow,
-                    heightForSingleWindow,
-                    widthForDoubleWindow,
-                    heightForDoubleWindow
-            );
+            if ("단창".equals(chassis.chassisType().getType())) {
+                widthForSingleWindow.addAndGet(approxWidth);
+                heightForSingleWindow.addAndGet(approxHeight);
+            } else {
+                widthForDoubleWindow.addAndGet(approxWidth);
+                heightForDoubleWindow.addAndGet(approxHeight);
+            }
 
             ChassisPriceInfo chassisPriceInfo =
                     chassisPriceInfoRepository.findByTypeAndCompanyTypeAndWidthAndHeight(
@@ -88,10 +88,10 @@ public class CalculateChassisPriceCommandHandler implements
 
         // 인건비를 계산한다.
         calculatedResultList.add(chassisPriceCalculator.calculateLaborFee(
-                widthForSingleWindow,
-                heightForSingleWindow,
-                widthForDoubleWindow,
-                heightForDoubleWindow)
+                widthForSingleWindow.get(),
+                heightForSingleWindow.get(),
+                widthForDoubleWindow.get(),
+                heightForDoubleWindow.get())
         );
 
         // 철거시, 철거비를 계산한다.
@@ -105,23 +105,5 @@ public class CalculateChassisPriceCommandHandler implements
         }
 
         return calculatedResultList.stream().mapToInt(Integer::intValue).sum();
-    }
-
-    private void assignDimensionsByWindowType(
-            final ChassisType chassisType,
-            final int approxWidth,
-            final int approxHeight,
-            int widthForSingleWindow,
-            int heightForSingleWindow,
-            int widthForDoubleWindow,
-            int heightForDoubleWindow
-    ) {
-        if ("단창".equals(chassisType.getType())) {
-            widthForSingleWindow = approxWidth;
-            heightForSingleWindow = approxHeight;
-        } else {
-            widthForDoubleWindow = approxWidth;
-            heightForDoubleWindow = approxHeight;
-        }
     }
 }
