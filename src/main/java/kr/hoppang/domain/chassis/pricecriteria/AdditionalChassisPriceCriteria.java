@@ -9,7 +9,7 @@ import lombok.Getter;
 public class AdditionalChassisPriceCriteria {
 
     private final AdditionalChassisPriceCriteriaType type;
-    private final int price;
+    private int price;
     private final LocalDateTime lastModified;
     private final LocalDateTime createdAt;
 
@@ -78,5 +78,13 @@ public class AdditionalChassisPriceCriteria {
         }
 
         return tmpTargetFloor * this.price;
+    }
+
+    public void revisePrice(final int price) {
+        this.price = price;
+    }
+
+    public boolean comparePriceWithTarget(final int targetPrice) {
+        return this.price == targetPrice;
     }
 }

@@ -1,8 +1,11 @@
 package kr.hoppang.application.command.chassis.handlers;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 import kr.hoppang.abstraction.domain.ICommandHandler;
 import kr.hoppang.application.command.chassis.commands.ReviseChassisPriceAdditionalCriteriaCommand;
+import kr.hoppang.application.command.chassis.commands.ReviseChassisPriceAdditionalCriteriaCommand.ReviseChassisPriceAdditionalCriteria;
 import kr.hoppang.domain.chassis.pricecriteria.AdditionalChassisPriceCriteria;
 import kr.hoppang.domain.chassis.repository.pricecriteria.AdditionalChassisPriceCriteriaRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,9 +30,20 @@ public class ReviseChassisPriceAdditionalCriteriaCommandHandler
     @Transactional
     public Boolean handle(final ReviseChassisPriceAdditionalCriteriaCommand command) {
 
-        return additionalChassisPriceCriteriaRepository.reviseAdditionalChassisPriceCriteria(
-                command.reqList().stream()
-                        .map(e -> AdditionalChassisPriceCriteria.of(e.type(), e.revisingPrice()))
-                        .collect(Collectors.toList()));
+        List<AdditionalChassisPriceCriteria> beforeModificationInfos = additionalChassisPriceCriteriaRepository.findAll();
+
+        List<AdditionalChassisPriceCriteria> reviseRepositoryDto = new ArrayList<>();
+
+        for (ReviseChassisPriceAdditionalCriteria revisingTarget : command.reqList()) {
+            beforeModificationInfos.stream()
+                    .filter(f -> f.getType().equals(revisingTarget.type()))
+                    .filter(f2 -> !f2.comparePriceWithTarget(revisingTarget.revisingPrice()))
+                    .forEach(revisingObj -> {
+                        revisingObj.revisePrice(revisingTarget.revisingPrice());
+                        reviseRepositoryDto.add(revisingObj);
+                    });
+        }
+
+        return additionalChassisPriceCriteriaRepository.reviseAdditionalChassisPriceCriteria(reviseRepositoryDto);
     }
 }

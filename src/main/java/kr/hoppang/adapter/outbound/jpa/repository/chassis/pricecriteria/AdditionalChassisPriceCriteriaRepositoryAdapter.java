@@ -65,9 +65,10 @@ public class AdditionalChassisPriceCriteriaRepositoryAdapter implements
                     .findFirst()
                     .orElseThrow();
 
+            entity.updateLastModified();
             entity.revisePrice(e.getPrice());
         });
-        
+
         return true;
     }
 }

@@ -6,6 +6,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import kr.hoppang.adapter.outbound.jpa.entity.BaseEntity;
 import kr.hoppang.domain.chassis.pricecriteria.AdditionalChassisPriceCriteria;
 import lombok.AccessLevel;
@@ -47,8 +48,11 @@ public class AdditionalChassisPriceCriteriaEntity extends BaseEntity {
         );
     }
 
-
     public void revisePrice(final int price) {
         this.price = price;
+    }
+
+    public void updateLastModified() {
+        updateLastModifiedAsNow();
     }
 }

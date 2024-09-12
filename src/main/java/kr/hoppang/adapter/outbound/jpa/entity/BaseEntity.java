@@ -29,4 +29,8 @@ public abstract class BaseEntity {
         this.createdAt = createdAt;
         this.lastModified = lastModified;
     }
+
+    protected void updateLastModifiedAsNow() {
+        this.lastModified = LocalDateTime.now();
+    }
 }
