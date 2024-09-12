@@ -42,22 +42,19 @@ public class AdditionalChassisPriceCriteria {
     }
 
     public int calculateLaborFee(
-            final ChassisType chassisType,
-            final int approxWidth,
-            final int approxHeight
+            final int widthForSingleWindow,
+            final int heightForSingleWindow,
+            final int widthForDoubleWindow,
+            final int heightForDoubleWindow
     ) {
         /*
         * 단창 평당 인건비 3600 원
         * 이중창 평당 인건비 4600 원
         * */
+        int laborFeeOfSingleWindow = calculateSingleWindowLaborFee(widthForSingleWindow, heightForSingleWindow);
+        int laborFeeOfDoubleWindow = calculateDoubleWindowLaborFee(widthForDoubleWindow, heightForDoubleWindow);
 
-        // 창 종류에 따른 평당 인건비
-        int laborFeeByAPyeong = "단창".equals(chassisType.getType()) ? 3600 : 4600;
-
-        // 평수 계산
-        int pyeong = (approxWidth/300) * (approxHeight/300);
-
-        int laborFee = pyeong * laborFeeByAPyeong;
+        int laborFee = laborFeeOfSingleWindow + laborFeeOfDoubleWindow;
 
         // 최소 인건비에 비해 해당 평수의 인건비가 저렴할 경우, "최소 인건비" 와 "평수의 인건비"의 차를 반환한다.
         // 최소 인건비에 비해 해당 평수의 인건비가 비쌀 경우, "평수의 인건비"의 차를 반환한다.
@@ -66,6 +63,26 @@ public class AdditionalChassisPriceCriteria {
         } else {
             return laborFee;
         }
+    }
+
+    private int calculateSingleWindowLaborFee(final int width, final int height) {
+        // 평당 인건비 (단창)
+        int laborFeeByAPyeong = 3600;
+
+        // 평수 계산
+        int pyeong = (width/300) * (height/300);
+
+        return pyeong * laborFeeByAPyeong;
+    }
+
+    private int calculateDoubleWindowLaborFee(final int width, final int height) {
+        // 평당 인건비 (이중창)
+        int laborFeeByAPyeong = 4600;
+
+        // 평수 계산
+        int pyeong = (width/300) * (height/300);
+
+        return pyeong * laborFeeByAPyeong;
     }
 
     public int calculateLadderCarWhenOverFloor11(final int targetFloor) {

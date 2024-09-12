@@ -6,13 +6,11 @@ import static kr.hoppang.adapter.common.util.CheckUtil.check;
 import java.util.ArrayList;
 import java.util.List;
 import kr.hoppang.abstraction.domain.ICommandHandler;
-import kr.hoppang.adapter.outbound.jpa.entity.chassis.pricecriteria.AdditionalChassisPriceCriteriaType;
 import kr.hoppang.application.command.chassis.commands.CalculateChassisPriceCommand;
 import kr.hoppang.application.command.chassis.commands.CalculateChassisPriceCommand.CalculateChassisPrice;
 import kr.hoppang.domain.chassis.ChassisPriceInfo;
-import kr.hoppang.domain.chassis.pricecriteria.AdditionalChassisPriceCriteria;
+import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.repository.ChassisPriceInfoRepository;
-import kr.hoppang.domain.chassis.repository.pricecriteria.AdditionalChassisPriceCriteriaRepository;
 import kr.hoppang.util.calculator.ApproximateCalculator;
 import kr.hoppang.util.calculator.ChassisPriceCalculator;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class CalculateChassisPriceCommandHandler implements
         ICommandHandler<CalculateChassisPriceCommand, Integer> {
 
+    private final ChassisPriceCalculator chassisPriceCalculator;
     private final ChassisPriceInfoRepository chassisPriceInfoRepository;
-    private final AdditionalChassisPriceCriteriaRepository additionalChassisPriceCriteriaRepository;
 
     @Override
     public boolean isCommandHandler() {
@@ -46,102 +44,84 @@ public class CalculateChassisPriceCommandHandler implements
 
         List<Integer> calculatedResultList = new ArrayList<>();
 
-        reqList.forEach(e -> {
-            check(e.width() > 5000 || e.width() < 300, NOT_AVAILABLE_MANUFACTURE);
-            check(e.height() > 2600 || e.height() < 300, NOT_AVAILABLE_MANUFACTURE);
+        // 인건비를 위한 이중창 가로 세로 길이 저장 변수
+        int widthForSingleWindow = 0;
+        int heightForSingleWindow = 0;
 
-            int finalResultChassisPrice = 0;
+        // 인건비를 위한 이중창 가로 세로 길이 저장 변수
+        int widthForDoubleWindow = 0;
+        int heightForDoubleWindow = 0;
 
-            int approxWidth = ApproximateCalculator.getApproximateWidth(e.width());
-            int approxHeight = ApproximateCalculator.getApproximateHeight(e.height());
+        // 자재비를 계산한다.
+        reqList.forEach(chassis -> {
+            check(chassis.width() > 5000 || chassis.width() < 300, NOT_AVAILABLE_MANUFACTURE);
+            check(chassis.height() > 2600 || chassis.height() < 300, NOT_AVAILABLE_MANUFACTURE);
+
+            int chassisPrice = 0;
+
+            int approxWidth = ApproximateCalculator.getApproximateWidth(chassis.width());
+            int approxHeight = ApproximateCalculator.getApproximateHeight(chassis.height());
+
+            assignDimensionsByWindowType(chassis.chassisType(),
+                    approxWidth, approxHeight,
+                    widthForSingleWindow,
+                    heightForSingleWindow,
+                    widthForDoubleWindow,
+                    heightForDoubleWindow
+            );
 
             ChassisPriceInfo chassisPriceInfo =
                     chassisPriceInfoRepository.findByTypeAndCompanyTypeAndWidthAndHeight(
-                            e.chassisType(), e.companyType(), approxWidth, approxHeight);
+                            chassis.chassisType(), chassis.companyType(), approxWidth, approxHeight);
 
-            // 자재비를 계산한다.
-            int chassisPriceResult = ChassisPriceCalculator.calculate(
+            chassisPrice = chassisPriceCalculator.calculateMaterialPrice(
                     chassisPriceInfo.getPrice(),
                     approxWidth, approxHeight,
-                    e.width(), e.height()
+                    chassis.width(), chassis.height()
             );
 
-            finalResultChassisPrice += chassisPriceResult;
-
-            // 층수에 따른 사다리차 비용을 계산한다
-            //  1층은 도수운반비 추가
-            if (e.floorCustomerLiving() == 1) {
-                AdditionalChassisPriceCriteria freightTransportFee =
-                        additionalChassisPriceCriteriaRepository.findByType(
-                                AdditionalChassisPriceCriteriaType.FreightTransportFee);
-
-                finalResultChassisPrice += freightTransportFee.getPrice();
-            }
-
-            // 2층 부터 사다리차 비용 추가
-            if (e.floorCustomerLiving() >= 2 && e.floorCustomerLiving() <= 6) {
-                AdditionalChassisPriceCriteria ladderCar2To6Fee =
-                        additionalChassisPriceCriteriaRepository.findByType(
-                                AdditionalChassisPriceCriteriaType.LadderCar2To6);
-
-                finalResultChassisPrice += ladderCar2To6Fee.getPrice();
-
-            } else if (e.floorCustomerLiving() == 7 || 8 == e.floorCustomerLiving()) {
-                AdditionalChassisPriceCriteria ladderCar7To8Fee =
-                        additionalChassisPriceCriteriaRepository.findByType(
-                                AdditionalChassisPriceCriteriaType.LadderCar7To8);
-
-                finalResultChassisPrice += ladderCar7To8Fee.getPrice();
-
-            } else if (e.floorCustomerLiving() == 9 || 10 == e.floorCustomerLiving()) {
-                AdditionalChassisPriceCriteria ladderCar9To10Fee =
-                        additionalChassisPriceCriteriaRepository.findByType(
-                                AdditionalChassisPriceCriteriaType.LadderCar9To10);
-
-                finalResultChassisPrice += ladderCar9To10Fee.getPrice();
-
-            } else if (e.floorCustomerLiving() >= 11) {
-                AdditionalChassisPriceCriteria ladderCar11To22PerFloorFee =
-                        additionalChassisPriceCriteriaRepository.findByType(
-                                AdditionalChassisPriceCriteriaType.LadderCar11To22PerF);
-
-                finalResultChassisPrice +=
-                        ladderCar11To22PerFloorFee.calculateLadderCarWhenOverFloor11(
-                                e.floorCustomerLiving());
-            }
-
-
-            // 인건비를 계산한다.
-            AdditionalChassisPriceCriteria minimumLaborFee =
-                    additionalChassisPriceCriteriaRepository.findByType(
-                            AdditionalChassisPriceCriteriaType.MinimumLaborFee);
-
-            int laborFee = minimumLaborFee.calculateLaborFee(e.chassisType(), approxWidth,
-                    approxHeight);
-
-            finalResultChassisPrice += laborFee;
-
-            // 철거시, 철거비를 계산한다.
-            if (e.isScheduledForDemolition()) {
-                AdditionalChassisPriceCriteria demolitionFee =
-                        additionalChassisPriceCriteriaRepository.findByType(
-                                AdditionalChassisPriceCriteriaType.DemolitionFee);
-
-                finalResultChassisPrice += demolitionFee.getPrice();
-            }
-
-            // 살고있을 시, 보양비를 계산한다.
-            if (e.isResident()) {
-                AdditionalChassisPriceCriteria maintenanceFee =
-                        additionalChassisPriceCriteriaRepository.findByType(
-                                AdditionalChassisPriceCriteriaType.MaintenanceFee);
-
-                finalResultChassisPrice += maintenanceFee.getPrice();
-            }
-
-            calculatedResultList.add(finalResultChassisPrice);
+            calculatedResultList.add(chassisPrice);
         });
 
+        // 층수에 따른 사다리차 비용을 계산한다
+        calculatedResultList.add(chassisPriceCalculator.calculateLadderFee(event.floorCustomerLiving()));
+
+        // 인건비를 계산한다.
+        calculatedResultList.add(chassisPriceCalculator.calculateLaborFee(
+                widthForSingleWindow,
+                heightForSingleWindow,
+                widthForDoubleWindow,
+                heightForDoubleWindow)
+        );
+
+        // 철거시, 철거비를 계산한다.
+        if (event.isScheduledForDemolition()) {
+            calculatedResultList.add(chassisPriceCalculator.calculateDemolitionFee());
+        }
+
+        // 살고있을 시, 보양비를 계산한다.
+        if (event.isResident()) {
+            calculatedResultList.add(chassisPriceCalculator.calculateFreightTransportFee());
+        }
+
         return calculatedResultList.stream().mapToInt(Integer::intValue).sum();
+    }
+
+    private void assignDimensionsByWindowType(
+            final ChassisType chassisType,
+            final int approxWidth,
+            final int approxHeight,
+            int widthForSingleWindow,
+            int heightForSingleWindow,
+            int widthForDoubleWindow,
+            int heightForDoubleWindow
+    ) {
+        if ("단창".equals(chassisType.getType())) {
+            widthForSingleWindow = approxWidth;
+            heightForSingleWindow = approxHeight;
+        } else {
+            widthForDoubleWindow = approxWidth;
+            heightForDoubleWindow = approxHeight;
+        }
     }
 }

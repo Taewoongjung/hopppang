@@ -29,14 +29,16 @@ public class GetCalculatedChassisPriceWebDtoV1 {
                         e.chassisType,
                         e.companyType,
                         e.width,
-                        e.height,
-                        e.floorCustomerLiving,
-                        e.isScheduledForDemolition,
-                        e.isResident
+                        e.height
                 ));
             });
 
-            return new CalculateChassisPriceCommand(queryList);
+            return new CalculateChassisPriceCommand(
+                    queryList,
+                    reqCalculateChassisPriceList.get(0).floorCustomerLiving,
+                    reqCalculateChassisPriceList.get(0).isScheduledForDemolition,
+                    reqCalculateChassisPriceList.get(0).isResident
+            );
         }
     }
 

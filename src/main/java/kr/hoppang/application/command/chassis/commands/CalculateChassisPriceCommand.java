@@ -6,17 +6,17 @@ import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
 
 public record CalculateChassisPriceCommand(
-        List<CalculateChassisPrice> calculateChassisPriceList
+        List<CalculateChassisPrice> calculateChassisPriceList,
+        int floorCustomerLiving,
+        boolean isScheduledForDemolition,
+        boolean isResident
 
 ) implements ICommand {
 
         public record CalculateChassisPrice(
                 ChassisType chassisType,
                 CompanyType companyType,
-                int width, int height,
-                int floorCustomerLiving,
-                boolean isScheduledForDemolition,
-                boolean isResident) {
+                int width, int height) {
 
         }
 }
