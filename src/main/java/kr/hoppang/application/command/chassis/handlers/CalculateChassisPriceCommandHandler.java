@@ -8,6 +8,7 @@ import java.util.List;
 import kr.hoppang.abstraction.domain.ICommandHandler;
 import kr.hoppang.adapter.outbound.jpa.entity.chassis.pricecriteria.AdditionalChassisPriceCriteriaType;
 import kr.hoppang.application.command.chassis.commands.CalculateChassisPriceCommand;
+import kr.hoppang.application.command.chassis.commands.CalculateChassisPriceCommand.CalculateChassisPrice;
 import kr.hoppang.domain.chassis.ChassisPriceInfo;
 import kr.hoppang.domain.chassis.pricecriteria.AdditionalChassisPriceCriteria;
 import kr.hoppang.domain.chassis.repository.ChassisPriceInfoRepository;
@@ -23,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class CalculateChassisPriceCommandHandler implements
-        ICommandHandler<List<CalculateChassisPriceCommand>, Integer> {
+        ICommandHandler<CalculateChassisPriceCommand, Integer> {
 
     private final ChassisPriceInfoRepository chassisPriceInfoRepository;
     private final AdditionalChassisPriceCriteriaRepository additionalChassisPriceCriteriaRepository;
@@ -35,15 +36,17 @@ public class CalculateChassisPriceCommandHandler implements
 
     @Override
     @Transactional(readOnly = true)
-    public Integer handle(final List<CalculateChassisPriceCommand> event) {
+    public Integer handle(final CalculateChassisPriceCommand event) {
 
-        if (event.size() == 0) {
+        List<CalculateChassisPrice> reqList = event.calculateChassisPriceList();
+
+        if (reqList.size() == 0) {
             return 0;
         }
 
         List<Integer> calculatedResultList = new ArrayList<>();
 
-        event.forEach(e -> {
+        reqList.forEach(e -> {
             check(e.width() > 5000 || e.width() < 300, NOT_AVAILABLE_MANUFACTURE);
             check(e.height() > 2600 || e.height() < 300, NOT_AVAILABLE_MANUFACTURE);
 

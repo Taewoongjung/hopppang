@@ -1,9 +1,9 @@
 package kr.hoppang.abstraction.domain;
 
-public interface ICommandHandler<Command, CommandResult> {
+public interface ICommandHandler<Command extends ICommand, CommandResult> {
 
     boolean isCommandHandler();
 
-    CommandResult handle(final Command command) throws Exception;
+    CommandResult handle(final Command command);
 
 }
