@@ -1,9 +1,9 @@
 package kr.hoppang.abstraction.domain;
 
-public interface IQueryHandler<Query, Dto> {
+public interface IQueryHandler<Query extends IQuery, ResponseDto> {
 
     boolean isQueryHandler();
 
-    Dto handle(final Query query);
+    ResponseDto handle(final Query query);
 
 }
