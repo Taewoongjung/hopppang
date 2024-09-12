@@ -67,24 +67,19 @@ public class SecurityConfig {
         http.httpBasic(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests((auth) -> auth
+
                         // all permitted
                         .requestMatchers(HttpMethod.GET,
-                                "/api/excels/tasks/{taskId}"
-                                , "/api/emails/validations"
+                                "/api/emails/validations"
                                 , "/api/phones/validations"
                                 , "/api/users/emails"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST,
                                 "/api/login"
                                 , "/api/signup"
-                                , "/api/users/verify"
-                                , "/api/emails/validations"
-                                , "/api/phones/validations"
                                 , "/api/chassis/calculations/prices"
                         ).permitAll()
-                        .requestMatchers(HttpMethod.PATCH,
-                                "/api/users/passwords"
-                        ).permitAll()
+
 
                         // all authorize
                         .requestMatchers(HttpMethod.GET,
@@ -97,20 +92,12 @@ public class SecurityConfig {
                                 , "/api/chassis/prices/additions/criteria"
                         ).authenticated()
 
-                        .requestMatchers(HttpMethod.PUT,
-                                "/api/businesses/schedules/{scheduleId}"
-                                , "/api/businesses/{businessId}/materials/{materialId}"
-                        ).authenticated()
 
                         .requestMatchers(HttpMethod.POST
                                 , "/api/chassis/prices"
 //                                , "/api/chassis/calculations/prices"
                         ).authenticated()
 
-                        .requestMatchers(HttpMethod.PATCH,
-                                "/api/businesses/{businessId}/usages/categories",
-                                "/api/businesses/{businessId}/progresses"
-                        ).authenticated()
 
                         .requestMatchers("/admin").hasRole("CUSTOMER")
                         .requestMatchers("/login").permitAll()
