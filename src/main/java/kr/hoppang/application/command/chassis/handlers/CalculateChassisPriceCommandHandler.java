@@ -1,13 +1,13 @@
-package kr.hoppang.application.readmodel.chassis.handlers;
+package kr.hoppang.application.command.chassis.handlers;
 
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_AVAILABLE_MANUFACTURE;
 import static kr.hoppang.adapter.common.util.CheckUtil.check;
 
 import java.util.ArrayList;
 import java.util.List;
-import kr.hoppang.abstraction.domain.IQueryHandler;
+import kr.hoppang.abstraction.domain.ICommandHandler;
 import kr.hoppang.adapter.outbound.jpa.entity.chassis.pricecriteria.AdditionalChassisPriceCriteriaType;
-import kr.hoppang.application.readmodel.chassis.queries.CalculateChassisPriceQuery;
+import kr.hoppang.application.command.chassis.commands.CalculateChassisPriceCommand;
 import kr.hoppang.domain.chassis.ChassisPriceInfo;
 import kr.hoppang.domain.chassis.pricecriteria.AdditionalChassisPriceCriteria;
 import kr.hoppang.domain.chassis.repository.ChassisPriceInfoRepository;
@@ -22,19 +22,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class CalculateChassisPriceQueryHandler implements IQueryHandler<List<CalculateChassisPriceQuery>, Integer> {
+public class CalculateChassisPriceCommandHandler implements
+        ICommandHandler<List<CalculateChassisPriceCommand>, Integer> {
 
     private final ChassisPriceInfoRepository chassisPriceInfoRepository;
     private final AdditionalChassisPriceCriteriaRepository additionalChassisPriceCriteriaRepository;
 
     @Override
-    public boolean isQueryHandler() {
+    public boolean isCommandHandler() {
         return true;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Integer handle(final List<CalculateChassisPriceQuery> event) {
+    public Integer handle(final List<CalculateChassisPriceCommand> event) {
 
         if (event.size() == 0) {
             return 0;
