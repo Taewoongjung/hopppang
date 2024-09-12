@@ -47,4 +47,8 @@ public class AdditionalChassisPriceCriteriaEntity extends BaseEntity {
         );
     }
 
+
+    public void revisePrice(final int price) {
+        this.price = price;
+    }
 }

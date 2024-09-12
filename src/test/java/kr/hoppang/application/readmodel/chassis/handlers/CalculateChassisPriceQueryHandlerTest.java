@@ -5,7 +5,6 @@ import static kr.hoppang.util.calculator.ApproximateCalculator.getApproximateWid
 
 import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
-import org.junit.jupiter.api.Test;
 
 class CalculateChassisPriceQueryHandlerTest {
 

@@ -9,4 +9,6 @@ public interface AdditionalChassisPriceCriteriaRepository {
     AdditionalChassisPriceCriteria findByType(final AdditionalChassisPriceCriteriaType type);
 
     List<AdditionalChassisPriceCriteria> findAll();
+
+    boolean reviseAdditionalChassisPriceCriteria(final List<AdditionalChassisPriceCriteria> targetList);
 }

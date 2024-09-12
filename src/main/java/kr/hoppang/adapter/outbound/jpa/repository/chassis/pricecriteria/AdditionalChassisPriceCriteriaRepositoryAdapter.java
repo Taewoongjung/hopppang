@@ -50,4 +50,24 @@ public class AdditionalChassisPriceCriteriaRepositoryAdapter implements
                 .map(AdditionalChassisPriceCriteriaEntity::toPojo)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    @Transactional
+    public boolean reviseAdditionalChassisPriceCriteria(
+            final List<AdditionalChassisPriceCriteria> targetList) {
+
+        List<AdditionalChassisPriceCriteriaEntity> entityList =
+                additionalChassisPriceCriteriaJpaRepository.findAll();
+
+        targetList.forEach(e -> {
+            AdditionalChassisPriceCriteriaEntity entity = entityList.stream()
+                    .filter(f -> e.getType().equals(f.getType()))
+                    .findFirst()
+                    .orElseThrow();
+
+            entity.revisePrice(e.getPrice());
+        });
+        
+        return true;
+    }
 }

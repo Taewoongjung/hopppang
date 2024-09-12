@@ -98,6 +98,10 @@ public class SecurityConfig {
 //                                , "/api/chassis/calculations/prices"
                         ).authenticated()
 
+                        .requestMatchers(HttpMethod.PUT
+                                , "/api/chassis/prices/additions/criteria"
+                        ).authenticated()
+
 
                         .requestMatchers("/admin").hasRole("CUSTOMER")
                         .requestMatchers("/login").permitAll()

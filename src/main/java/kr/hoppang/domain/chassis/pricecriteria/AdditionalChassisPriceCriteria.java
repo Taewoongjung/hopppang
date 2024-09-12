@@ -8,10 +8,10 @@ import lombok.Getter;
 @Getter
 public class AdditionalChassisPriceCriteria {
 
-    private AdditionalChassisPriceCriteriaType type;
-    private int price;
-    private LocalDateTime lastModified;
-    private LocalDateTime createdAt;
+    private final AdditionalChassisPriceCriteriaType type;
+    private final int price;
+    private final LocalDateTime lastModified;
+    private final LocalDateTime createdAt;
 
     private AdditionalChassisPriceCriteria(
             final AdditionalChassisPriceCriteriaType type,
@@ -32,6 +32,13 @@ public class AdditionalChassisPriceCriteria {
             final LocalDateTime createdAt
     ) {
         return new AdditionalChassisPriceCriteria(type, price, lastModified, createdAt);
+    }
+
+    public static AdditionalChassisPriceCriteria of(
+            final AdditionalChassisPriceCriteriaType type,
+            final int price
+    ) {
+        return new AdditionalChassisPriceCriteria(type, price, null, null);
     }
 
     public int calculateLaborFee(
