@@ -90,7 +90,7 @@ services:
     expose:
       - "10244"  # Optional, consider removing if not necessary
     volumes:
-      - /home/twj/hoppang_web/build/static/js/main.777c22df.js:/usr/share/nginx/html  # Nginx와 공유할 빌드 폴더
+      - /home/twj/hoppang_web/build/static/js:/usr/share/nginx/html  # Nginx와 공유할 빌드 폴더
     networks:
       - server-connection
 
