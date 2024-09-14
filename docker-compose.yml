@@ -16,8 +16,6 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - /etc/letsencrypt/live/hoppang.store/fullchain.pem:/etc/nginx/ssl/hoppang-store-certificate.crt:ro # hoppang.store 인증서
       - /etc/letsencrypt/live/hoppang.store/privkey.pem:/etc/nginx/ssl/hoppang-store-private.key:ro # hoppang.store 인증서
-      - /home/twj/hoppang_web/build/static/js:/usr/share/nginx/html  # React 빌드 파일을 Nginx와 연결
-      - /etc/nginx/cache:/var/cache/nginx  # Nginx cache
     networks:
       - server-connection
     environment:
@@ -88,7 +86,7 @@ services:
     image: dndxowjd/hoppang-web-fe:0.01
     restart: always
     expose:
-      - "10244"  # Optional, consider removing if not necessary
+      - "10244"
     networks:
       - server-connection
 
