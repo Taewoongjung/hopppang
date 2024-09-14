@@ -19,6 +19,7 @@ services:
 #      - /etc/letsencrypt/live/api-hoppang.shop/privkey.pem:/etc/nginx/ssl/api-hoppang-shop-private.key:ro # api-hoppang.shop 인증서
       - /etc/letsencrypt/live/hoppang.store/fullchain.pem:/etc/nginx/ssl/hoppang-store-certificate.crt:ro # hoppang.store 인증서
       - /etc/letsencrypt/live/hoppang.store/privkey.pem:/etc/nginx/ssl/hoppang-store-private.key:ro # hoppang.store 인증서
+      - /path/to/react/build:/usr/share/nginx/html  # React 빌드 파일을 Nginx와 연결
     networks:
       - server-connection
     environment:
@@ -90,6 +91,8 @@ services:
     restart: always
     expose:
       - "10244"
+    volumes:
+      - /path/to/local/build:/usr/share/nginx/html  # Nginx와 공유할 빌드 폴더
     networks:
       - server-connection
 
