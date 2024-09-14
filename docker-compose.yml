@@ -5,7 +5,7 @@ networks:
     driver: bridge
 
 services:
-  nginx:
+  reverse-nginx:
     container_name: nginx-proxy-hoppang
     image: nginx:latest
     restart: always
