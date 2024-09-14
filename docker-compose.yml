@@ -92,7 +92,7 @@ services:
     expose:
       - "10244"
     volumes:
-      - /path/to/local/build:/usr/share/nginx/html  # Nginx와 공유할 빌드 폴더
+      - /usr/share/nginx/html:/usr/share/nginx/html  # Nginx와 공유할 빌드 폴더
     networks:
       - server-connection
 
