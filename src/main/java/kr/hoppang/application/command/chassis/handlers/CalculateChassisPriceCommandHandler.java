@@ -104,6 +104,8 @@ public class CalculateChassisPriceCommandHandler implements
             calculatedResultList.add(chassisPriceCalculator.calculateFreightTransportFee());
         }
 
+        calculatedResultList.add(chassisPriceCalculator.calculateDeliveryFee());
+
         return calculatedResultList.stream().mapToInt(Integer::intValue).sum();
     }
 }

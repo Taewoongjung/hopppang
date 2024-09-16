@@ -115,4 +115,12 @@ public class ChassisPriceCalculator {
 
         return freightTransportFee.getPrice();
     }
+
+    public int calculateDeliveryFee() {
+        AdditionalChassisPriceCriteria deliveryFee =
+                additionalChassisPriceCriteriaRepository.findByType(
+                        AdditionalChassisPriceCriteriaType.FreightTransportFee);
+
+        return deliveryFee.getPrice();
+    }
 }
