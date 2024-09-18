@@ -5,6 +5,7 @@ import kr.hoppang.adapter.inbound.chassis.webdto.AddAndReviseChassisPriceInforma
 import kr.hoppang.adapter.inbound.chassis.webdto.AddAndReviseChassisPriceInformationWebDtoV1.Res;
 import kr.hoppang.adapter.inbound.chassis.webdto.GetCalculatedChassisPriceWebDtoV1;
 import kr.hoppang.adapter.inbound.chassis.webdto.ReviseAdditionalChassisPriceWebDtoV1;
+import kr.hoppang.application.command.chassis.commandresults.CalculateChassisPriceCommandHandlerCommandResult;
 import kr.hoppang.application.command.chassis.commands.AddAndReviseChassisPriceInformationCommand;
 import kr.hoppang.application.command.chassis.handlers.AddAndReviseChassisPriceInformationCommandHandler;
 import kr.hoppang.application.command.chassis.handlers.CalculateChassisPriceCommandHandler;
@@ -54,7 +55,7 @@ public class ChassisCommandController {
     }
 
     @PostMapping(value = "/calculations/prices")
-    public ResponseEntity<Integer> getCalculatedChassisPrice(
+    public ResponseEntity<CalculateChassisPriceCommandHandlerCommandResult> getCalculatedChassisPrice(
             @RequestBody final GetCalculatedChassisPriceWebDtoV1.Req req
     ) {
         req.validate();

@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import kr.hoppang.abstraction.domain.ICommandHandler;
+import kr.hoppang.application.command.chassis.commandresults.CalculateChassisPriceCommandHandlerCommandResult;
+import kr.hoppang.application.command.chassis.commandresults.CalculateChassisPriceCommandHandlerCommandResult.ChassisPriceResult;
 import kr.hoppang.application.command.chassis.commands.CalculateChassisPriceCommand;
 import kr.hoppang.application.command.chassis.commands.CalculateChassisPriceCommand.CalculateChassisPrice;
 import kr.hoppang.domain.chassis.ChassisPriceInfo;
@@ -22,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class CalculateChassisPriceCommandHandler implements
-        ICommandHandler<CalculateChassisPriceCommand, Integer> {
+        ICommandHandler<CalculateChassisPriceCommand, CalculateChassisPriceCommandHandlerCommandResult> {
 
     private final ChassisPriceCalculator chassisPriceCalculator;
     private final ChassisPriceInfoRepository chassisPriceInfoRepository;
@@ -34,15 +36,16 @@ public class CalculateChassisPriceCommandHandler implements
 
     @Override
     @Transactional(readOnly = true)
-    public Integer handle(final CalculateChassisPriceCommand event) {
+    public CalculateChassisPriceCommandHandlerCommandResult handle(final CalculateChassisPriceCommand event) {
 
         List<CalculateChassisPrice> reqList = event.calculateChassisPriceList();
 
         if (reqList.size() == 0) {
-            return 0;
+            return null;
         }
 
         List<Integer> calculatedResultList = new ArrayList<>();
+        List<ChassisPriceResult> chassisPriceResultList = new ArrayList<>();
 
         // 인건비를 위한 이중창 가로 세로 길이 저장 변수
         AtomicInteger widthForSingleWindow = new AtomicInteger(0);
@@ -81,31 +84,50 @@ public class CalculateChassisPriceCommandHandler implements
             );
 
             calculatedResultList.add(chassisPrice);
+
+            chassisPriceResultList.add(new ChassisPriceResult(
+                    chassis.width(), chassis.height(), chassisPrice)
+            );
         });
 
         // 층수에 따른 사다리차 비용을 계산한다
-        calculatedResultList.add(chassisPriceCalculator.calculateLadderFee(event.floorCustomerLiving()));
+        int ladderCarFee = chassisPriceCalculator.calculateLadderFee(event.floorCustomerLiving());
+        calculatedResultList.add(ladderCarFee);
 
         // 인건비를 계산한다.
-        calculatedResultList.add(chassisPriceCalculator.calculateLaborFee(
+        int laborFee = chassisPriceCalculator.calculateLaborFee(
                 widthForSingleWindow.get(),
                 heightForSingleWindow.get(),
                 widthForDoubleWindow.get(),
-                heightForDoubleWindow.get())
-        );
+                heightForDoubleWindow.get());
+        calculatedResultList.add(laborFee);
 
         // 철거시, 철거비를 계산한다.
+        int demolitionFee = 0;
         if (event.isScheduledForDemolition()) {
-            calculatedResultList.add(chassisPriceCalculator.calculateDemolitionFee());
+            demolitionFee = chassisPriceCalculator.calculateDemolitionFee();
+            calculatedResultList.add(demolitionFee);
         }
 
         // 살고있을 시, 보양비를 계산한다.
+        int maintenanceFee = 0;
         if (event.isResident()) {
-            calculatedResultList.add(chassisPriceCalculator.calculateFreightTransportFee());
+            maintenanceFee = chassisPriceCalculator.calculateMaintenanceFee();
+            calculatedResultList.add(maintenanceFee);
         }
 
-        calculatedResultList.add(chassisPriceCalculator.calculateDeliveryFee());
+        int deliveryFee = chassisPriceCalculator.calculateDeliveryFee();
+        calculatedResultList.add(deliveryFee);
 
-        return calculatedResultList.stream().mapToInt(Integer::intValue).sum();
+        return new CalculateChassisPriceCommandHandlerCommandResult(
+                reqList.get(0).companyType().name(),
+                reqList.get(0).chassisType().name(),
+                chassisPriceResultList,
+                deliveryFee,
+                demolitionFee,
+                maintenanceFee,
+                ladderCarFee,
+                calculatedResultList.stream().mapToInt(Integer::intValue).sum()
+        );
     }
 }

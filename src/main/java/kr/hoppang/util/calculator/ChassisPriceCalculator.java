@@ -3,7 +3,6 @@ package kr.hoppang.util.calculator;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import kr.hoppang.adapter.outbound.jpa.entity.chassis.pricecriteria.AdditionalChassisPriceCriteriaType;
-import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.pricecriteria.AdditionalChassisPriceCriteria;
 import kr.hoppang.domain.chassis.repository.pricecriteria.AdditionalChassisPriceCriteriaRepository;
 import lombok.RequiredArgsConstructor;
@@ -108,18 +107,19 @@ public class ChassisPriceCalculator {
     }
 
     // @TODO 보양비 계산
-    public int calculateFreightTransportFee() {
-        AdditionalChassisPriceCriteria freightTransportFee =
+    public int calculateMaintenanceFee() {
+        AdditionalChassisPriceCriteria maintenanceFee =
                 additionalChassisPriceCriteriaRepository.findByType(
-                        AdditionalChassisPriceCriteriaType.FreightTransportFee);
+                        AdditionalChassisPriceCriteriaType.MaintenanceFee);
 
-        return freightTransportFee.getPrice();
+        return maintenanceFee.getPrice();
     }
 
+    // @TODO 배송비 계산
     public int calculateDeliveryFee() {
         AdditionalChassisPriceCriteria deliveryFee =
                 additionalChassisPriceCriteriaRepository.findByType(
-                        AdditionalChassisPriceCriteriaType.FreightTransportFee);
+                        AdditionalChassisPriceCriteriaType.DeliveryFee);
 
         return deliveryFee.getPrice();
     }
