@@ -86,7 +86,7 @@ public class CalculateChassisPriceCommandHandler implements
             calculatedResultList.add(chassisPrice);
 
             chassisPriceResultList.add(new ChassisPriceResult(
-                    chassis.width(), chassis.height(), chassisPrice)
+                    chassis.chassisType().name(), chassis.width(), chassis.height(), chassisPrice)
             );
         });
 
@@ -121,7 +121,6 @@ public class CalculateChassisPriceCommandHandler implements
 
         return new CalculateChassisPriceCommandHandlerCommandResult(
                 reqList.get(0).companyType().name(),
-                reqList.get(0).chassisType().name(),
                 chassisPriceResultList,
                 deliveryFee,
                 demolitionFee,

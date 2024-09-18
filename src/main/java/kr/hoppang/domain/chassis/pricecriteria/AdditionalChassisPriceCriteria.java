@@ -55,8 +55,7 @@ public class AdditionalChassisPriceCriteria {
 
         int laborFee = laborFeeOfSingleWindow + laborFeeOfDoubleWindow;
 
-        // 최소 인건비에 비해 해당 평수의 인건비가 저렴할 경우, "최소 인건비" 와 "평수의 인건비"의 차를 반환한다.
-        // 최소 인건비에 비해 해당 평수의 인건비가 비쌀 경우, "평수의 인건비"의 차를 반환한다.
+        // 최소 인건비에 비해 해당 평수의 인건비가 저렴할 경우, "최소 인건비" 와 "평수의 인건비"의 차를 반환한다..
         if (this.price > laborFee) {
             return this.price - laborFee;
         } else {

@@ -4,7 +4,6 @@ import java.util.List;
 
 public record CalculateChassisPriceCommandHandlerCommandResult(
         String company,
-        String chassisType,
         List<ChassisPriceResult> chassisPriceResultList,
         int deliveryFee,
         int demolitionFee,
@@ -14,7 +13,8 @@ public record CalculateChassisPriceCommandHandlerCommandResult(
         int wholeCalculatedFee // 총 비용
         ) {
 
-    public record ChassisPriceResult(int width,
+    public record ChassisPriceResult(String chassisType,
+                                     int width,
                                      int height,
                                      int price) { }
 
