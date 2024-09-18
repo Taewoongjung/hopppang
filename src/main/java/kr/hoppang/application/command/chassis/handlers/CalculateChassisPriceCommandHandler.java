@@ -125,6 +125,7 @@ public class CalculateChassisPriceCommandHandler implements
                 deliveryFee,
                 demolitionFee,
                 maintenanceFee,
+                laborFee,
                 ladderCarFee,
                 event.floorCustomerLiving() <= 1 ? ladderCarFee : 0, // 1층 이하면 사다리차 비용이 도수 운반비로 치환 된다
                 calculatedResultList.stream().mapToInt(Integer::intValue).sum()

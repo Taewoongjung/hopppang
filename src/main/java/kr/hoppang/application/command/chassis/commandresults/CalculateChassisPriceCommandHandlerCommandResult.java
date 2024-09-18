@@ -8,6 +8,7 @@ public record CalculateChassisPriceCommandHandlerCommandResult(
         int deliveryFee,
         int demolitionFee,
         int maintenanceFee,
+        int laborFee,
         int ladderFee,
         int freightTransportFee,
         // int etcFee, // 기타 비용 (배송비, 도수운반비)
