@@ -60,7 +60,7 @@ public class AdditionalChassisPriceCriteria {
         if (this.price > laborFee) {
             return this.price - laborFee;
         } else {
-            return laborFee;
+            return 0;
         }
     }
 
