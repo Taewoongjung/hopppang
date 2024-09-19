@@ -20,8 +20,4 @@ public record CalculateChassisPriceCommandHandlerCommandResult(
                                      int width,
                                      int height,
                                      int price) { }
-
-//    public int calculateEtcFee(final int targetFloor) {
-//
-//    }
 }

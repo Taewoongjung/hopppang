@@ -55,13 +55,16 @@ public class ChassisCommandController {
     }
 
     @PostMapping(value = "/calculations/prices")
-    public ResponseEntity<CalculateChassisPriceCommandHandlerCommandResult> getCalculatedChassisPrice(
+    public ResponseEntity<GetCalculatedChassisPriceWebDtoV1.Res> getCalculatedChassisPrice(
             @RequestBody final GetCalculatedChassisPriceWebDtoV1.Req req
     ) {
         req.validate();
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(calculateChassisPriceQueryHandler.handle(req.toQuery()));
+                .body(GetCalculatedChassisPriceWebDtoV1.Res.of(
+                        calculateChassisPriceQueryHandler.handle(req.toQuery())
+                    )
+                );
     }
 
     @PutMapping(value = "/prices/additions/criteria")
