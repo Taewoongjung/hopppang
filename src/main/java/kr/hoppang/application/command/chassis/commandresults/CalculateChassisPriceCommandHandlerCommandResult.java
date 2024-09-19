@@ -12,6 +12,7 @@ public record CalculateChassisPriceCommandHandlerCommandResult(
         int ladderFee,
         int freightTransportFee,
         // int etcFee, // 기타 비용 (배송비, 도수운반비)
+        int customerFloor,
         int wholeCalculatedFee // 총 비용
         ) {
 
