@@ -65,6 +65,7 @@ services:
       - chown root:root /be-app/logs
     environment:
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - HOPPANG_SLACK_BOT_TOKEN=${HOPPANG_SLACK_BOT_TOKEN}
       - TZ=Asia/Seoul
     networks:
       - server-connection
