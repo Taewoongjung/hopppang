@@ -11,6 +11,7 @@ import com.slack.api.Slack;
 import com.slack.api.methods.MethodsClient;
 import com.slack.api.methods.SlackApiException;
 import com.slack.api.methods.request.chat.ChatPostMessageRequest;
+import com.slack.api.model.block.LayoutBlock;
 import com.slack.api.model.block.composition.TextObject;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -71,33 +72,41 @@ public class SlackAlarm implements AlarmService {
     public void sendNewEstimation(final NewEstimation newEstimationEvent) {
 
         try {
-            List<TextObject> textObjects = new ArrayList<>();
+            List<LayoutBlock> blocks = new ArrayList<>();
 
+            // Header block for title
+            blocks.add(header(header -> header.text(plainText("[견적 등록]"))));
+            blocks.add(divider()); // Divider for better visual separation
+
+            // 고객명과 주소
             if (newEstimationEvent.userName() != null) {
-                textObjects.add(markdownText("- *고객명:* " + newEstimationEvent.userName() + "\n" +
-                        "- *고객 주소:* " + newEstimationEvent.userAddress()));
-                textObjects.add(markdownText("  \n"));
-
+                blocks.add(section(section -> section.text(markdownText(
+                        "*:bust_in_silhouette: 고객명:* " + newEstimationEvent.userName()))));
+                blocks.add(section(section -> section.text(markdownText(
+                        "*:house_with_garden: 고객 주소:* " + newEstimationEvent.userAddress()))));
+                blocks.add(divider()); // Add a divider after 유저 section
             } else {
-                textObjects.add(markdownText("*(비로그인 유저)*\n"));
-                textObjects.add(markdownText("  \n"));
+                blocks.add(section(section -> section.text(markdownText(
+                        "*:warning: 비로그인 유저*"))));
+                blocks.add(divider()); // Add a divider after 비로그인 유저 section
             }
 
+            // Estimation details
+            blocks.add(section(section -> section.text(markdownText("*:package: 견적 리스트:*"))));
             newEstimationEvent.estimationList().forEach(e -> {
-                textObjects.add(markdownText("*[" + e.chassisType().getChassisName() + "]*\n"
-                        + "- *가로:* " + e.width() + "\n"
-                        + "- *세로:* " + e.height()));
+                blocks.add(section(section -> section.text(markdownText(
+                        "> *:window: 샤시 종류:* " + e.chassisType().getChassisName() + "\n" +
+                                "> *:straight_ruler: 가로:* " + e.width() + " mm\n" +
+                                "> *:straight_ruler: 세로:* " + e.height() + " mm\n"))));
             });
+
+            blocks.add(divider()); // Final divider to end the message
 
             MethodsClient methods = Slack.getInstance().methods(token);
             ChatPostMessageRequest request = ChatPostMessageRequest.builder()
                     .channel(newEstimationChannel)
-                    .blocks(asBlocks(
-                            header(header -> header.text(
-                                    plainText("[견적 등록]"))),
-                            divider(),
-                            section(section -> section.fields(textObjects)
-                            ))).build();
+                    .blocks(blocks)
+                    .build();
 
             methods.chatPostMessage(request);
 
