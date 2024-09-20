@@ -64,6 +64,10 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'io.netty:netty-resolver-dns-native-macos:4.1.68.Final:osx-aarch_64'
 
+	// slack
+	implementation 'com.slack.api:bolt:1.18.0'
+	implementation 'com.slack.api:bolt-servlet:1.18.0'
+	implementation 'com.slack.api:bolt-jetty:1.18.0'
 }
 
 tasks.named('test') {

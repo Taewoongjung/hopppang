@@ -45,6 +45,13 @@ spring:
 jwt:
   secret-key: ${JWT_SECRET_KEY}
 
+slack:
+  token: ${HOPPANG_SLACK_BOT_TOKEN}
+  channel:
+    monitor:
+      error: '#에러-dev'
+      new-estimation: '#샤시견적-dev'
+
 ---
 
 server:
@@ -93,3 +100,10 @@ spring:
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
+
+slack:
+  token: ${HOPPANG_SLACK_BOT_TOKEN}
+  channel:
+    monitor:
+      error: '#에러'
+      new-estimation: '#샤시견적'

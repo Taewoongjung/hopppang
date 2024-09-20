@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import kr.hoppang.abstraction.domain.ICommandHandler;
+import kr.hoppang.adapter.outbound.alarm.dto.NewEstimation;
 import kr.hoppang.application.command.chassis.commandresults.CalculateChassisPriceCommandHandlerCommandResult;
 import kr.hoppang.application.command.chassis.commandresults.CalculateChassisPriceCommandHandlerCommandResult.ChassisPriceResult;
 import kr.hoppang.application.command.chassis.commands.CalculateChassisPriceCommand;
@@ -17,6 +18,7 @@ import kr.hoppang.util.calculator.ApproximateCalculator;
 import kr.hoppang.util.calculator.ChassisPriceCalculator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,9 +28,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class CalculateChassisPriceCommandHandler implements
         ICommandHandler<CalculateChassisPriceCommand, CalculateChassisPriceCommandHandlerCommandResult> {
 
+    private final ApplicationEventPublisher eventPublisher;
     private final ChassisPriceCalculator chassisPriceCalculator;
     private final ChassisPriceInfoRepository chassisPriceInfoRepository;
-
     @Override
     public boolean isCommandHandler() {
         return true;
@@ -118,6 +120,13 @@ public class CalculateChassisPriceCommandHandler implements
 
         int deliveryFee = chassisPriceCalculator.calculateDeliveryFee();
         calculatedResultList.add(deliveryFee);
+
+        // 슬랙 알림 발송
+        eventPublisher.publishEvent(NewEstimation.of(
+            null, null,
+                reqList.get(0).companyType().name(),
+                event.calculateChassisPriceList()
+        ));
 
         return new CalculateChassisPriceCommandHandlerCommandResult(
                 reqList.get(0).companyType().name(),
