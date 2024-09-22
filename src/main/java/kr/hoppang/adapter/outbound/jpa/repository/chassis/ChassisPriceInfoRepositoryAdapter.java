@@ -5,8 +5,8 @@ import static kr.hoppang.adapter.common.util.CheckUtil.check;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kr.hoppang.adapter.outbound.jpa.entity.chassis.ChassisPriceInfoEntity;
-import kr.hoppang.domain.chassis.ChassisPriceInfo;
+import kr.hoppang.adapter.outbound.jpa.entity.chassis.price.ChassisPriceInfoEntity;
+import kr.hoppang.domain.chassis.price.ChassisPriceInfo;
 import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
 import kr.hoppang.domain.chassis.repository.ChassisPriceInfoRepository;

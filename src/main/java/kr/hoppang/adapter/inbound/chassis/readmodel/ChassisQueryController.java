@@ -10,7 +10,7 @@ import kr.hoppang.application.readmodel.chassis.queries.FindChassisPriceAddition
 import kr.hoppang.application.readmodel.chassis.queries.FindChassisPriceInfoByCompanyTypeQuery;
 import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
-import kr.hoppang.domain.chassis.pricecriteria.AdditionalChassisPriceCriteria;
+import kr.hoppang.domain.chassis.price.pricecriteria.AdditionalChassisPriceCriteria;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

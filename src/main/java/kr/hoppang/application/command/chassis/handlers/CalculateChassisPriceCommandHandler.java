@@ -12,7 +12,7 @@ import kr.hoppang.application.command.chassis.commandresults.CalculateChassisPri
 import kr.hoppang.application.command.chassis.commandresults.CalculateChassisPriceCommandHandlerCommandResult.ChassisPriceResult;
 import kr.hoppang.application.command.chassis.commands.CalculateChassisPriceCommand;
 import kr.hoppang.application.command.chassis.commands.CalculateChassisPriceCommand.CalculateChassisPrice;
-import kr.hoppang.domain.chassis.ChassisPriceInfo;
+import kr.hoppang.domain.chassis.price.ChassisPriceInfo;
 import kr.hoppang.domain.chassis.repository.ChassisPriceInfoRepository;
 import kr.hoppang.util.calculator.ApproximateCalculator;
 import kr.hoppang.util.calculator.ChassisPriceCalculator;

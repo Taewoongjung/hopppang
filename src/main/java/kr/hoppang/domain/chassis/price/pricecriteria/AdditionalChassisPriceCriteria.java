@@ -1,7 +1,7 @@
-package kr.hoppang.domain.chassis.pricecriteria;
+package kr.hoppang.domain.chassis.price.pricecriteria;
 
 import java.time.LocalDateTime;
-import kr.hoppang.adapter.outbound.jpa.entity.chassis.pricecriteria.AdditionalChassisPriceCriteriaType;
+import kr.hoppang.adapter.outbound.jpa.entity.chassis.price.pricecriteria.AdditionalChassisPriceCriteriaType;
 import lombok.Getter;
 
 @Getter

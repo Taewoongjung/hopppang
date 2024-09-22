@@ -2,8 +2,8 @@ package kr.hoppang.util.calculator;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import kr.hoppang.adapter.outbound.jpa.entity.chassis.pricecriteria.AdditionalChassisPriceCriteriaType;
-import kr.hoppang.domain.chassis.pricecriteria.AdditionalChassisPriceCriteria;
+import kr.hoppang.adapter.outbound.jpa.entity.chassis.price.pricecriteria.AdditionalChassisPriceCriteriaType;
+import kr.hoppang.domain.chassis.price.pricecriteria.AdditionalChassisPriceCriteria;
 import kr.hoppang.domain.chassis.repository.pricecriteria.AdditionalChassisPriceCriteriaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

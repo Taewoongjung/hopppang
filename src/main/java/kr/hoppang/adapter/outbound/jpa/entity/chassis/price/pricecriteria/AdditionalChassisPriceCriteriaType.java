@@ -1,4 +1,4 @@
-package kr.hoppang.adapter.outbound.jpa.entity.chassis.pricecriteria;
+package kr.hoppang.adapter.outbound.jpa.entity.chassis.price.pricecriteria;
 
 public enum AdditionalChassisPriceCriteriaType {
     DemolitionFee, // 철거비

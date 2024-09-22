@@ -1,4 +1,4 @@
-package kr.hoppang.adapter.outbound.jpa.entity.chassis.pricecriteria;
+package kr.hoppang.adapter.outbound.jpa.entity.chassis.price.pricecriteria;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -6,9 +6,8 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
 import kr.hoppang.adapter.outbound.jpa.entity.BaseEntity;
-import kr.hoppang.domain.chassis.pricecriteria.AdditionalChassisPriceCriteria;
+import kr.hoppang.domain.chassis.price.pricecriteria.AdditionalChassisPriceCriteria;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

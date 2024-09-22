@@ -1,4 +1,4 @@
-package kr.hoppang.adapter.outbound.jpa.entity.chassis;
+package kr.hoppang.adapter.outbound.jpa.entity.chassis.price;
 
 import java.io.Serializable;
 import kr.hoppang.domain.chassis.ChassisType;

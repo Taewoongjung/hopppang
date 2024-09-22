@@ -1,6 +1,5 @@
-package kr.hoppang.adapter.outbound.jpa.entity.chassis;
+package kr.hoppang.adapter.outbound.jpa.entity.chassis.price;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -9,7 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import kr.hoppang.domain.chassis.ChassisPriceInfo;
+import kr.hoppang.domain.chassis.price.ChassisPriceInfo;
 import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
 import lombok.AccessLevel;

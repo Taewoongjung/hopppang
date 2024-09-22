@@ -1,6 +1,8 @@
-package kr.hoppang.domain.chassis;
+package kr.hoppang.domain.chassis.price;
 
 import java.time.LocalDateTime;
+import kr.hoppang.domain.chassis.ChassisType;
+import kr.hoppang.domain.chassis.CompanyType;
 import lombok.Getter;
 import lombok.ToString;
 
