@@ -10,7 +10,7 @@ public class ChassisEstimationInfo {
 
     private Long id;
     private Long userId;
-    private Long chassisEstimationAddressId;
+    private ChassisEstimationAddress chassisEstimationAddress;
     private int width;
     private int height;
     private int laborFee;
@@ -26,7 +26,7 @@ public class ChassisEstimationInfo {
     private ChassisEstimationInfo(
             final Long id,
             final Long userId,
-            final Long chassisEstimationAddressId,
+            final ChassisEstimationAddress chassisEstimationAddress,
             final int width,
             final int height,
             final int laborFee,
@@ -41,7 +41,7 @@ public class ChassisEstimationInfo {
     ) {
         this.id = id;
         this.userId = userId;
-        this.chassisEstimationAddressId = chassisEstimationAddressId;
+        this.chassisEstimationAddress = chassisEstimationAddress;
         this.width = width;
         this.height = height;
         this.laborFee = laborFee;
@@ -58,7 +58,7 @@ public class ChassisEstimationInfo {
     // 생성
     public static ChassisEstimationInfo of(
             final Long userId,
-            final Long chassisEstimationAddressId,
+            final ChassisEstimationAddress chassisEstimationAddress,
             final int width,
             final int height,
             final int laborFee,
@@ -72,7 +72,7 @@ public class ChassisEstimationInfo {
         return new ChassisEstimationInfo(
                 null,
                 userId,
-                chassisEstimationAddressId,
+                chassisEstimationAddress,
                 width,
                 height,
                 laborFee,
@@ -90,7 +90,7 @@ public class ChassisEstimationInfo {
     public static ChassisEstimationInfo of(
             final Long id,
             final Long userId,
-            final Long chassisEstimationAddressId,
+            final ChassisEstimationAddress chassisEstimationAddress,
             final int width,
             final int height,
             final int laborFee,
@@ -106,7 +106,7 @@ public class ChassisEstimationInfo {
         return new ChassisEstimationInfo(
                 id,
                 userId,
-                chassisEstimationAddressId,
+                chassisEstimationAddress,
                 width,
                 height,
                 laborFee,
