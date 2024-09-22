@@ -15,7 +15,7 @@ import lombok.ToString;
 @ToString
 @Table(name = "chassis_estimation_address")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ChassisEstimationAddress {
+public class ChassisEstimationAddressEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +24,7 @@ public class ChassisEstimationAddress {
     private String subAddress;
     private String buildingNumber;
 
-    private ChassisEstimationAddress(
+    private ChassisEstimationAddressEntity(
             final Long id,
             final String address,
             final String subAddress,
@@ -36,11 +36,11 @@ public class ChassisEstimationAddress {
         this.buildingNumber = buildingNumber;
     }
 
-    public static ChassisEstimationAddress of(
+    public static ChassisEstimationAddressEntity of(
             final String address,
             final String subAddress,
             final String buildingNumber
     ) {
-        return new ChassisEstimationAddress(null, address, subAddress, buildingNumber);
+        return new ChassisEstimationAddressEntity(null, address, subAddress, buildingNumber);
     }
 }
