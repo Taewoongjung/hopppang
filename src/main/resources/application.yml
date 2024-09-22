@@ -89,12 +89,12 @@ spring:
     database: mysql
   datasource:
     master:
-      jdbcUrl: jdbc:mysql://database-master:3306/hoppang?useSSL=false&allowPublicKeyRetrieval=true
+      jdbcUrl: jdbc:mysql://database-master:3307/hoppang?useSSL=false&allowPublicKeyRetrieval=true
       username: root
       password: 1234567
       driver-class-name: com.mysql.cj.jdbc.Driver
     slave:
-      jdbcUrl: jdbc:mysql://database-slave:3306/hoppang?useSSL=false&allowPublicKeyRetrieval=true
+      jdbcUrl: jdbc:mysql://database-slave:3308/hoppang?useSSL=false&allowPublicKeyRetrieval=true
       username: root
       password: 1234567
       driver-class-name: com.mysql.cj.jdbc.Driver
@@ -107,7 +107,7 @@ spring:
   flyway:
     user: root
     password: 1234567
-    url: jdbc:mysql://database-master:3306/hoppang?useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://database-master:3307/hoppang?useSSL=false&allowPublicKeyRetrieval=true
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 jwt:
