@@ -1,4 +1,4 @@
-package kr.hoppang.adapter.outbound.jpa.repository.chassis.pricecriteria;
+package kr.hoppang.adapter.outbound.jpa.repository.chassis.price.pricecriteria;
 
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_ADDITIONAL_CRITERIA_PRICE_INFO;
 import static kr.hoppang.adapter.common.util.CheckUtil.check;

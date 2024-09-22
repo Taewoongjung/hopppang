@@ -1,4 +1,4 @@
-package kr.hoppang.adapter.outbound.jpa.repository.chassis;
+package kr.hoppang.adapter.outbound.jpa.repository.chassis.price;
 
 import java.util.List;
 import kr.hoppang.adapter.outbound.jpa.entity.chassis.price.ChassisPriceInfoEntity;

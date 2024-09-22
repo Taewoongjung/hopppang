@@ -1,4 +1,4 @@
-package kr.hoppang.adapter.outbound.jpa.repository.chassis.pricecriteria;
+package kr.hoppang.adapter.outbound.jpa.repository.chassis.price.pricecriteria;
 
 import kr.hoppang.adapter.outbound.jpa.entity.chassis.price.pricecriteria.AdditionalChassisPriceCriteriaEntity;
 import kr.hoppang.adapter.outbound.jpa.entity.chassis.price.pricecriteria.AdditionalChassisPriceCriteriaType;

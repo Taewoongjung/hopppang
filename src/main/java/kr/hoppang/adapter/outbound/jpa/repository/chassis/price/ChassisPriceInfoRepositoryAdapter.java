@@ -1,4 +1,4 @@
-package kr.hoppang.adapter.outbound.jpa.repository.chassis;
+package kr.hoppang.adapter.outbound.jpa.repository.chassis.price;
 
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_CHASSIS_PRICE_INFO;
 import static kr.hoppang.adapter.common.util.CheckUtil.check;
