@@ -4,7 +4,7 @@ import java.util.List;
 import kr.hoppang.abstraction.domain.IQueryHandler;
 import kr.hoppang.application.readmodel.chassis.queries.FindChassisPriceInfoByCompanyTypeQuery;
 import kr.hoppang.domain.chassis.price.ChassisPriceInfo;
-import kr.hoppang.domain.chassis.repository.ChassisPriceInfoRepository;
+import kr.hoppang.domain.chassis.price.repository.ChassisPriceInfoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

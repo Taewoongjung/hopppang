@@ -1,4 +1,4 @@
-package kr.hoppang.domain.chassis.repository;
+package kr.hoppang.domain.chassis.price.repository;
 
 import java.util.List;
 import kr.hoppang.domain.chassis.price.ChassisPriceInfo;

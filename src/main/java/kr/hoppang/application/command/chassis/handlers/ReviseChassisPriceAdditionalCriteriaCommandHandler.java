@@ -6,7 +6,7 @@ import kr.hoppang.abstraction.domain.ICommandHandler;
 import kr.hoppang.application.command.chassis.commands.ReviseChassisPriceAdditionalCriteriaCommand;
 import kr.hoppang.application.command.chassis.commands.ReviseChassisPriceAdditionalCriteriaCommand.ReviseChassisPriceAdditionalCriteria;
 import kr.hoppang.domain.chassis.price.pricecriteria.AdditionalChassisPriceCriteria;
-import kr.hoppang.domain.chassis.repository.pricecriteria.AdditionalChassisPriceCriteriaRepository;
+import kr.hoppang.domain.chassis.price.repository.pricecriteria.AdditionalChassisPriceCriteriaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

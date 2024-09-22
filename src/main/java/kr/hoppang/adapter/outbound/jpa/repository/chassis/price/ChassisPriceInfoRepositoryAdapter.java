@@ -9,7 +9,7 @@ import kr.hoppang.adapter.outbound.jpa.entity.chassis.price.ChassisPriceInfoEnti
 import kr.hoppang.domain.chassis.price.ChassisPriceInfo;
 import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
-import kr.hoppang.domain.chassis.repository.ChassisPriceInfoRepository;
+import kr.hoppang.domain.chassis.price.repository.ChassisPriceInfoRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

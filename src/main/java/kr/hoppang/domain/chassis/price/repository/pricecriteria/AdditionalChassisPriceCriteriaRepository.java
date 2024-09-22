@@ -1,4 +1,4 @@
-package kr.hoppang.domain.chassis.repository.pricecriteria;
+package kr.hoppang.domain.chassis.price.repository.pricecriteria;
 
 import java.util.List;
 import kr.hoppang.adapter.outbound.jpa.entity.chassis.price.pricecriteria.AdditionalChassisPriceCriteriaType;
