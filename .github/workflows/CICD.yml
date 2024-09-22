@@ -41,7 +41,7 @@ jobs:
             cd /home/twj/hopppang
             git pull
             sleep 3
-            docker compose up -d --build
+            docker compose up -d --build back-end-app
 
   # test:
   #     needs: build
