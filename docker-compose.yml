@@ -35,7 +35,7 @@ services:
     environment:
       MYSQL_DATABASE: hoppang
       MYSQL_ROOT_HOST: '%'
-      MYSQL_USER: 'user'
+      MYSQL_USER: 'root'
       MYSQL_ROOT_PASSWORD: 1234567
       TZ: 'Asia/Seoul'
     ports:
@@ -59,7 +59,7 @@ services:
     environment:
       MYSQL_DATABASE: hoppang
       MYSQL_ROOT_HOST: '%'
-      MYSQL_USER: 'user'
+      MYSQL_USER: 'root'
       MYSQL_ROOT_PASSWORD: 1234567
       TZ: 'Asia/Seoul'
     ports:
