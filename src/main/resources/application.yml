@@ -26,10 +26,16 @@ spring:
             entity_copy_observer: allow
     database: mysql
   datasource:
-    url: jdbc:mysql://localhost:3307/hoppang?useSSL=false&allowPublicKeyRetrieval=true
-    username: root
-    password: 1234567
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    master:
+      jdbcUrl: jdbc:mysql://localhost:3307/hoppang?useSSL=false&allowPublicKeyRetrieval=true
+      username: root
+      password: 1234567
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    slave:
+      jdbcUrl: jdbc:mysql://localhost:3308/hoppang?useSSL=false&allowPublicKeyRetrieval=true
+      username: root
+      password: 1234567
+      driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 20
       connection-timeout: 30000
@@ -82,10 +88,16 @@ spring:
             entity_copy_observer: allow
     database: mysql
   datasource:
-    url: jdbc:mysql://database:3306/hoppang?useSSL=false&allowPublicKeyRetrieval=true
-    username: root
-    password: 1234567
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    master:
+      jdbcUrl: jdbc:mysql://database-master:3306/hoppang?useSSL=false&allowPublicKeyRetrieval=true
+      username: root
+      password: 1234567
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    slave:
+      jdbcUrl: jdbc:mysql://database-slave:3306/hoppang?useSSL=false&allowPublicKeyRetrieval=true
+      username: root
+      password: 1234567
+      driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 20
       connection-timeout: 30000
@@ -95,7 +107,7 @@ spring:
   flyway:
     user: root
     password: 1234567
-    url: jdbc:mysql://database:3306/hoppang?useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://database-master:3306/hoppang?useSSL=false&allowPublicKeyRetrieval=true
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 jwt:

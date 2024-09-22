@@ -25,29 +25,55 @@ services:
       - web-front-end-app
       - admin-front-end-app
 
-  database:
-    container_name: hoppang_database
-    image: mysql:8.0.33
+  database-master:
+    container_name: hoppang_database_master
+    build:
+      context: ./
+      dockerfile: master/Dockerfile
     restart: unless-stopped
-    platform: linux/amd64
+    platform: linux/x86_64
     environment:
       MYSQL_DATABASE: hoppang
       MYSQL_ROOT_HOST: '%'
+      MYSQL_USER: 'user'
       MYSQL_ROOT_PASSWORD: 1234567
       TZ: 'Asia/Seoul'
     ports:
       - "3307:3306"
-    healthcheck:
-      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
-      interval: 3s
-      timeout: 20s
-      retries: 10
     command:
-      - "mysqld"
-      - "--character-set-server=utf8mb4"
-      - "--collation-server=utf8mb4_unicode_ci"
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - my-db-master:/var/lib/mysql
+      - my-db-master:/var/lib/mysql-files
     networks:
       - server-connection
+
+  database-slave:
+    container_name: hoppang_database_slave
+    build:
+      context: ./
+      dockerfile: slave/Dockerfile
+    restart: unless-stopped
+    platform: linux/x86_64
+    environment:
+      MYSQL_DATABASE: hoppang
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_USER: 'user'
+      MYSQL_ROOT_PASSWORD: 1234567
+      TZ: 'Asia/Seoul'
+    ports:
+      - "3308:3306"
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - my-db-slave:/var/lib/mysql
+      - my-db-slave:/var/lib/mysql-files
+    networks:
+      - server-connection
+    depends_on:
+      - database-master
 
   back-end-app:
     build:
@@ -58,7 +84,8 @@ services:
     expose:
       - "9090"
     depends_on:
-      - database
+      - database-master
+      - database-slave
     command:
       - ./gradlew bootRun
       - chmod 777 /be-app/logs
@@ -94,3 +121,5 @@ services:
 volumes:
   dev-log:
     external: true
+  my-db-master:
+  my-db-slave:
