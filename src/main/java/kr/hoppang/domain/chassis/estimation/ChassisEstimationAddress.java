@@ -8,9 +8,9 @@ import lombok.ToString;
 public class ChassisEstimationAddress {
 
     private Long id;
-    private String address;
-    private String subAddress;
-    private String buildingNumber;
+    private final String address;
+    private final String subAddress;
+    private final String buildingNumber;
 
     private ChassisEstimationAddress(
             final Long id,
@@ -39,5 +39,9 @@ public class ChassisEstimationAddress {
             final String buildingNumber
     ) {
         return new ChassisEstimationAddress(id, address, subAddress, buildingNumber);
+    }
+
+    public void setId(final Long id) {
+        this.id = id;
     }
 }

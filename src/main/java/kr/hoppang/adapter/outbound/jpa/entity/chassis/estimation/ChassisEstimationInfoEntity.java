@@ -47,12 +47,10 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
             final int maintenanceFee,
             final int freightTransportFee,
             final int deliveryFee,
-            final int price,
-            final LocalDateTime createdAt,
-            final LocalDateTime lastModified
+            final int price
         ) {
 
-        super(createdAt, lastModified);
+        super(LocalDateTime.now(), LocalDateTime.now());
 
         this.id = id;
         this.userId = userId;
@@ -80,9 +78,7 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
             final int maintenanceFee,
             final int freightTransportFee,
             final int deliveryFee,
-            final int price,
-            final LocalDateTime createdAt,
-            final LocalDateTime lastModified
+            final int price
     ) {
 
         return new ChassisEstimationInfoEntity(
@@ -97,8 +93,7 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
                 maintenanceFee,
                 freightTransportFee,
                 deliveryFee,
-                price,
-                createdAt, lastModified
+                price
         );
     }
 }

@@ -8,20 +8,20 @@ import lombok.ToString;
 @ToString
 public class ChassisEstimationInfo {
 
-    private Long id;
-    private Long userId;
-    private ChassisEstimationAddress chassisEstimationAddress;
-    private int width;
-    private int height;
-    private int laborFee;
-    private int ladderCarFee;
-    private int demolitionFee;
-    private int maintenanceFee;
-    private int freightTransportFee;
-    private int deliveryFee;
-    private int price;
-    private LocalDateTime createdAt;
-    private LocalDateTime lastModified;
+    private final Long id;
+    private final Long userId;
+    private final ChassisEstimationAddress chassisEstimationAddress;
+    private final int width;
+    private final int height;
+    private final int laborFee;
+    private final int ladderCarFee;
+    private final int demolitionFee;
+    private final int maintenanceFee;
+    private final int freightTransportFee;
+    private final int deliveryFee;
+    private final int price;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime lastModified;
 
     private ChassisEstimationInfo(
             final Long id,
