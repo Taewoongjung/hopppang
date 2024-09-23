@@ -13,8 +13,7 @@ public class ChassisEstimationConverter {
         return ChassisEstimationInfoEntity.of(
                 pojo.getUserId(),
                 pojo.getChassisEstimationAddress() != null ? pojo.getChassisEstimationAddress().getId() : null,
-                pojo.getWidth(),
-                pojo.getHeight(),
+                pojo.getCompanyType(),
                 pojo.getLaborFee(),
                 pojo.getLadderCarFee(),
                 pojo.getDemolitionFee(),

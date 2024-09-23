@@ -1,13 +1,20 @@
 package kr.hoppang.adapter.outbound.jpa.entity.chassis.estimation;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import kr.hoppang.adapter.outbound.jpa.entity.BaseEntity;
-import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -24,19 +31,31 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private Long userId;
-    private Long chassisEstimationAddressId;
+
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "company_type", nullable = false, columnDefinition = "varchar(20)")
     private CompanyType companyType;
-    private ChassisType chassisType;
-    private int width;
-    private int height;
+
     private int laborFee;
+
     private int ladderCarFee;
+
     private int demolitionFee;
+
     private int maintenanceFee;
+
     private int freightTransportFee;
+
     private int deliveryFee;
-    private int price;
+
+    private int totalPrice;
+
+    private Long chassisEstimationAddressId;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "chassisEstimationInfo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChassisEstimationSizeInfoEntity> chassisEstimationSizeInfoList = new ArrayList<>();
 
 
     private ChassisEstimationInfoEntity(
@@ -44,16 +63,13 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
             final Long userId,
             final Long chassisEstimationAddressId,
             final CompanyType companyType,
-            final ChassisType chassisType,
-            final int width,
-            final int height,
             final int laborFee,
             final int ladderCarFee,
             final int demolitionFee,
             final int maintenanceFee,
             final int freightTransportFee,
             final int deliveryFee,
-            final int price
+            final int totalPrice
         ) {
 
         super(LocalDateTime.now(), LocalDateTime.now());
@@ -62,16 +78,13 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
         this.userId = userId;
         this.chassisEstimationAddressId = chassisEstimationAddressId;
         this.companyType = companyType;
-        this.chassisType = chassisType;
-        this.width = width;
-        this.height = height;
         this.laborFee = laborFee;
         this.ladderCarFee = ladderCarFee;
         this.demolitionFee = demolitionFee;
         this.maintenanceFee = maintenanceFee;
         this.freightTransportFee = freightTransportFee;
         this.deliveryFee = deliveryFee;
-        this.price = price;
+        this.totalPrice = totalPrice;
     }
 
     // 생성
@@ -79,9 +92,6 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
             final Long userId,
             final Long chassisEstimationAddressId,
             final CompanyType companyType,
-            final ChassisType chassisType,
-            final int width,
-            final int height,
             final int laborFee,
             final int ladderCarFee,
             final int demolitionFee,
@@ -96,9 +106,6 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
                 userId,
                 chassisEstimationAddressId,
                 companyType,
-                chassisType,
-                width,
-                height,
                 laborFee,
                 ladderCarFee,
                 demolitionFee,
