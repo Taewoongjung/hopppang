@@ -1,5 +1,7 @@
 package kr.hoppang.domain.chassis;
 
+import java.util.Arrays;
+import java.util.NoSuchElementException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -14,4 +16,11 @@ public enum ChassisType {
 
     private final String type;
     private final String chassisName;
+
+    public static ChassisType from(final String target) {
+        return Arrays.stream(values())
+                .filter(f->target.equals(f.name()))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("ChassisType 에 없는 필드 입니다."));
+    }
 }
