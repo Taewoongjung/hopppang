@@ -7,6 +7,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import kr.hoppang.adapter.outbound.jpa.entity.BaseEntity;
+import kr.hoppang.domain.chassis.ChassisType;
+import kr.hoppang.domain.chassis.CompanyType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,6 +26,8 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
     private Long id;
     private Long userId;
     private Long chassisEstimationAddressId;
+    private CompanyType companyType;
+    private ChassisType chassisType;
     private int width;
     private int height;
     private int laborFee;
@@ -39,6 +43,8 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
             final Long id,
             final Long userId,
             final Long chassisEstimationAddressId,
+            final CompanyType companyType,
+            final ChassisType chassisType,
             final int width,
             final int height,
             final int laborFee,
@@ -55,6 +61,8 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
         this.id = id;
         this.userId = userId;
         this.chassisEstimationAddressId = chassisEstimationAddressId;
+        this.companyType = companyType;
+        this.chassisType = chassisType;
         this.width = width;
         this.height = height;
         this.laborFee = laborFee;
@@ -70,6 +78,8 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
     public static ChassisEstimationInfoEntity of(
             final Long userId,
             final Long chassisEstimationAddressId,
+            final CompanyType companyType,
+            final ChassisType chassisType,
             final int width,
             final int height,
             final int laborFee,
@@ -85,6 +95,8 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
                 null,
                 userId,
                 chassisEstimationAddressId,
+                companyType,
+                chassisType,
                 width,
                 height,
                 laborFee,

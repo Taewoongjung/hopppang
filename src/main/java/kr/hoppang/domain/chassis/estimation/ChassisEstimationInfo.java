@@ -1,6 +1,8 @@
 package kr.hoppang.domain.chassis.estimation;
 
 import java.time.LocalDateTime;
+import kr.hoppang.domain.chassis.ChassisType;
+import kr.hoppang.domain.chassis.CompanyType;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -11,6 +13,8 @@ public class ChassisEstimationInfo {
     private final Long id;
     private final Long userId;
     private final ChassisEstimationAddress chassisEstimationAddress;
+    private final CompanyType companyType;
+    private final ChassisType chassisType;
     private final int width;
     private final int height;
     private final int laborFee;
@@ -27,6 +31,8 @@ public class ChassisEstimationInfo {
             final Long id,
             final Long userId,
             final ChassisEstimationAddress chassisEstimationAddress,
+            final CompanyType companyType,
+            final ChassisType chassisType,
             final int width,
             final int height,
             final int laborFee,
@@ -42,6 +48,8 @@ public class ChassisEstimationInfo {
         this.id = id;
         this.userId = userId;
         this.chassisEstimationAddress = chassisEstimationAddress;
+        this.companyType = companyType;
+        this.chassisType = chassisType;
         this.width = width;
         this.height = height;
         this.laborFee = laborFee;
@@ -59,6 +67,8 @@ public class ChassisEstimationInfo {
     public static ChassisEstimationInfo of(
             final Long userId,
             final ChassisEstimationAddress chassisEstimationAddress,
+            final CompanyType companyType,
+            final ChassisType chassisType,
             final int width,
             final int height,
             final int laborFee,
@@ -73,6 +83,8 @@ public class ChassisEstimationInfo {
                 null,
                 userId,
                 chassisEstimationAddress,
+                companyType,
+                chassisType,
                 width,
                 height,
                 laborFee,
@@ -91,6 +103,8 @@ public class ChassisEstimationInfo {
             final Long id,
             final Long userId,
             final ChassisEstimationAddress chassisEstimationAddress,
+            final CompanyType companyType,
+            final ChassisType chassisType,
             final int width,
             final int height,
             final int laborFee,
@@ -107,6 +121,8 @@ public class ChassisEstimationInfo {
                 id,
                 userId,
                 chassisEstimationAddress,
+                companyType,
+                chassisType,
                 width,
                 height,
                 laborFee,

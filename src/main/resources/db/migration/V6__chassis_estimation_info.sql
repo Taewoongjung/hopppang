@@ -3,6 +3,8 @@ CREATE TABLE chassis_estimation_info
     id                              BIGINT(20) UNSIGNED      NOT NULL AUTO_INCREMENT,
     user_id                         BIGINT(20) UNSIGNED          NULL COMMENT '유저 id',
     chassis_estimation_address_id   BIGINT(20) UNSIGNED      NOT NULL COMMENT '샤시 견적에 해당하는 주소',
+    company_type                    VARCHAR(20)              NOT NULL COMMENT '회사 종류',
+    chassis_type                    VARCHAR(20)              NOT NULL COMMENT '샤시 종류',
     width                           INT UNSIGNED             NOT NULL COMMENT '너비(w)',
     height                          INT UNSIGNED             NOT NULL COMMENT '높이(h)',
     labor_fee                       INT UNSIGNED             NOT NULL COMMENT '인건비',
