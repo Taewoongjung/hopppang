@@ -39,6 +39,7 @@ public class ChassisEstimationInfo {
             final int freightTransportFee,
             final int deliveryFee,
             final int price,
+            final List<ChassisEstimationSizeInfo> chassisEstimationSizeInfoList,
             final LocalDateTime createdAt,
             final LocalDateTime lastModified
     ) {
@@ -53,6 +54,7 @@ public class ChassisEstimationInfo {
         this.freightTransportFee = freightTransportFee;
         this.deliveryFee = deliveryFee;
         this.price = price;
+        this.chassisEstimationSizeInfoList = chassisEstimationSizeInfoList;
         this.createdAt = createdAt;
         this.lastModified = lastModified;
     }
@@ -82,6 +84,7 @@ public class ChassisEstimationInfo {
                 freightTransportFee,
                 deliveryFee,
                 price,
+                null,
                 null, null
         );
     }
@@ -114,6 +117,39 @@ public class ChassisEstimationInfo {
                 freightTransportFee,
                 deliveryFee,
                 price,
+                null,
+                createdAt, lastModified
+        );
+    }
+    public static ChassisEstimationInfo of(
+            final Long id,
+            final Long userId,
+            final ChassisEstimationAddress chassisEstimationAddress,
+            final CompanyType companyType,
+            final int laborFee,
+            final int ladderCarFee,
+            final int demolitionFee,
+            final int maintenanceFee,
+            final int freightTransportFee,
+            final int deliveryFee,
+            final int price,
+            final List<ChassisEstimationSizeInfo> chassisEstimationSizeInfoList,
+            final LocalDateTime createdAt,
+            final LocalDateTime lastModified
+    ) {
+        return new ChassisEstimationInfo(
+                id,
+                userId,
+                chassisEstimationAddress,
+                companyType,
+                laborFee,
+                ladderCarFee,
+                demolitionFee,
+                maintenanceFee,
+                freightTransportFee,
+                deliveryFee,
+                price,
+                chassisEstimationSizeInfoList,
                 createdAt, lastModified
         );
     }

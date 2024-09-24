@@ -32,6 +32,9 @@ public class ChassisEstimationSizeInfoEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "chassis_estimation_info_id", nullable = false, columnDefinition = "bigint")
+    private Long chassisEstimationInfoId;
+
     @Enumerated(value = EnumType.STRING)
     @Column(name = "chassis_type", nullable = false, columnDefinition = "varchar(20)")
     private ChassisType chassisType;
@@ -40,6 +43,8 @@ public class ChassisEstimationSizeInfoEntity extends BaseEntity {
 
     private int height;
 
+    private int price;
+
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "chassis_estimation_info_id", referencedColumnName = "id", insertable = false, updatable = false)
@@ -47,29 +52,35 @@ public class ChassisEstimationSizeInfoEntity extends BaseEntity {
 
     private ChassisEstimationSizeInfoEntity(
             final Long id,
+            final Long chassisEstimationInfoId,
             final ChassisType chassisType,
             final int width,
             final int height,
-            final ChassisEstimationInfoEntity chassisEstimationInfo
+            final int price
     ) {
         super(LocalDateTime.now(), LocalDateTime.now());
 
         this.id = id;
+        this.chassisEstimationInfoId = chassisEstimationInfoId;
         this.chassisType = chassisType;
         this.width = width;
         this.height = height;
-        this.chassisEstimationInfo = chassisEstimationInfo;
+        this.price = price;
     }
 
     // 생성
     public static ChassisEstimationSizeInfoEntity of(
+            final Long chassisEstimationInfoId,
             final ChassisType chassisType,
             final int width,
             final int height,
-            final ChassisEstimationInfoEntity chassisEstimationInfo
+            final int price
     ) {
 
-        return new ChassisEstimationSizeInfoEntity(null, chassisType, width, height, chassisEstimationInfo);
+        return new ChassisEstimationSizeInfoEntity(null, chassisEstimationInfoId, chassisType, width, height, price);
     }
 
+    public void setChassisEstimationInfo(final ChassisEstimationInfoEntity chassisEstimationInfo) {
+        this.chassisEstimationInfo = chassisEstimationInfo;
+    }
 }

@@ -7,18 +7,20 @@ import static kr.hoppang.adapter.common.util.CheckUtil.check;
 import java.util.ArrayList;
 import java.util.List;
 import kr.hoppang.application.command.chassis.commandresults.CalculateChassisPriceCommandHandlerCommandResult;
-import kr.hoppang.application.command.chassis.commandresults.CalculateChassisPriceCommandHandlerCommandResult.ChassisPriceResult;
 import kr.hoppang.application.command.chassis.commands.CalculateChassisPriceCommand;
 import kr.hoppang.application.command.chassis.commands.CalculateChassisPriceCommand.CalculateChassisPrice;
 import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 public class GetCalculatedChassisPriceWebDtoV1 {
 
-    public record Req(List<ReqCalculateChassisPrice> reqCalculateChassisPriceList) {
+    public record Req(String zipCode,
+                      String address,
+                      String subAddress,
+                      String buildingNumber,
+                      List<ReqCalculateChassisPrice> reqCalculateChassisPriceList) {
 
         public void validate() {
             this.reqCalculateChassisPriceList.forEach(ReqCalculateChassisPrice::checkIfNull);
@@ -37,12 +39,29 @@ public class GetCalculatedChassisPriceWebDtoV1 {
             });
 
             return new CalculateChassisPriceCommand(
+                    forTestPeriodAddressZipCode(this.zipCode),
+                    forTestPeriodAddressInput(this.address),
+                    forTestPeriodAddressInput(this.subAddress),
+                    forTestPeriodAddressInput(this.buildingNumber),
                     queryList,
                     reqCalculateChassisPriceList.get(0).floorCustomerLiving,
                     reqCalculateChassisPriceList.get(0).isScheduledForDemolition,
                     reqCalculateChassisPriceList.get(0).isResident
             );
         }
+    }
+    private static String forTestPeriodAddressZipCode(final String target) {
+        if (target == null || "".equals(target)) {
+            return "00000";
+        }
+        return target;
+    }
+
+    private static String forTestPeriodAddressInput(final String target) {
+        if (target == null || "".equals(target)) {
+            return "테스트 기간";
+        }
+        return target;
     }
 
     @Getter

@@ -10,6 +10,9 @@ import kr.hoppang.abstraction.domain.ICommandHandler;
 import kr.hoppang.adapter.outbound.alarm.dto.NewEstimation;
 import kr.hoppang.application.command.chassis.commandresults.CalculateChassisPriceCommandHandlerCommandResult;
 import kr.hoppang.application.command.chassis.commandresults.CalculateChassisPriceCommandHandlerCommandResult.ChassisPriceResult;
+import kr.hoppang.application.command.chassis.commands.AddChassisEstimationInfoCommand;
+import kr.hoppang.application.command.chassis.commands.AddChassisEstimationInfoCommand.ChassisEstimationCommand;
+import kr.hoppang.application.command.chassis.commands.AddChassisEstimationInfoCommand.ChassisEstimationCommand.ChassisSize;
 import kr.hoppang.application.command.chassis.commands.CalculateChassisPriceCommand;
 import kr.hoppang.application.command.chassis.commands.CalculateChassisPriceCommand.CalculateChassisPrice;
 import kr.hoppang.domain.chassis.price.ChassisPriceInfo;
@@ -31,6 +34,8 @@ public class CalculateChassisPriceCommandHandler implements
     private final ApplicationEventPublisher eventPublisher;
     private final ChassisPriceCalculator chassisPriceCalculator;
     private final ChassisPriceInfoRepository chassisPriceInfoRepository;
+    private final AddChassisEstimationInfoCommandHandler addChassisEstimationInfoCommandHandler;
+
     @Override
     public boolean isCommandHandler() {
         return true;
@@ -128,6 +133,31 @@ public class CalculateChassisPriceCommandHandler implements
                 event.calculateChassisPriceList()
         ));
 
+        // 각 비용 최종 가격
+        int ladderFee = event.floorCustomerLiving() <= 1 ? 0
+                : ladderCarFee; // ladderFee : 1층 이하면 사다리차 비용이 도수 운반비이다.
+        int freightTransportFee = event.floorCustomerLiving() <= 1 ? ladderCarFee
+                : 0; // freightTransportFee : 1층 이하면 사다리차 비용이 도수 운반비로 치환 된다
+        int floor = event.floorCustomerLiving();
+        int totalPrice = calculatedResultList.stream().mapToInt(Integer::intValue).sum();
+
+        registerChassisEstimation(
+                chassisPriceResultList,
+                event.zipCode(),
+                event.address(),
+                event.subAddress(),
+                event.buildingNumber(),
+                reqList.get(0).companyType().name(),
+                deliveryFee,
+                demolitionFee,
+                maintenanceFee,
+                laborFee,
+                ladderFee,
+                freightTransportFee,
+                floor,
+                totalPrice
+        );
+
         return new CalculateChassisPriceCommandHandlerCommandResult(
                 reqList.get(0).companyType().name(),
                 chassisPriceResultList,
@@ -135,10 +165,57 @@ public class CalculateChassisPriceCommandHandler implements
                 demolitionFee,
                 maintenanceFee,
                 laborFee,
-                event.floorCustomerLiving() <= 1 ? 0 : ladderCarFee, // ladderFee : 1층 이하면 사다리차 비용이 도수 운반비이다.
-                event.floorCustomerLiving() <= 1 ? ladderCarFee : 0, // freightTransportFee : 1층 이하면 사다리차 비용이 도수 운반비로 치환 된다
-                event.floorCustomerLiving(),
-                calculatedResultList.stream().mapToInt(Integer::intValue).sum()
+                ladderFee,
+                freightTransportFee,
+                floor,
+                totalPrice
         );
+    }
+
+    private void registerChassisEstimation(
+            final List<ChassisPriceResult> chassisPriceResultList,
+            final String zipCode,
+            final String address,
+            final String subAddress,
+            final String buildingNumber,
+            final String companyName,
+            final int deliveryFee,
+            final int demolitionFee,
+            final int maintenanceFee,
+            final int laborFee,
+            final int ladderFee,
+            final int freightTransportFee,
+            final int floor,
+            final int totalPrice) {
+
+        List<ChassisSize> chassisSizeList = new ArrayList<>();
+
+        for (ChassisPriceResult chassisPriceResult : chassisPriceResultList) {
+            chassisSizeList.add(new ChassisSize(
+                    chassisPriceResult.chassisType(),
+                    chassisPriceResult.width(),
+                    chassisPriceResult.height(),
+                    chassisPriceResult.price()));
+        }
+
+//        addChassisEstimationInfoCommandHandler.handle(new AddChassisEstimationInfoCommand(
+        eventPublisher.publishEvent(new AddChassisEstimationInfoCommand(
+                new ChassisEstimationCommand(
+                        zipCode,
+                        address,
+                        subAddress,
+                        buildingNumber,
+                        companyName,
+                        deliveryFee,
+                        demolitionFee,
+                        maintenanceFee,
+                        laborFee,
+                        ladderFee,
+                        freightTransportFee,
+                        floor,
+                        totalPrice,
+                        chassisSizeList
+                )
+        ));
     }
 }

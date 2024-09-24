@@ -11,6 +11,7 @@ import lombok.ToString;
 public class ChassisEstimationSizeInfo {
 
     private final Long id;
+    private final Long chassisEstimationInfoId;
     private final ChassisType chassisType;
     private final int width;
     private final int height;
@@ -20,6 +21,7 @@ public class ChassisEstimationSizeInfo {
 
     private ChassisEstimationSizeInfo(
             final Long id,
+            final Long chassisEstimationInfoId,
             final ChassisType chassisType,
             final int width,
             final int height,
@@ -28,6 +30,7 @@ public class ChassisEstimationSizeInfo {
             final LocalDateTime lastModified
     ) {
         this.id = id;
+        this.chassisEstimationInfoId = chassisEstimationInfoId;
         this.chassisType = chassisType;
         this.width = width;
         this.height = height;
@@ -45,6 +48,7 @@ public class ChassisEstimationSizeInfo {
     ) {
         return new ChassisEstimationSizeInfo(
                 null,
+                null,
                 chassisType,
                 width,
                 height,
@@ -56,6 +60,7 @@ public class ChassisEstimationSizeInfo {
     // 조회
     public static ChassisEstimationSizeInfo of(
             final Long id,
+            final Long chassisEstimationInfoId,
             final ChassisType chassisType,
             final int width,
             final int height,
@@ -65,6 +70,7 @@ public class ChassisEstimationSizeInfo {
     ) {
         return new ChassisEstimationSizeInfo(
                 id,
+                chassisEstimationInfoId,
                 chassisType,
                 width,
                 height,

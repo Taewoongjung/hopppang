@@ -20,27 +20,31 @@ public class ChassisEstimationAddressEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String zipCode;
     private String address;
     private String subAddress;
     private String buildingNumber;
 
     private ChassisEstimationAddressEntity(
             final Long id,
+            final String zipCode,
             final String address,
             final String subAddress,
             final String buildingNumber
     ) {
         this.id = id;
+        this.zipCode = zipCode;
         this.address = address;
         this.subAddress = subAddress;
         this.buildingNumber = buildingNumber;
     }
 
     public static ChassisEstimationAddressEntity of(
+            final String zipCode,
             final String address,
             final String subAddress,
             final String buildingNumber
     ) {
-        return new ChassisEstimationAddressEntity(null, address, subAddress, buildingNumber);
+        return new ChassisEstimationAddressEntity(null, zipCode, address, subAddress, buildingNumber);
     }
 }

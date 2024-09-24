@@ -69,7 +69,8 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
             final int maintenanceFee,
             final int freightTransportFee,
             final int deliveryFee,
-            final int totalPrice
+            final int totalPrice,
+            final List<ChassisEstimationSizeInfoEntity> chassisEstimationSizeInfoList
         ) {
 
         super(LocalDateTime.now(), LocalDateTime.now());
@@ -85,9 +86,39 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
         this.freightTransportFee = freightTransportFee;
         this.deliveryFee = deliveryFee;
         this.totalPrice = totalPrice;
+        this.chassisEstimationSizeInfoList = chassisEstimationSizeInfoList;
     }
 
     // 생성
+    public static ChassisEstimationInfoEntity of(
+            final Long userId,
+            final Long chassisEstimationAddressId,
+            final CompanyType companyType,
+            final int laborFee,
+            final int ladderCarFee,
+            final int demolitionFee,
+            final int maintenanceFee,
+            final int freightTransportFee,
+            final int deliveryFee,
+            final int price,
+            final List<ChassisEstimationSizeInfoEntity> chassisEstimationSizeInfoList
+    ) {
+
+        return new ChassisEstimationInfoEntity(
+                null,
+                userId,
+                chassisEstimationAddressId,
+                companyType,
+                laborFee,
+                ladderCarFee,
+                demolitionFee,
+                maintenanceFee,
+                freightTransportFee,
+                deliveryFee,
+                price,
+                chassisEstimationSizeInfoList
+        );
+    }
     public static ChassisEstimationInfoEntity of(
             final Long userId,
             final Long chassisEstimationAddressId,
@@ -112,7 +143,8 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
                 maintenanceFee,
                 freightTransportFee,
                 deliveryFee,
-                price
+                price,
+                null
         );
     }
 }

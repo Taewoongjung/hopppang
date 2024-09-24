@@ -6,6 +6,10 @@ import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
 
 public record CalculateChassisPriceCommand(
+        String zipCode,
+        String address,
+        String subAddress,
+        String buildingNumber,
         List<CalculateChassisPrice> calculateChassisPriceList,
         int floorCustomerLiving,
         boolean isScheduledForDemolition,
