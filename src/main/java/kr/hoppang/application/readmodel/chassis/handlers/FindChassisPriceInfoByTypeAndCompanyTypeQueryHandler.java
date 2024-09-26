@@ -7,6 +7,7 @@ import kr.hoppang.domain.chassis.price.ChassisPriceInfo;
 import kr.hoppang.domain.chassis.price.repository.ChassisPriceInfoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -22,6 +23,11 @@ public class FindChassisPriceInfoByTypeAndCompanyTypeQueryHandler implements IQu
     }
 
     @Override
+    @Cacheable(
+            value = "chassisPriceInfoCache",
+            key = "#event.chassisType() + '_' + #event.companyType()",
+            unless = "#result.isEmpty()"
+    )
     public List<ChassisPriceInfo> handle(final FindChassisPriceInfoByCompanyTypeQuery event) {
 
         return chassisPriceInfoRepository.findByTypeAndCompanyType(event.chassisType(), event.companyType());

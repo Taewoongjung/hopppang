@@ -7,8 +7,8 @@ import kr.hoppang.domain.chassis.price.pricecriteria.AdditionalChassisPriceCrite
 import kr.hoppang.domain.chassis.price.repository.pricecriteria.AdditionalChassisPriceCriteriaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -20,11 +20,14 @@ public class FindChassisPriceAdditionalCriteriaQueryHandler implements
 
     @Override
     public boolean isQueryHandler() {
-        return false;
+        return true;
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Cacheable(
+            value = "additionalChassisPriceCriteria",
+            cacheManager = "cacheManager"
+    )
     public List<AdditionalChassisPriceCriteria> handle(final FindChassisPriceAdditionalCriteriaQuery event) {
 
         return additionalChassisPriceCriteriaRepository.findAll();

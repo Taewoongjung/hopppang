@@ -1,19 +1,18 @@
 package kr.hoppang.domain.chassis.price.pricecriteria;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.LinkedHashMap;
 import kr.hoppang.adapter.outbound.jpa.entity.chassis.price.pricecriteria.AdditionalChassisPriceCriteriaType;
-import kr.hoppang.domain.cache.CacheData;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-public class AdditionalChassisPriceCriteria implements CacheData {
+@NoArgsConstructor
+public class AdditionalChassisPriceCriteria {
 
-    private final AdditionalChassisPriceCriteriaType type;
+    private AdditionalChassisPriceCriteriaType type;
     private int price;
-    private final LocalDateTime lastModified;
-    private final LocalDateTime createdAt;
+    private LocalDateTime lastModified;
+    private LocalDateTime createdAt;
 
     private AdditionalChassisPriceCriteria(
             final AdditionalChassisPriceCriteriaType type,
@@ -104,33 +103,5 @@ public class AdditionalChassisPriceCriteria implements CacheData {
 
     public boolean comparePriceWithTarget(final int targetPrice) {
         return this.price == targetPrice;
-    }
-
-    public static AdditionalChassisPriceCriteria mapToAdditionalChassisPriceCriteria(
-            final LinkedHashMap<String, Object> map) {
-
-        // LocalDateTime 변환
-        String lastModifiedStr = (String) map.get("lastModified");
-        LocalDateTime lastModified = LocalDateTime.parse(lastModifiedStr, DateTimeFormatter.ISO_DATE_TIME);
-
-        String createdAtStr = (String) map.get("lastModified");
-        LocalDateTime createdAt = LocalDateTime.parse(createdAtStr, DateTimeFormatter.ISO_DATE_TIME);
-
-        return AdditionalChassisPriceCriteria.of(
-                (AdditionalChassisPriceCriteriaType.valueOf((String) map.get("type"))),
-                ((Integer) map.get("price")),
-                lastModified,
-                createdAt
-        );
-    }
-
-    @Override
-    public String toString() {
-        return "AdditionalChassisPriceCriteria{" +
-                "type=" + type +
-                ", price=" + price +
-                ", lastModified=" + lastModified +
-                ", createdAt=" + createdAt +
-                '}';
     }
 }
