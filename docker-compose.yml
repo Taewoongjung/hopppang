@@ -75,6 +75,14 @@ services:
     depends_on:
       - database-master
 
+  cache-redis:
+    image: redis:latest
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - server-connection
+
   back-end-app:
     build:
       context: ./
@@ -86,6 +94,7 @@ services:
     depends_on:
       - database-master
       - database-slave
+      - cache-redis
     command:
       - ./gradlew bootRun
       - chmod 777 /be-app/logs
