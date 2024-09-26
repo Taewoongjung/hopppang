@@ -25,6 +25,19 @@ public class ChassisPriceInfoRepositoryAdapter implements ChassisPriceInfoReposi
 
     @Override
     @Transactional(readOnly = true)
+    public List<ChassisPriceInfo> findAll() {
+
+        List<ChassisPriceInfoEntity> chassisPriceInfoEntityList =
+                chassisPriceInfoJpaRepository.findAll();
+
+        check(chassisPriceInfoEntityList.isEmpty(), NOT_EXIST_CHASSIS_PRICE_INFO);
+
+        return chassisPriceInfoEntityList.stream().map(ChassisPriceInfoEntity::toPojo)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<ChassisPriceInfo> findByTypeAndCompanyType(
             final ChassisType type,
             final CompanyType companyType) {

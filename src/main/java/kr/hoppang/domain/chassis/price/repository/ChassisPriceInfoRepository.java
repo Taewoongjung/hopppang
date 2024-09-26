@@ -7,6 +7,8 @@ import kr.hoppang.domain.chassis.CompanyType;
 
 public interface ChassisPriceInfoRepository {
 
+    List<ChassisPriceInfo> findAll();
+
     List<ChassisPriceInfo> findByTypeAndCompanyType(final ChassisType type, final CompanyType companyType);
 
     ChassisPriceInfo findByTypeAndCompanyTypeAndWidthAndHeight(
