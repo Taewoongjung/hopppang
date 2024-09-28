@@ -12,6 +12,7 @@ import kr.hoppang.domain.chassis.price.pricecriteria.AdditionalChassisPriceCrite
 import kr.hoppang.domain.chassis.price.repository.pricecriteria.AdditionalChassisPriceCriteriaRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +26,7 @@ public class AdditionalChassisPriceCriteriaRepositoryAdapter implements
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "additionalChassisPriceCriteria", key = "#type")
     public AdditionalChassisPriceCriteria findByType(final AdditionalChassisPriceCriteriaType type) {
 
         AdditionalChassisPriceCriteriaEntity entity =

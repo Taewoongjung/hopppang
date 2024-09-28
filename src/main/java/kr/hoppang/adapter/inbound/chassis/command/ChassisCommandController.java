@@ -5,7 +5,6 @@ import kr.hoppang.adapter.inbound.chassis.webdto.AddAndReviseChassisPriceInforma
 import kr.hoppang.adapter.inbound.chassis.webdto.AddAndReviseChassisPriceInformationWebDtoV1.Res;
 import kr.hoppang.adapter.inbound.chassis.webdto.GetCalculatedChassisPriceWebDtoV1;
 import kr.hoppang.adapter.inbound.chassis.webdto.ReviseAdditionalChassisPriceWebDtoV1;
-import kr.hoppang.application.command.chassis.commandresults.CalculateChassisPriceCommandHandlerCommandResult;
 import kr.hoppang.application.command.chassis.commands.AddAndReviseChassisPriceInformationCommand;
 import kr.hoppang.application.command.chassis.handlers.AddAndReviseChassisPriceInformationCommandHandler;
 import kr.hoppang.application.command.chassis.handlers.CalculateChassisPriceCommandHandler;
@@ -62,9 +61,7 @@ public class ChassisCommandController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(GetCalculatedChassisPriceWebDtoV1.Res.of(
-                        calculateChassisPriceQueryHandler.handle(req.toQuery())
-                    )
-                );
+                        calculateChassisPriceQueryHandler.handle(req.toQuery())));
     }
 
     @PutMapping(value = "/prices/additions/criteria")

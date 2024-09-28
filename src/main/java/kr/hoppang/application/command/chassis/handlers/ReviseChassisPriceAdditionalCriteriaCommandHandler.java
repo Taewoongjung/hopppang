@@ -9,6 +9,7 @@ import kr.hoppang.domain.chassis.price.pricecriteria.AdditionalChassisPriceCrite
 import kr.hoppang.domain.chassis.price.repository.pricecriteria.AdditionalChassisPriceCriteriaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,7 @@ public class ReviseChassisPriceAdditionalCriteriaCommandHandler
 
     @Override
     @Transactional
+    @CacheEvict(value = "additionalChassisPriceCriteria", key = "additionalChassisPriceCriteria", allEntries = true)
     public Boolean handle(final ReviseChassisPriceAdditionalCriteriaCommand command) {
 
         List<AdditionalChassisPriceCriteria> beforeModificationInfos = additionalChassisPriceCriteriaRepository.findAll();
@@ -43,6 +45,7 @@ public class ReviseChassisPriceAdditionalCriteriaCommandHandler
                     });
         }
 
-        return additionalChassisPriceCriteriaRepository.reviseAdditionalChassisPriceCriteria(reviseRepositoryDto);
+        return additionalChassisPriceCriteriaRepository
+                .reviseAdditionalChassisPriceCriteria(reviseRepositoryDto);
     }
 }
