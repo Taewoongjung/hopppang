@@ -8,6 +8,7 @@ import lombok.ToString;
 public class ChassisEstimationAddress {
 
     private Long id;
+    private Long chassisEstimationInfoId;
     private final String zipCode;
     private final String address;
     private final String subAddress;
@@ -15,12 +16,14 @@ public class ChassisEstimationAddress {
 
     private ChassisEstimationAddress(
             final Long id,
+            final Long chassisEstimationInfoId,
             final String zipCode,
             final String address,
             final String subAddress,
             final String buildingNumber
     ) {
         this.id = id;
+        this.chassisEstimationInfoId = chassisEstimationInfoId;
         this.zipCode = zipCode;
         this.address = address;
         this.subAddress = subAddress;
@@ -33,20 +36,23 @@ public class ChassisEstimationAddress {
             final String subAddress,
             final String buildingNumber
     ) {
-        return new ChassisEstimationAddress(null, zipCode, address, subAddress, buildingNumber);
+        return new ChassisEstimationAddress(
+                null, null, zipCode, address, subAddress, buildingNumber);
     }
 
     public static ChassisEstimationAddress of(
             final Long id,
+            final Long chassisEstimationInfoId,
             final String zipCode,
             final String address,
             final String subAddress,
             final String buildingNumber
     ) {
-        return new ChassisEstimationAddress(id, zipCode, address, subAddress, buildingNumber);
+        return new ChassisEstimationAddress(
+                id, chassisEstimationInfoId, zipCode, address, subAddress, buildingNumber);
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public void setChassisEstimationInfoId(final Long id) {
+        this.chassisEstimationInfoId = id;
     }
 }

@@ -2,7 +2,6 @@ CREATE TABLE chassis_estimation_info
 (
     id                              BIGINT(20) UNSIGNED      NOT NULL AUTO_INCREMENT,
     user_id                         BIGINT(20) UNSIGNED          NULL COMMENT '유저 id',
-    chassis_estimation_address_id   BIGINT(20) UNSIGNED      NOT NULL COMMENT '샤시 견적에 해당하는 주소',
     company_type                    VARCHAR(20)              NOT NULL COMMENT '회사 종류',
     labor_fee                       INT UNSIGNED             NOT NULL COMMENT '인건비',
     ladder_car_fee                  INT UNSIGNED             NOT NULL COMMENT '사다리차 비용',
@@ -14,8 +13,7 @@ CREATE TABLE chassis_estimation_info
     created_at                      DATETIME(6) DEFAULT CURRENT_TIMESTAMP(6) NOT NULL,
     last_modified                   DATETIME(6) DEFAULT CURRENT_TIMESTAMP(6) NOT NULL ON UPDATE CURRENT_TIMESTAMP(6),
     PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES user(id),
-    FOREIGN KEY (chassis_estimation_address_id) REFERENCES chassis_estimation_address(id)
+    FOREIGN KEY (user_id) REFERENCES user(id)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT '샤시 견적 정보';
 

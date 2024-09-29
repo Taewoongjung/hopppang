@@ -9,7 +9,9 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -52,7 +54,8 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
 
     private int totalPrice;
 
-    private Long chassisEstimationAddressId;
+    @OneToOne(mappedBy = "chassisEstimationInfo",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private ChassisEstimationAddressEntity chassisEstimationAddress;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "chassisEstimationInfo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChassisEstimationSizeInfoEntity> chassisEstimationSizeInfoList = new ArrayList<>();
@@ -61,7 +64,6 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
     private ChassisEstimationInfoEntity(
             final Long id,
             final Long userId,
-            final Long chassisEstimationAddressId,
             final CompanyType companyType,
             final int laborFee,
             final int ladderCarFee,
@@ -70,6 +72,7 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
             final int freightTransportFee,
             final int deliveryFee,
             final int totalPrice,
+            final ChassisEstimationAddressEntity chassisEstimationAddress,
             final List<ChassisEstimationSizeInfoEntity> chassisEstimationSizeInfoList
         ) {
 
@@ -77,7 +80,6 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
 
         this.id = id;
         this.userId = userId;
-        this.chassisEstimationAddressId = chassisEstimationAddressId;
         this.companyType = companyType;
         this.laborFee = laborFee;
         this.ladderCarFee = ladderCarFee;
@@ -86,13 +88,13 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
         this.freightTransportFee = freightTransportFee;
         this.deliveryFee = deliveryFee;
         this.totalPrice = totalPrice;
+        this.chassisEstimationAddress = chassisEstimationAddress;
         this.chassisEstimationSizeInfoList = chassisEstimationSizeInfoList;
     }
 
     // 생성
     public static ChassisEstimationInfoEntity of(
             final Long userId,
-            final Long chassisEstimationAddressId,
             final CompanyType companyType,
             final int laborFee,
             final int ladderCarFee,
@@ -101,13 +103,13 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
             final int freightTransportFee,
             final int deliveryFee,
             final int price,
+            final ChassisEstimationAddressEntity chassisEstimationAddress,
             final List<ChassisEstimationSizeInfoEntity> chassisEstimationSizeInfoList
     ) {
 
         return new ChassisEstimationInfoEntity(
                 null,
                 userId,
-                chassisEstimationAddressId,
                 companyType,
                 laborFee,
                 ladderCarFee,
@@ -116,12 +118,12 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
                 freightTransportFee,
                 deliveryFee,
                 price,
+                chassisEstimationAddress,
                 chassisEstimationSizeInfoList
         );
     }
     public static ChassisEstimationInfoEntity of(
             final Long userId,
-            final Long chassisEstimationAddressId,
             final CompanyType companyType,
             final int laborFee,
             final int ladderCarFee,
@@ -135,7 +137,6 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
         return new ChassisEstimationInfoEntity(
                 null,
                 userId,
-                chassisEstimationAddressId,
                 companyType,
                 laborFee,
                 ladderCarFee,
@@ -144,7 +145,12 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
                 freightTransportFee,
                 deliveryFee,
                 price,
-                null
+                null, null
         );
+    }
+
+    public void setChassisEstimationAddress(
+            final ChassisEstimationAddressEntity chassisEstimationAddress) {
+        this.chassisEstimationAddress = chassisEstimationAddress;
     }
 }

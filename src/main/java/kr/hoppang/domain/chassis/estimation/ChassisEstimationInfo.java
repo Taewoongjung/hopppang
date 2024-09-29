@@ -13,7 +13,6 @@ public class ChassisEstimationInfo {
 
     private final Long id;
     private final Long userId;
-    private final ChassisEstimationAddress chassisEstimationAddress;
     private final CompanyType companyType;
     private final int laborFee;
     private final int ladderCarFee;
@@ -25,6 +24,7 @@ public class ChassisEstimationInfo {
     private final LocalDateTime createdAt;
     private final LocalDateTime lastModified;
 
+    private final ChassisEstimationAddress chassisEstimationAddress;
     private List<ChassisEstimationSizeInfo> chassisEstimationSizeInfoList = new ArrayList<>();
 
     private ChassisEstimationInfo(

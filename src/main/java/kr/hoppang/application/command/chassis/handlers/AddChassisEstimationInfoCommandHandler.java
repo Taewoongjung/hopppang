@@ -1,5 +1,6 @@
 package kr.hoppang.application.command.chassis.handlers;
 
+import java.util.concurrent.CompletableFuture;
 import kr.hoppang.abstraction.domain.ICommandHandler;
 import kr.hoppang.application.command.chassis.commands.AddChassisEstimationInfoCommand;
 import kr.hoppang.domain.chassis.estimation.repository.ChassisEstimationRepository;
@@ -15,7 +16,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AddChassisEstimationInfoCommandHandler implements ICommandHandler<AddChassisEstimationInfoCommand, Boolean> {
+public class AddChassisEstimationInfoCommandHandler implements ICommandHandler<AddChassisEstimationInfoCommand, CompletableFuture<Void>> {
 
     private final ChassisEstimationRepository chassisEstimationRepository;
 
@@ -28,13 +29,14 @@ public class AddChassisEstimationInfoCommandHandler implements ICommandHandler<A
     @Async
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public Boolean handle(final AddChassisEstimationInfoCommand command) {
+    public CompletableFuture<Void> handle(final AddChassisEstimationInfoCommand command) {
         log.info("[핸들러] AddChassisEstimationInfoCommand 수행");
 
         chassisEstimationRepository.registerChassisEstimation(command.makeChassisEstimationInfo(),
                 command.makeChassisEstimationSizeInfo());
 
         log.info("[샤시 견적] 성공");
-        return true;
+
+        return CompletableFuture.completedFuture(null);
     }
 }

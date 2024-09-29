@@ -16,7 +16,6 @@ public class ChassisEstimationConverter {
 
         return ChassisEstimationInfoEntity.of(
                 pojo.getUserId(),
-                pojo.getChassisEstimationAddress() != null ? pojo.getChassisEstimationAddress().getId() : null,
                 pojo.getCompanyType(),
                 pojo.getLaborFee(),
                 pojo.getLadderCarFee(),
@@ -24,7 +23,7 @@ public class ChassisEstimationConverter {
                 pojo.getMaintenanceFee(),
                 pojo.getFreightTransportFee(),
                 pojo.getDeliveryFee(),
-                pojo.getPrice());
+                pojo.getTotalPrice());
     }
 
     public static List<ChassisEstimationSizeInfoEntity> chassisEstimationSizeInfoToEntity(
@@ -47,6 +46,7 @@ public class ChassisEstimationConverter {
             final ChassisEstimationAddress pojo) {
 
         return ChassisEstimationAddressEntity.of(
+                pojo.getChassisEstimationInfoId(),
                 pojo.getZipCode(),
                 pojo.getAddress(),
                 pojo.getSubAddress(),

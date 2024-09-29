@@ -34,7 +34,6 @@ public class CalculateChassisPriceCommandHandler implements
     private final ApplicationEventPublisher eventPublisher;
     private final ChassisPriceCalculator chassisPriceCalculator;
     private final ChassisPriceInfoRepository chassisPriceInfoRepository;
-    private final AddChassisEstimationInfoCommandHandler addChassisEstimationInfoCommandHandler;
 
     @Override
     public boolean isCommandHandler() {
@@ -198,7 +197,6 @@ public class CalculateChassisPriceCommandHandler implements
                     chassisPriceResult.price()));
         }
 
-//        addChassisEstimationInfoCommandHandler.handle(new AddChassisEstimationInfoCommand(
         eventPublisher.publishEvent(new AddChassisEstimationInfoCommand(
                 new ChassisEstimationCommand(
                         zipCode,
