@@ -1,12 +1,22 @@
 package kr.hoppang.domain.chassis.estimation.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import kr.hoppang.domain.chassis.ChassisType;
+import kr.hoppang.domain.chassis.CompanyType;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationInfo;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationSizeInfo;
+import kr.hoppang.domain.chassis.estimation.repository.dto.FindChassisEstimationInfosResult;
 
 public interface ChassisEstimationRepository {
 
-    public List<ChassisEstimationInfo> findChassisEstimationInfosBy(/* 여기에 필터 조건 추가 하기 */);
+    public List<FindChassisEstimationInfosResult> findChassisEstimationInfosBy(
+            final Long estimationId,
+            final CompanyType companyType,
+            final ChassisType chassisType,
+            final LocalDateTime startTime,
+            final LocalDateTime endTime
+    );
 
     public void registerChassisEstimation(final ChassisEstimationInfo ChassisEstimationInfo,
             final List<ChassisEstimationSizeInfo> chassisEstimationSizeInfoList);
