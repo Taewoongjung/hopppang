@@ -15,7 +15,8 @@ public interface ChassisEstimationRepository {
             final CompanyType companyType,
             final ChassisType chassisType,
             final LocalDateTime startTime,
-            final LocalDateTime endTime
+            final LocalDateTime endTime,
+            final int limit, final int offset
     );
 
     public void registerChassisEstimation(final ChassisEstimationInfo ChassisEstimationInfo,

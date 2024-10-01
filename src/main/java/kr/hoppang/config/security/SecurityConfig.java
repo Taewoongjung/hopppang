@@ -81,7 +81,7 @@ public class SecurityConfig {
                         ).permitAll()
 
 
-                        // all authorize
+                        // authorized
                         .requestMatchers(HttpMethod.GET,
                                 "/actuator/health"
                                 , "/api/me"
@@ -90,6 +90,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,
                                 "/api/chassis/prices"
                                 , "/api/chassis/prices/additions/criteria"
+                                , "/api/chassis/estimations"
                         ).authenticated()
 
 

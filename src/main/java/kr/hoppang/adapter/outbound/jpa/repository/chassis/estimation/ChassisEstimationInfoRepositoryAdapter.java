@@ -4,8 +4,12 @@ import static kr.hoppang.util.converter.chassis.estimation.ChassisEstimationConv
 import static kr.hoppang.util.converter.chassis.estimation.ChassisEstimationConverter.chassisEstimationInfoToEntity;
 import static kr.hoppang.util.converter.chassis.estimation.ChassisEstimationConverter.chassisEstimationSizeInfoToEntity;
 
-//import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import kr.hoppang.adapter.outbound.jpa.entity.chassis.estimation.ChassisEstimationInfoEntity;
 import kr.hoppang.adapter.outbound.jpa.entity.chassis.estimation.ChassisEstimationSizeInfoEntity;
@@ -15,23 +19,20 @@ import kr.hoppang.domain.chassis.estimation.ChassisEstimationInfo;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationSizeInfo;
 import kr.hoppang.domain.chassis.estimation.repository.ChassisEstimationRepository;
 import kr.hoppang.domain.chassis.estimation.repository.dto.FindChassisEstimationInfosResult;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-//import static kr.hoppang.adapter.outbound.jpa.entity.chassis.estimation.QChassisEstimationInfoEntity.chassisEstimationInfoEntity;
-//import static kr.hoppang.adapter.outbound.jpa.entity.chassis.estimation.QChassisEstimationAddressEntity.chassisEstimationAddressEntity;
-//import static kr.hoppang.adapter.outbound.jpa.entity.chassis.estimation.QChassisEstimationSizeInfoEntity.chassisEstimationSizeInfoEntity;
+import static kr.hoppang.adapter.outbound.jpa.entity.chassis.estimation.QChassisEstimationInfoEntity.chassisEstimationInfoEntity;
+import static kr.hoppang.adapter.outbound.jpa.entity.chassis.estimation.QChassisEstimationAddressEntity.chassisEstimationAddressEntity;
+import static kr.hoppang.adapter.outbound.jpa.entity.chassis.estimation.QChassisEstimationSizeInfoEntity.chassisEstimationSizeInfoEntity;
 
-@Getter
 @Repository
 @RequiredArgsConstructor
 public class ChassisEstimationInfoRepositoryAdapter implements ChassisEstimationRepository {
 
-//    private final JPAQueryFactory queryFactory;
+    private final JPAQueryFactory queryFactory;
     private final ChassisEstimationInfoJpaRepository chassisEstimationJpaRepository;
-    private final ChassisEstimationAddressJpaRepository chassisEstimationAddressJpaRepository;
     private final ChassisEstimationSizeInfoJpaRepository chassisEstimationSizeInfoJpaRepository;
 
     @Override
@@ -41,24 +42,65 @@ public class ChassisEstimationInfoRepositoryAdapter implements ChassisEstimation
             final CompanyType companyType,
             final ChassisType chassisType,
             final LocalDateTime startTime,
-            final LocalDateTime endTime
+            final LocalDateTime endTime,
+            final int limit, final int offset
     ) {
 
-//        queryFactory.select(
-//                Projections.constructor(
-//                        (FindChassisEstimationInfosResult.class),
-//                        chassisEstimationInfoEntity.id,
-//                        chassisEstimationSizeInfoEntity.chassisType,
-//                        chassisEstimationSizeInfoEntity.width,
-//                        chassisEstimationSizeInfoEntity.height,
-//                        chassisEstimationSizeInfoEntity.price,
-//                        chassisEstimationInfoEntity.userId,
-//        ))
-//                .from(chassisEstimationInfoEntity)
-//                .join(chassisEstimationInfoEntity.chassisEstimationSizeInfoList, chassisEstimationSizeInfoEntity)
-//                .join(chassisEstimationInfoEntity.chassisEstimationAddressId)
+        // where 절 정의 start
+        BooleanBuilder whereClause = new BooleanBuilder();
 
-        return null;
+        if (estimationId != null) {
+            whereClause.and(chassisEstimationInfoEntity.id.eq(estimationId));
+        }
+
+        if (companyType != null) {
+            whereClause.and(chassisEstimationInfoEntity.companyType.eq(companyType));
+        }
+
+        if (chassisType != null) {
+            whereClause.and(chassisEstimationSizeInfoEntity.chassisType.eq(chassisType));
+        }
+
+        if (startTime != null && endTime != null) {
+            whereClause.and(chassisEstimationInfoEntity.createdAt.between(startTime, endTime));
+        }
+        // where 절 정의 end
+
+        // 조회 결과 순서 정의 start
+        List<OrderSpecifier> sortOrder = new ArrayList<>();
+        sortOrder.add(chassisEstimationInfoEntity.createdAt.desc());
+        // 조회 결과 순서 정의 end
+
+        // 조회
+        return queryFactory.select(
+                Projections.constructor(
+                        (FindChassisEstimationInfosResult.class),
+                        chassisEstimationInfoEntity.id,
+                        chassisEstimationSizeInfoEntity.chassisType,
+                        chassisEstimationSizeInfoEntity.width,
+                        chassisEstimationSizeInfoEntity.height,
+                        chassisEstimationSizeInfoEntity.price,
+                        chassisEstimationInfoEntity.userId,
+                        chassisEstimationInfoEntity.companyType,
+                        chassisEstimationInfoEntity.laborFee,
+                        chassisEstimationInfoEntity.ladderCarFee,
+                        chassisEstimationInfoEntity.demolitionFee,
+                        chassisEstimationInfoEntity.maintenanceFee,
+                        chassisEstimationInfoEntity.freightTransportFee,
+                        chassisEstimationInfoEntity.deliveryFee,
+                        chassisEstimationInfoEntity.totalPrice,
+                        chassisEstimationAddressEntity.address,
+                        chassisEstimationAddressEntity.subAddress,
+                        chassisEstimationInfoEntity.createdAt,
+                        chassisEstimationInfoEntity.lastModified
+        ))
+                .from(chassisEstimationInfoEntity)
+                .join(chassisEstimationInfoEntity.chassisEstimationSizeInfoList, chassisEstimationSizeInfoEntity)
+                .join(chassisEstimationInfoEntity.chassisEstimationAddress, chassisEstimationAddressEntity)
+                .where(whereClause)
+                .orderBy(sortOrder.toArray(new OrderSpecifier<?>[0]))
+                .limit(limit).offset(offset)
+                .fetch();
     }
 
     @Override
