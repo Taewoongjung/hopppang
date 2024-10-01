@@ -2,9 +2,17 @@ package kr.hoppang.domain.chassis;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+@Getter
+@RequiredArgsConstructor
 public enum CompanyType {
-    LX, HYUNDAI, KCC_GLASS;
+    LX ("LX 하우시스"),
+    HYUNDAI ("현대 L&C"),
+    KCC_GLASS ("KCC 글라스");
+
+    private final String companyName;
 
     public static CompanyType from(final String target) {
         return Arrays.stream(values())

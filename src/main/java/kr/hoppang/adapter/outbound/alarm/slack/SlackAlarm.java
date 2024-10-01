@@ -92,6 +92,7 @@ public class SlackAlarm implements AlarmService {
             }
 
             // Estimation details
+            blocks.add(section(section -> section.text(markdownText("*:office: 회사:* " + newEstimationEvent.company().getCompanyName()))));
             blocks.add(section(section -> section.text(markdownText("*:package: 견적 리스트:*"))));
             newEstimationEvent.estimationList().forEach(e -> {
                 blocks.add(section(section -> section.text(markdownText(

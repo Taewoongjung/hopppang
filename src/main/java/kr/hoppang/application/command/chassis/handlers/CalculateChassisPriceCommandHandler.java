@@ -128,7 +128,7 @@ public class CalculateChassisPriceCommandHandler implements
         // 슬랙 알림 발송
         eventPublisher.publishEvent(NewEstimation.of(
             null, null,
-                reqList.get(0).companyType().name(),
+                reqList.get(0).companyType(),
                 event.calculateChassisPriceList()
         ));
 
