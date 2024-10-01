@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import kr.hoppang.adapter.inbound.chassis.webdto.GetChassisEstimationInformationWebDtoV1;
 import kr.hoppang.adapter.inbound.chassis.webdto.GetChassisPriceAdditionalCriteriaWebDtoV1;
 import kr.hoppang.adapter.inbound.chassis.webdto.GetChassisPriceInformationWebDtoV1;
+import kr.hoppang.adapter.inbound.chassis.webdto.GetCountOfChassisEstimationInformationWebDtoV1;
 import kr.hoppang.application.readmodel.chassis.handlers.FindChassisEstimationInformationQueryHandler;
 import kr.hoppang.application.readmodel.chassis.handlers.FindChassisPriceAdditionalCriteriaQueryHandler;
 import kr.hoppang.application.readmodel.chassis.handlers.FindChassisPriceInfoByTypeAndCompanyTypeQueryHandler;
@@ -73,7 +74,7 @@ public class ChassisQueryController {
             @RequestParam(value = "chassisType", required = false) final ChassisType chassisType,
             @RequestParam(value = "startTime") final String startTime,
             @RequestParam(value = "endTime") final String endTime,
-            @RequestParam(value = "limit", defaultValue = "10") final int limit,
+            @RequestParam(value = "limit", defaultValue = "9999999") final int limit,
             @RequestParam(value = "offset", defaultValue = "0") final int offset
     ) {
 
@@ -87,5 +88,33 @@ public class ChassisQueryController {
                                 convertStringToLocalDateTime(endTime).plusDays(1).minusSeconds(1),
                                 limit, offset)
                 )));
+    }
+
+    @GetMapping(value = "/estimations/count")
+    public ResponseEntity<GetCountOfChassisEstimationInformationWebDtoV1.Res> getCountOfChassisEstimationInformation(
+            @RequestParam(value = "estimationIdList", required = false) final List<Long> estimationIdList,
+            @RequestParam(value = "companyType", required = false) final CompanyType companyType,
+            @RequestParam(value = "chassisType", required = false) final ChassisType chassisType,
+            @RequestParam(value = "startTime") final String startTime,
+            @RequestParam(value = "endTime") final String endTime,
+            @RequestParam(value = "limit", defaultValue = "9999999") final int limit,
+            @RequestParam(value = "offset", defaultValue = "0") final int offset
+    ) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(
+                        new GetCountOfChassisEstimationInformationWebDtoV1.Res(
+                                toWebResponseObject(
+                                        findChassisEstimationInformationQueryHandler.handle(
+                                                new FindChassisEstimationInformationQuery(
+                                                        estimationIdList,
+                                                        companyType,
+                                                        chassisType,
+                                                        convertStringToLocalDateTime(startTime),
+                                                        convertStringToLocalDateTime(
+                                                                endTime).plusDays(1)
+                                                                .minusSeconds(1),
+                                                        limit, offset)
+                                        )).size()));
     }
 }

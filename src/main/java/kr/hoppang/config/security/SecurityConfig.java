@@ -91,6 +91,7 @@ public class SecurityConfig {
                                 "/api/chassis/prices"
                                 , "/api/chassis/prices/additions/criteria"
                                 , "/api/chassis/estimations"
+                                , "/api/chassis/estimations/count"
                         ).authenticated()
 
 

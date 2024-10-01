@@ -43,6 +43,7 @@ public class JWTFilter extends OncePerRequestFilter {
             "/api/chassis/prices"
             , "/api/chassis/prices/additions/criteria"
             , "/api/chassis/estimations"
+            , "/api/chassis/estimations/count"
     };
 
     @Override
