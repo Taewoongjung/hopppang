@@ -68,7 +68,7 @@ public class ChassisQueryController {
 
     @GetMapping(value = "/estimations")
     public ResponseEntity<List<GetChassisEstimationInformationWebDtoV1.Res>> getChassisEstimationInformation(
-            @RequestParam(value = "estimationId", required = false) final Long estimationId,
+            @RequestParam(value = "estimationIdList", required = false) final List<Long> estimationIdList,
             @RequestParam(value = "companyType", required = false) final CompanyType companyType,
             @RequestParam(value = "chassisType", required = false) final ChassisType chassisType,
             @RequestParam(value = "startTime") final String startTime,
@@ -80,7 +80,7 @@ public class ChassisQueryController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(toWebResponseObject(findChassisEstimationInformationQueryHandler.handle(
                         new FindChassisEstimationInformationQuery(
-                                estimationId,
+                                estimationIdList,
                                 companyType,
                                 chassisType,
                                 convertStringToLocalDateTime(startTime),

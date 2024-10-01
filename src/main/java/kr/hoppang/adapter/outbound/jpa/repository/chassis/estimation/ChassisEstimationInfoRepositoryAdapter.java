@@ -38,7 +38,7 @@ public class ChassisEstimationInfoRepositoryAdapter implements ChassisEstimation
     @Override
     @Transactional(readOnly = true)
     public List<FindChassisEstimationInfosResult> findChassisEstimationInfosBy(
-            final Long estimationId,
+            final List<Long> estimationId,
             final CompanyType companyType,
             final ChassisType chassisType,
             final LocalDateTime startTime,
@@ -49,8 +49,12 @@ public class ChassisEstimationInfoRepositoryAdapter implements ChassisEstimation
         // where 절 정의 start
         BooleanBuilder whereClause = new BooleanBuilder();
 
+        if (startTime != null && endTime != null) {
+            whereClause.and(chassisEstimationInfoEntity.createdAt.between(startTime, endTime));
+        }
+
         if (estimationId != null) {
-            whereClause.and(chassisEstimationInfoEntity.id.eq(estimationId));
+            whereClause.and(chassisEstimationInfoEntity.id.in(estimationId));
         }
 
         if (companyType != null) {
@@ -61,9 +65,6 @@ public class ChassisEstimationInfoRepositoryAdapter implements ChassisEstimation
             whereClause.and(chassisEstimationSizeInfoEntity.chassisType.eq(chassisType));
         }
 
-        if (startTime != null && endTime != null) {
-            whereClause.and(chassisEstimationInfoEntity.createdAt.between(startTime, endTime));
-        }
         // where 절 정의 end
 
         // 조회 결과 순서 정의 start

@@ -11,7 +11,7 @@ import kr.hoppang.domain.chassis.estimation.repository.dto.FindChassisEstimation
 public interface ChassisEstimationRepository {
 
     public List<FindChassisEstimationInfosResult> findChassisEstimationInfosBy(
-            final Long estimationId,
+            final List<Long> estimationId,
             final CompanyType companyType,
             final ChassisType chassisType,
             final LocalDateTime startTime,
