@@ -3,6 +3,7 @@ package kr.hoppang.application.command.chassis.commandresults;
 import java.util.List;
 
 public record CalculateChassisPriceCommandHandlerCommandResult(
+        long estimationId,
         String company,
         List<ChassisPriceResult> chassisPriceResultList,
         int deliveryFee,

@@ -106,7 +106,7 @@ public class ChassisEstimationInfoRepositoryAdapter implements ChassisEstimation
 
     @Override
     @Transactional
-    public void registerChassisEstimation(
+    public long registerChassisEstimation(
             final ChassisEstimationInfo chassisEstimationInfo,
             final List<ChassisEstimationSizeInfo> chassisEstimationSizeInfoList
     ) {
@@ -138,5 +138,7 @@ public class ChassisEstimationInfoRepositoryAdapter implements ChassisEstimation
 
         chassisEstimationSizeInfoJpaRepository.saveAll(chassisEstimationSizeInfoEntityList);
         // ChassisEstimationSizeInfo 디비 저장 end
+
+        return chassisEstimationInfoEntity.getId();
     }
 }

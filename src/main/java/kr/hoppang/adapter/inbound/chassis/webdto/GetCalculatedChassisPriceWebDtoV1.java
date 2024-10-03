@@ -83,6 +83,7 @@ public class GetCalculatedChassisPriceWebDtoV1 {
 
 
     public record Res(
+            long estimationId,
             String company,
             List<ChassisPrice> chassisPriceResultList,
             int deliveryFee,
@@ -112,6 +113,7 @@ public class GetCalculatedChassisPriceWebDtoV1 {
                             ));
 
             return new Res(
+                    commandResult.estimationId(),
                     commandResult.company(),
                     chassisPriceResultList,
                     commandResult.deliveryFee(),

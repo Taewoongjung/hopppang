@@ -34,6 +34,7 @@ public class CalculateChassisPriceCommandHandler implements
     private final ApplicationEventPublisher eventPublisher;
     private final ChassisPriceCalculator chassisPriceCalculator;
     private final ChassisPriceInfoRepository chassisPriceInfoRepository;
+    private final AddChassisEstimationInfoCommandHandler addChassisEstimationInfoCommandHandler;
 
     @Override
     public boolean isCommandHandler() {
@@ -140,7 +141,7 @@ public class CalculateChassisPriceCommandHandler implements
         int floor = event.floorCustomerLiving();
         int totalPrice = calculatedResultList.stream().mapToInt(Integer::intValue).sum();
 
-        registerChassisEstimation(
+        long registeredEstimationId = registerChassisEstimation(
                 chassisPriceResultList,
                 event.zipCode(),
                 event.address(),
@@ -158,6 +159,7 @@ public class CalculateChassisPriceCommandHandler implements
         );
 
         return new CalculateChassisPriceCommandHandlerCommandResult(
+                registeredEstimationId,
                 reqList.get(0).companyType().name(),
                 chassisPriceResultList,
                 deliveryFee,
@@ -171,7 +173,7 @@ public class CalculateChassisPriceCommandHandler implements
         );
     }
 
-    private void registerChassisEstimation(
+    private long registerChassisEstimation(
             final List<ChassisPriceResult> chassisPriceResultList,
             final String zipCode,
             final String address,
@@ -197,7 +199,7 @@ public class CalculateChassisPriceCommandHandler implements
                     chassisPriceResult.price()));
         }
 
-        eventPublisher.publishEvent(new AddChassisEstimationInfoCommand(
+        return addChassisEstimationInfoCommandHandler.handle(new AddChassisEstimationInfoCommand(
                 new ChassisEstimationCommand(
                         zipCode,
                         address,

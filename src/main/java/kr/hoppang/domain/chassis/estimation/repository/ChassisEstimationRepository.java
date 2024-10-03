@@ -19,6 +19,6 @@ public interface ChassisEstimationRepository {
             final int limit, final int offset
     );
 
-    public void registerChassisEstimation(final ChassisEstimationInfo ChassisEstimationInfo,
+    public long registerChassisEstimation(final ChassisEstimationInfo ChassisEstimationInfo,
             final List<ChassisEstimationSizeInfo> chassisEstimationSizeInfoList);
 }
