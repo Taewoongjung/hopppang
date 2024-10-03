@@ -89,7 +89,6 @@ public class GetCalculatedChassisPriceWebDtoV1 {
             int deliveryFee,
             int demolitionFee,
             int maintenanceFee,
-            int laborFee,
             int ladderFee,
             int freightTransportFee,
             // int etcFee, // 기타 비용 (배송비, 도수운반비)
@@ -106,9 +105,9 @@ public class GetCalculatedChassisPriceWebDtoV1 {
                     .forEach(e ->
                             chassisPriceResultList.add(
                                     new ChassisPrice(
-                                            e.chassisType(),
-                                            e.width(), e.height(),
-                                            e.price()
+                                            e.getChassisType(),
+                                            e.getWidth(), e.getHeight(),
+                                            e.getPrice()
                                     )
                             ));
 
@@ -119,7 +118,6 @@ public class GetCalculatedChassisPriceWebDtoV1 {
                     commandResult.deliveryFee(),
                     commandResult.demolitionFee(),
                     commandResult.maintenanceFee(),
-                    commandResult.laborFee(),
                     commandResult.ladderFee(),
                     commandResult.freightTransportFee(),
                     commandResult.customerFloor(),

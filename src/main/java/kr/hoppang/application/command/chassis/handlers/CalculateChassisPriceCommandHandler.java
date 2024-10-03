@@ -133,6 +133,13 @@ public class CalculateChassisPriceCommandHandler implements
                 event.calculateChassisPriceList()
         ));
 
+        // 인건비를 견적 받은 샤시의 개수만큼 나눠서 각각 금액에 더한다.
+        if (laborFee != 0) {
+            int dividedLaborFeeByCountOfChassis = laborFee / chassisPriceResultList.size();
+
+            chassisPriceResultList.forEach(e -> e.addLaborFeeToChassisPrice(dividedLaborFeeByCountOfChassis));
+        }
+
         // 각 비용 최종 가격
         int ladderFee = event.floorCustomerLiving() <= 1 ? 0
                 : ladderCarFee; // ladderFee : 1층 이하면 사다리차 비용이 도수 운반비이다.
@@ -165,7 +172,6 @@ public class CalculateChassisPriceCommandHandler implements
                 deliveryFee,
                 demolitionFee,
                 maintenanceFee,
-                laborFee,
                 ladderFee,
                 freightTransportFee,
                 floor,
@@ -193,10 +199,10 @@ public class CalculateChassisPriceCommandHandler implements
 
         for (ChassisPriceResult chassisPriceResult : chassisPriceResultList) {
             chassisSizeList.add(new ChassisSize(
-                    chassisPriceResult.chassisType(),
-                    chassisPriceResult.width(),
-                    chassisPriceResult.height(),
-                    chassisPriceResult.price()));
+                    chassisPriceResult.getChassisType(),
+                    chassisPriceResult.getWidth(),
+                    chassisPriceResult.getHeight(),
+                    chassisPriceResult.getPrice()));
         }
 
         return addChassisEstimationInfoCommandHandler.handle(new AddChassisEstimationInfoCommand(
