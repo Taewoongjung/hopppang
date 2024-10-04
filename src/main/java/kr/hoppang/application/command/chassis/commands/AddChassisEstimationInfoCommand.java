@@ -8,13 +8,19 @@ import kr.hoppang.domain.chassis.CompanyType;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationAddress;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationInfo;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationSizeInfo;
+import kr.hoppang.util.common.BoolType;
 
 public record AddChassisEstimationInfoCommand(ChassisEstimationCommand chassisEstimationCommand) implements ICommand {
 
-    public record ChassisEstimationCommand(String address,
-                                           String zipCode,
-                                           String subAddress,
+    public record ChassisEstimationCommand(String zipCode,
+                                           String state,
+                                           String city,
+                                           String town,
+                                           String bCode,
+                                           String remainAddress,
                                            String buildingNumber,
+                                           BoolType isApartment,
+                                           BoolType isExpanded,
                                            String company,
                                            int deliveryFee,
                                            int demolitionFee,
@@ -42,9 +48,14 @@ public record AddChassisEstimationInfoCommand(ChassisEstimationCommand chassisEs
                 null,
                 ChassisEstimationAddress.of(
                         command.zipCode,
-                        command.address,
-                        command.subAddress,
-                        command.buildingNumber
+                        command.state,
+                        command.city,
+                        command.town,
+                        command.bCode,
+                        command.remainAddress,
+                        command.buildingNumber,
+                        command.isApartment,
+                        command.isExpanded
                 ),
                 CompanyType.from(command.company),
                 command.laborFee,
@@ -59,11 +70,9 @@ public record AddChassisEstimationInfoCommand(ChassisEstimationCommand chassisEs
 
     public List<ChassisEstimationSizeInfo> makeChassisEstimationSizeInfo() {
 
-        ChassisEstimationCommand command = this.chassisEstimationCommand;
-
         List<ChassisEstimationSizeInfo> chassisEstimationSizeInfoList = new ArrayList<>();
 
-        command.chassisSizeList.forEach(e -> {
+        this.chassisEstimationCommand.chassisSizeList.forEach(e -> {
             chassisEstimationSizeInfoList.add(
                     ChassisEstimationSizeInfo.of(
                             ChassisType.from(e.chassisType), e.width, e.height, e.price)

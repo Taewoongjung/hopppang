@@ -17,9 +17,14 @@ import lombok.Getter;
 public class GetCalculatedChassisPriceWebDtoV1 {
 
     public record Req(String zipCode,
-                      String address,
-                      String subAddress,
+                      String state,
+                      String city,
+                      String town,
+                      String bCode,
+                      String remainAddress,
                       String buildingNumber,
+                      boolean isApartment,
+                      boolean isExpanded,
                       List<ReqCalculateChassisPrice> reqCalculateChassisPriceList) {
 
         public void validate() {
@@ -40,9 +45,14 @@ public class GetCalculatedChassisPriceWebDtoV1 {
 
             return new CalculateChassisPriceCommand(
                     forTestPeriodAddressZipCode(this.zipCode),
-                    forTestPeriodAddressInput(this.address),
-                    forTestPeriodAddressInput(this.subAddress),
+                    forTestPeriodAddressInput(this.state),
+                    forTestPeriodAddressInput(this.city),
+                    forTestPeriodAddressInput(this.town),
+                    forTestPeriodAddressInput(this.bCode),
+                    forTestPeriodAddressInput(this.remainAddress),
                     forTestPeriodAddressInput(this.buildingNumber),
+                    this.isApartment,
+                    this.isExpanded,
                     queryList,
                     reqCalculateChassisPriceList.get(0).floorCustomerLiving,
                     reqCalculateChassisPriceList.get(0).isScheduledForDemolition,
@@ -50,6 +60,7 @@ public class GetCalculatedChassisPriceWebDtoV1 {
             );
         }
     }
+
     private static String forTestPeriodAddressZipCode(final String target) {
         if (target == null || "".equals(target)) {
             return "00000";
@@ -91,7 +102,6 @@ public class GetCalculatedChassisPriceWebDtoV1 {
             int maintenanceFee,
             int ladderFee,
             int freightTransportFee,
-            // int etcFee, // 기타 비용 (배송비, 도수운반비)
             int customerFloor,
             int wholeCalculatedFee // 총 비용
     ) {

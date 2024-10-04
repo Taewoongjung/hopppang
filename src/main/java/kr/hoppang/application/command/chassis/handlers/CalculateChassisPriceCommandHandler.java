@@ -2,6 +2,7 @@ package kr.hoppang.application.command.chassis.handlers;
 
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_AVAILABLE_MANUFACTURE;
 import static kr.hoppang.adapter.common.util.CheckUtil.check;
+import static kr.hoppang.util.common.BoolType.convertBooleanToType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -151,9 +152,14 @@ public class CalculateChassisPriceCommandHandler implements
         long registeredEstimationId = registerChassisEstimation(
                 chassisPriceResultList,
                 event.zipCode(),
-                event.address(),
-                event.subAddress(),
+                event.state(),
+                event.city(),
+                event.town(),
+                event.bCode(),
+                event.remainAddress(),
                 event.buildingNumber(),
+                event.isApartment(),
+                event.isExpanded(),
                 reqList.get(0).companyType().name(),
                 deliveryFee,
                 demolitionFee,
@@ -182,9 +188,14 @@ public class CalculateChassisPriceCommandHandler implements
     private long registerChassisEstimation(
             final List<ChassisPriceResult> chassisPriceResultList,
             final String zipCode,
-            final String address,
-            final String subAddress,
+            final String state,
+            final String city,
+            final String town,
+            final String bCode,
+            final String remainAddress,
             final String buildingNumber,
+            final boolean isApartment,
+            final boolean isExpanded,
             final String companyName,
             final int deliveryFee,
             final int demolitionFee,
@@ -208,9 +219,14 @@ public class CalculateChassisPriceCommandHandler implements
         return addChassisEstimationInfoCommandHandler.handle(new AddChassisEstimationInfoCommand(
                 new ChassisEstimationCommand(
                         zipCode,
-                        address,
-                        subAddress,
+                        state,
+                        city,
+                        town,
+                        bCode,
+                        remainAddress,
                         buildingNumber,
+                        convertBooleanToType(isApartment),
+                        convertBooleanToType(isExpanded),
                         companyName,
                         deliveryFee,
                         demolitionFee,

@@ -48,9 +48,14 @@ public class ChassisEstimationConverter {
         return ChassisEstimationAddressEntity.of(
                 pojo.getChassisEstimationInfoId(),
                 pojo.getZipCode(),
-                pojo.getAddress(),
-                pojo.getSubAddress(),
-                pojo.getBuildingNumber()
+                pojo.getState(),
+                pojo.getCity(),
+                pojo.getTown(),
+                pojo.getBCode(),
+                pojo.getRemainAddress(),
+                pojo.getBuildingNumber(),
+                pojo.getIsApartment(),
+                pojo.getIsExpanded()
         );
     }
 }

@@ -48,26 +48,35 @@ public class FindChassisEstimationInformationQueryHandler
         List<FindChassisEstimationInformationQueryHandlerResult> resultList = new ArrayList<>();
 
         foundList.forEach(e ->
-                        resultList.add(new FindChassisEstimationInformationQueryHandlerResult(
-                                e.getId(),
-                                e.getChassisType(),
-                                e.getWidth(),
-                                e.getHeight(),
-                                e.getPrice(),
-                                e.getUserId(),
-                                ChassisEstimationAddress.of(null, e.getAddress(), e.getSubAddress(), null),
-                                e.getCompanyType(),
-                                e.getLaborFee(),
-                                e.getLadderCarFee(),
-                                e.getDemolitionFee(),
-                                e.getMaintenanceFee(),
-                                e.getFreightTransportFee(),
-                                e.getDeliveryFee(),
-                                e.getTotalPrice(),
-                                e.getCreatedAt(),
-                                e.getLastModified()
-                        ))
-                );
+                resultList.add(new FindChassisEstimationInformationQueryHandlerResult(
+                        e.getId(),
+                        e.getChassisType(),
+                        e.getWidth(),
+                        e.getHeight(),
+                        e.getPrice(),
+                        e.getUserId(),
+                        ChassisEstimationAddress.of(null,
+                                e.getState(),
+                                e.getCity(),
+                                e.getTown(),
+                                null,
+                                e.getRemainAddress(),
+                                null,
+                                e.getIsApartment(),
+                                e.getIsExpanded()
+                        ),
+                        e.getCompanyType(),
+                        e.getLaborFee(),
+                        e.getLadderCarFee(),
+                        e.getDemolitionFee(),
+                        e.getMaintenanceFee(),
+                        e.getFreightTransportFee(),
+                        e.getDeliveryFee(),
+                        e.getTotalPrice(),
+                        e.getCreatedAt(),
+                        e.getLastModified()
+                ))
+        );
 
         return resultList;
     }

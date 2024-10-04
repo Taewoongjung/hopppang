@@ -4,6 +4,7 @@ import com.querydsl.core.annotations.QueryProjection;
 import java.time.LocalDateTime;
 import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
+import kr.hoppang.util.common.BoolType;
 import lombok.Getter;
 
 @Getter
@@ -23,18 +24,21 @@ public class FindChassisEstimationInfosResult {
     private int freightTransportFee;
     private int deliveryFee;
     private int totalPrice;
-    private String address;
-    private String subAddress;
+    private String state;
+    private String city;
+    private String town;
+    private String remainAddress;
+    private BoolType isApartment;
+    private BoolType isExpanded;
     private LocalDateTime createdAt;
     private LocalDateTime lastModified;
 
     @QueryProjection
-    public FindChassisEstimationInfosResult(
-            Long id, ChassisType chassisType, int width, int height,
+    public FindChassisEstimationInfosResult(Long id, ChassisType chassisType, int width, int height,
             int price, Long userId, CompanyType companyType, int laborFee, int ladderCarFee,
             int demolitionFee, int maintenanceFee, int freightTransportFee, int deliveryFee,
-            int totalPrice, String address, String subAddress, LocalDateTime createdAt,
-            LocalDateTime lastModified) {
+            int totalPrice, String state, String city, String town, String remainAddress,
+            BoolType isApartment, BoolType isExpanded, LocalDateTime createdAt, LocalDateTime lastModified) {
         this.id = id;
         this.chassisType = chassisType;
         this.width = width;
@@ -49,8 +53,12 @@ public class FindChassisEstimationInfosResult {
         this.freightTransportFee = freightTransportFee;
         this.deliveryFee = deliveryFee;
         this.totalPrice = totalPrice;
-        this.address = address;
-        this.subAddress = subAddress;
+        this.state = state;
+        this.city = city;
+        this.town = town;
+        this.remainAddress = remainAddress;
+        this.isApartment = isApartment;
+        this.isExpanded = isExpanded;
         this.createdAt = createdAt;
         this.lastModified = lastModified;
     }

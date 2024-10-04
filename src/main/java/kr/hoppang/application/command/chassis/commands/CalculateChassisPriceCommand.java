@@ -4,12 +4,18 @@ import java.util.List;
 import kr.hoppang.abstraction.domain.ICommand;
 import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
+import kr.hoppang.util.common.BoolType;
 
 public record CalculateChassisPriceCommand(
         String zipCode,
-        String address,
-        String subAddress,
+        String state,
+        String city,
+        String town,
+        String bCode,
+        String remainAddress,
         String buildingNumber,
+        boolean isApartment,
+        boolean isExpanded,
         List<CalculateChassisPrice> calculateChassisPriceList,
         int floorCustomerLiving,
         boolean isScheduledForDemolition,
