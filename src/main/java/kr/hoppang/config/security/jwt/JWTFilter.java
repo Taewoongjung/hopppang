@@ -30,6 +30,8 @@ public class JWTFilter extends OncePerRequestFilter {
     private static final AntPathMatcher antPathMatcher = new AntPathMatcher();
     private static final String[] EXCLUDED_PATH = {
             "/api/chassis/calculations/prices"
+            , "/api/kakao/signup/{code}"
+            , "/api/kakao/auth"
 //      예시)
 //
 //            "/api/emails/validations"

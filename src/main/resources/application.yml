@@ -72,6 +72,11 @@ slack:
       error: '#에러-dev'
       new-estimation: '#샤시견적-dev'
 
+login:
+  kakao:
+    rest-api-key: da09bfccea21381b988c8ede053a85c5
+    redirect-uri: http://localhost:3000/chassis/calculator
+
 ---
 
 server:
@@ -147,3 +152,8 @@ slack:
     monitor:
       error: '#에러'
       new-estimation: '#샤시견적'
+
+login:
+  kakao:
+    rest-api-key: da09bfccea21381b988c8ede053a85c5
+    redirect-uri: http://localhost:3000/chassis/calculator
