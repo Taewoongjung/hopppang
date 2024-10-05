@@ -125,7 +125,7 @@ services:
     expose:
       - "10244"
     environment:
-      - REACT_HOPPANG_APP_REQUEST_API_URL=${HOPPANG_APP_REQUEST_API_URL}
+      - HOPPANG_APP_REQUEST_API_URL=${HOPPANG_APP_REQUEST_API_URL}
     networks:
       - server-connection
 
