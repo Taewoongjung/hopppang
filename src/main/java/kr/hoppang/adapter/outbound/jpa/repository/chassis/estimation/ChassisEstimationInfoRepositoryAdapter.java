@@ -64,7 +64,6 @@ public class ChassisEstimationInfoRepositoryAdapter implements ChassisEstimation
         if (chassisType != null) {
             whereClause.and(chassisEstimationSizeInfoEntity.chassisType.eq(chassisType));
         }
-
         // where 절 정의 end
 
         // 조회 결과 순서 정의 start
@@ -94,6 +93,7 @@ public class ChassisEstimationInfoRepositoryAdapter implements ChassisEstimation
                         chassisEstimationAddressEntity.city,
                         chassisEstimationAddressEntity.town,
                         chassisEstimationAddressEntity.remainAddress,
+                        chassisEstimationAddressEntity.isApartment,
                         chassisEstimationAddressEntity.isExpanded,
                         chassisEstimationInfoEntity.createdAt,
                         chassisEstimationInfoEntity.lastModified
