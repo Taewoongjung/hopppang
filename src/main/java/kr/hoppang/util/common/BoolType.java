@@ -11,4 +11,8 @@ public enum BoolType {
 
         return T;
     }
+
+    public static boolean convertToBoolean(final BoolType target) {
+        return !F.equals(target);
+    }
 }

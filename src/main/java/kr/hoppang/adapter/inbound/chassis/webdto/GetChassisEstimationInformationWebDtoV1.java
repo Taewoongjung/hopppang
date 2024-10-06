@@ -10,11 +10,19 @@ public class GetChassisEstimationInformationWebDtoV1 {
     public record Res(Long id,
                         Long userId,
                         CompanyType companyType,
-                        ChassisEstimationAddress chassisEstimationAddress,
+                        EstimationAddress chassisEstimationAddress,
                         int totalPrice,
                         LocalDateTime createdAt,
                         AdditionalChassisPriceInfo additionalChassisPriceInfo,
                         List<ChassisSize> chassisSizeList) {
+
+        public record EstimationAddress(String zipCode,
+                                        String address,
+                                        String subAddress,
+                                        boolean isApartment,
+                                        boolean isExpanded) {
+
+        }
 
         public record ChassisSize(String chassisType,
                                       int width,

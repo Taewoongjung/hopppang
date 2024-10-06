@@ -1,5 +1,7 @@
 package kr.hoppang.application.readmodel.chassis.queryresults;
 
+import static kr.hoppang.util.common.BoolType.convertToBoolean;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +11,7 @@ import kr.hoppang.adapter.inbound.chassis.webdto.GetChassisEstimationInformation
 import kr.hoppang.adapter.inbound.chassis.webdto.GetChassisEstimationInformationWebDtoV1.Res;
 import kr.hoppang.adapter.inbound.chassis.webdto.GetChassisEstimationInformationWebDtoV1.Res.AdditionalChassisPriceInfo;
 import kr.hoppang.adapter.inbound.chassis.webdto.GetChassisEstimationInformationWebDtoV1.Res.ChassisSize;
+import kr.hoppang.adapter.inbound.chassis.webdto.GetChassisEstimationInformationWebDtoV1.Res.EstimationAddress;
 import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationAddress;
@@ -40,7 +43,6 @@ public record FindChassisEstimationInformationQueryHandlerResult(
         Set<Long> estimationIdList = target.stream().map(e -> e.id).collect(Collectors.toSet());
 
         for (Long estimationId : estimationIdList) {
-
             List<ChassisSize> chassisSizeListOfEstimation = new ArrayList<>();
 
             target.stream()
@@ -57,7 +59,13 @@ public record FindChassisEstimationInformationQueryHandlerResult(
                                     estimationId,
                                     estimation.userId,
                                     estimation.companyType,
-                                    estimation.chassisEstimationAddress,
+                                    new EstimationAddress(
+                                            estimation.chassisEstimationAddress.getZipCode(),
+                                            getAddressStr(estimation.chassisEstimationAddress),
+                                            estimation.chassisEstimationAddress.getRemainAddress(),
+                                            convertToBoolean(estimation.chassisEstimationAddress.getIsApartment()),
+                                            convertToBoolean(estimation.chassisEstimationAddress.getIsExpanded())
+                                    ),
                                     estimation.totalPrice,
                                     estimation.createdAt,
                                     new AdditionalChassisPriceInfo(
@@ -74,5 +82,14 @@ public record FindChassisEstimationInformationQueryHandlerResult(
         }
 
         return resultList;
+    }
+
+    private static String getAddressStr(final ChassisEstimationAddress target) {
+
+        String state = target.getState();
+        String city = target.getCity();
+        String town = target.getTown();
+
+        return state + " " + city + " " + town;
     }
 }
