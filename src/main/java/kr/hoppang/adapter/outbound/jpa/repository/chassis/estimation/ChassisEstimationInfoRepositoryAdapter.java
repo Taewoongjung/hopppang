@@ -66,11 +66,6 @@ public class ChassisEstimationInfoRepositoryAdapter implements ChassisEstimation
         }
         // where 절 정의 end
 
-        // 조회 결과 순서 정의 start
-        List<OrderSpecifier> sortOrder = new ArrayList<>();
-        sortOrder.add(chassisEstimationInfoEntity.createdAt.desc());
-        // 조회 결과 순서 정의 end
-
         // 조회
         return queryFactory.select(
                 Projections.constructor(
@@ -102,7 +97,6 @@ public class ChassisEstimationInfoRepositoryAdapter implements ChassisEstimation
                 .join(chassisEstimationInfoEntity.chassisEstimationSizeInfoList, chassisEstimationSizeInfoEntity)
                 .join(chassisEstimationInfoEntity.chassisEstimationAddress, chassisEstimationAddressEntity)
                 .where(whereClause)
-                .orderBy(sortOrder.toArray(new OrderSpecifier<?>[0]))
                 .limit(limit).offset(offset)
                 .fetch();
     }
