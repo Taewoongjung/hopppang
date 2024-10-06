@@ -84,6 +84,7 @@ public class ChassisEstimationInfoRepositoryAdapter implements ChassisEstimation
                         chassisEstimationInfoEntity.freightTransportFee,
                         chassisEstimationInfoEntity.deliveryFee,
                         chassisEstimationInfoEntity.totalPrice,
+                        chassisEstimationAddressEntity.zipCode,
                         chassisEstimationAddressEntity.state,
                         chassisEstimationAddressEntity.city,
                         chassisEstimationAddressEntity.town,

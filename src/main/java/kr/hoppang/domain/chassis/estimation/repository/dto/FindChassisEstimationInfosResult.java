@@ -24,6 +24,7 @@ public class FindChassisEstimationInfosResult {
     private int freightTransportFee;
     private int deliveryFee;
     private int totalPrice;
+    private String zipCode;
     private String state;
     private String city;
     private String town;
@@ -37,7 +38,7 @@ public class FindChassisEstimationInfosResult {
     public FindChassisEstimationInfosResult(Long id, ChassisType chassisType, int width, int height,
             int price, Long userId, CompanyType companyType, int laborFee, int ladderCarFee,
             int demolitionFee, int maintenanceFee, int freightTransportFee, int deliveryFee,
-            int totalPrice, String state, String city, String town, String remainAddress,
+            int totalPrice, String zipCode, String state, String city, String town, String remainAddress,
             BoolType isApartment, BoolType isExpanded, LocalDateTime createdAt, LocalDateTime lastModified) {
         this.id = id;
         this.chassisType = chassisType;
@@ -53,6 +54,7 @@ public class FindChassisEstimationInfosResult {
         this.freightTransportFee = freightTransportFee;
         this.deliveryFee = deliveryFee;
         this.totalPrice = totalPrice;
+        this.zipCode = zipCode;
         this.state = state;
         this.city = city;
         this.town = town;

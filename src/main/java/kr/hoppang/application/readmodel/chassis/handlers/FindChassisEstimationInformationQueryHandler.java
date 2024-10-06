@@ -1,9 +1,7 @@
 package kr.hoppang.application.readmodel.chassis.handlers;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 import kr.hoppang.abstraction.domain.IQueryHandler;
 import kr.hoppang.application.readmodel.chassis.queries.FindChassisEstimationInformationQuery;
 import kr.hoppang.application.readmodel.chassis.queryresults.FindChassisEstimationInformationQueryHandlerResult;
@@ -57,7 +55,8 @@ public class FindChassisEstimationInformationQueryHandler
                         e.getHeight(),
                         e.getPrice(),
                         e.getUserId(),
-                        ChassisEstimationAddress.of(null,
+                        ChassisEstimationAddress.of(
+                                e.getZipCode(),
                                 e.getState(),
                                 e.getCity(),
                                 e.getTown(),
@@ -80,9 +79,6 @@ public class FindChassisEstimationInformationQueryHandler
                 ))
         );
 
-        return resultList.stream()
-                .sorted(Comparator.comparing(
-                        FindChassisEstimationInformationQueryHandlerResult::createdAt).reversed())
-                .collect(Collectors.toList());
+        return resultList;
     }
 }

@@ -4,6 +4,7 @@ import static kr.hoppang.util.common.BoolType.convertToBoolean;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -78,10 +79,12 @@ public record FindChassisEstimationInformationQueryHandlerResult(
                                     ),
                                     chassisSizeListOfEstimation
                             )));
-
         }
 
-        return resultList;
+        return resultList.stream()
+                .sorted(Comparator.comparing(
+                        GetChassisEstimationInformationWebDtoV1.Res::createdAt).reversed())
+                .collect(Collectors.toList());
     }
 
     private static String getAddressStr(final ChassisEstimationAddress target) {
