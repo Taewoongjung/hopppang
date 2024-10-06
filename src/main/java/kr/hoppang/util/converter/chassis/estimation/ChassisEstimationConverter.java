@@ -23,7 +23,8 @@ public class ChassisEstimationConverter {
                 pojo.getMaintenanceFee(),
                 pojo.getFreightTransportFee(),
                 pojo.getDeliveryFee(),
-                pojo.getTotalPrice());
+                pojo.getTotalPrice(),
+                pojo.getCustomerLivingFloor());
     }
 
     public static List<ChassisEstimationSizeInfoEntity> chassisEstimationSizeInfoToEntity(

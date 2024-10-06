@@ -9,7 +9,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -54,6 +53,8 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
 
     private int totalPrice;
 
+    private int customerLivingFloor;
+
     @OneToOne(mappedBy = "chassisEstimationInfo",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private ChassisEstimationAddressEntity chassisEstimationAddress;
 
@@ -72,6 +73,7 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
             final int freightTransportFee,
             final int deliveryFee,
             final int totalPrice,
+            final int customerLivingFloor,
             final ChassisEstimationAddressEntity chassisEstimationAddress,
             final List<ChassisEstimationSizeInfoEntity> chassisEstimationSizeInfoList
         ) {
@@ -88,6 +90,7 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
         this.freightTransportFee = freightTransportFee;
         this.deliveryFee = deliveryFee;
         this.totalPrice = totalPrice;
+        this.customerLivingFloor = customerLivingFloor;
         this.chassisEstimationAddress = chassisEstimationAddress;
         this.chassisEstimationSizeInfoList = chassisEstimationSizeInfoList;
     }
@@ -103,6 +106,7 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
             final int freightTransportFee,
             final int deliveryFee,
             final int price,
+            final int customerLivingFloor,
             final ChassisEstimationAddressEntity chassisEstimationAddress,
             final List<ChassisEstimationSizeInfoEntity> chassisEstimationSizeInfoList
     ) {
@@ -118,6 +122,7 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
                 freightTransportFee,
                 deliveryFee,
                 price,
+                customerLivingFloor,
                 chassisEstimationAddress,
                 chassisEstimationSizeInfoList
         );
@@ -131,7 +136,8 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
             final int maintenanceFee,
             final int freightTransportFee,
             final int deliveryFee,
-            final int price
+            final int price,
+            final int customerLivingFloor
     ) {
 
         return new ChassisEstimationInfoEntity(
@@ -145,6 +151,7 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
                 freightTransportFee,
                 deliveryFee,
                 price,
+                customerLivingFloor,
                 null, null
         );
     }

@@ -21,6 +21,7 @@ public class ChassisEstimationInfo {
     private final int freightTransportFee;
     private final int deliveryFee;
     private final int totalPrice;
+    private final int customerLivingFloor;
     private final LocalDateTime createdAt;
     private final LocalDateTime lastModified;
 
@@ -39,6 +40,7 @@ public class ChassisEstimationInfo {
             final int freightTransportFee,
             final int deliveryFee,
             final int totalPrice,
+            final int customerLivingFloor,
             final List<ChassisEstimationSizeInfo> chassisEstimationSizeInfoList,
             final LocalDateTime createdAt,
             final LocalDateTime lastModified
@@ -54,6 +56,7 @@ public class ChassisEstimationInfo {
         this.freightTransportFee = freightTransportFee;
         this.deliveryFee = deliveryFee;
         this.totalPrice = totalPrice;
+        this.customerLivingFloor = customerLivingFloor;
         this.chassisEstimationSizeInfoList = chassisEstimationSizeInfoList;
         this.createdAt = createdAt;
         this.lastModified = lastModified;
@@ -70,7 +73,8 @@ public class ChassisEstimationInfo {
             final int maintenanceFee,
             final int freightTransportFee,
             final int deliveryFee,
-            final int totalPrice
+            final int totalPrice,
+            final int customerLivingFloor
     ) {
         return new ChassisEstimationInfo(
                 null,
@@ -84,6 +88,7 @@ public class ChassisEstimationInfo {
                 freightTransportFee,
                 deliveryFee,
                 totalPrice,
+                customerLivingFloor,
                 null,
                 null, null
         );
@@ -102,6 +107,7 @@ public class ChassisEstimationInfo {
             final int freightTransportFee,
             final int deliveryFee,
             final int totalPrice,
+            final int customerLivingFloor,
             final LocalDateTime createdAt,
             final LocalDateTime lastModified
     ) {
@@ -117,6 +123,7 @@ public class ChassisEstimationInfo {
                 freightTransportFee,
                 deliveryFee,
                 totalPrice,
+                customerLivingFloor,
                 null,
                 createdAt, lastModified
         );
@@ -133,6 +140,7 @@ public class ChassisEstimationInfo {
             final int freightTransportFee,
             final int deliveryFee,
             final int totalPrice,
+            final int customerLivingFloor,
             final List<ChassisEstimationSizeInfo> chassisEstimationSizeInfoList,
             final LocalDateTime createdAt,
             final LocalDateTime lastModified
@@ -149,6 +157,7 @@ public class ChassisEstimationInfo {
                 freightTransportFee,
                 deliveryFee,
                 totalPrice,
+                customerLivingFloor,
                 chassisEstimationSizeInfoList,
                 createdAt, lastModified
         );

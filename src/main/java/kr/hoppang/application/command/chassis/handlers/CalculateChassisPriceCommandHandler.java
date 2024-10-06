@@ -168,7 +168,8 @@ public class CalculateChassisPriceCommandHandler implements
                 ladderFee,
                 freightTransportFee,
                 floor,
-                totalPrice
+                totalPrice,
+                event.floorCustomerLiving()
         );
 
         return new CalculateChassisPriceCommandHandlerCommandResult(
@@ -204,7 +205,8 @@ public class CalculateChassisPriceCommandHandler implements
             final int ladderFee,
             final int freightTransportFee,
             final int floor,
-            final int totalPrice) {
+            final int totalPrice,
+            final int floorCustomerLiving) {
 
         List<ChassisSize> chassisSizeList = new ArrayList<>();
 
@@ -236,6 +238,7 @@ public class CalculateChassisPriceCommandHandler implements
                         freightTransportFee,
                         floor,
                         totalPrice,
+                        floorCustomerLiving,
                         chassisSizeList
                 )
         ));
