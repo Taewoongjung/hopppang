@@ -1,19 +1,20 @@
 package kr.hoppang.adapter.outbound.alarm.slack;
 
-import static com.slack.api.model.block.Blocks.asBlocks;
+import static com.slack.api.model.block.Blocks.context;
 import static com.slack.api.model.block.Blocks.divider;
 import static com.slack.api.model.block.Blocks.header;
 import static com.slack.api.model.block.Blocks.section;
 import static com.slack.api.model.block.composition.BlockCompositions.markdownText;
 import static com.slack.api.model.block.composition.BlockCompositions.plainText;
+import static com.slack.api.model.block.element.BlockElements.asContextElements;
 
 import com.slack.api.Slack;
 import com.slack.api.methods.MethodsClient;
 import com.slack.api.methods.SlackApiException;
 import com.slack.api.methods.request.chat.ChatPostMessageRequest;
 import com.slack.api.model.block.LayoutBlock;
-import com.slack.api.model.block.composition.TextObject;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import kr.hoppang.adapter.outbound.alarm.AlarmService;
@@ -22,12 +23,12 @@ import kr.hoppang.adapter.outbound.alarm.dto.NewEstimation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-@Async
 @Slf4j
 @Primary
 @Component
@@ -42,23 +43,64 @@ public class SlackAlarm implements AlarmService {
     @Value(value = "${slack.channel.monitor.new-estimation}")
     private String newEstimationChannel;
 
-    @Override
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Async
+    @EventListener
     public void sendErrorAlarm(final ErrorAlarm errorEvent) {
 
         try {
-            List<TextObject> textObjects = new ArrayList<>();
-            textObjects.add(markdownText(errorEvent.errorMsg()));
+            List<LayoutBlock> blocks = new ArrayList<>();
+
+            blocks.add(divider());
+
+            blocks.add(section(section ->
+                    section.text(markdownText("*에러 제목:* `" + errorEvent.errorTitle() + "`"))
+            ));
+
+            blocks.add(divider());
+
+            // queryParam 슬랙 메시지에 출력
+            if (errorEvent.queryParam() != null && !"".equals(errorEvent.queryParam())) {
+                blocks.add(section(section ->
+                        section.text(
+                                markdownText(
+                                        "*QueryParam:* \n```" + errorEvent.queryParam() + "```"))
+                ));
+                blocks.add(divider());
+            }
+
+            // body 슬랙 메시지에 출력
+            if (errorEvent.requestedBody() != null && !"".equals(errorEvent.requestedBody())) {
+                blocks.add(section(section ->
+                        section.text(
+                                markdownText("*Body:* \n```" + errorEvent.requestedBody() + "```"))
+                ));
+                blocks.add(divider());
+            }
+
+            // queryParam, body 둘 다 없을 때 divider 하나만 추가
+            if (errorEvent.queryParam() == null || "".equals(errorEvent.queryParam()) &&
+                    errorEvent.requestedBody() == null || "".equals(errorEvent.requestedBody())) {
+
+                blocks.add(divider());
+            }
+
+            blocks.add(section(section ->
+                    section.text(markdownText("*에러 메시지:* \n```" + errorEvent.errorMsg() + "```"))
+            ));
+
+            blocks.add(divider());
+
+            blocks.add(context(context ->
+                    context.elements(asContextElements(
+                            markdownText(":clock1: 발생 시간: " + Instant.now())
+                    ))
+            ));
 
             MethodsClient methods = Slack.getInstance().methods(token);
             ChatPostMessageRequest request = ChatPostMessageRequest.builder()
                     .channel(errorAlarmChanel)
-                    .blocks(asBlocks(
-                            header(header -> header.text(
-                                    plainText("⚠️ " + errorEvent.methodName()))),
-                            divider(),
-                            section(section -> section.fields(textObjects)
-                            ))).build();
+                    .blocks(blocks)
+                    .build();
 
             methods.chatPostMessage(request);
 
@@ -67,7 +109,7 @@ public class SlackAlarm implements AlarmService {
         }
     }
 
-    @Override
+    @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void sendNewEstimation(final NewEstimation newEstimationEvent) {
 
