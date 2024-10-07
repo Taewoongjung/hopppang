@@ -1,9 +1,10 @@
 package kr.hoppang.adapter.inbound.chassis.webdto;
 
-import static kr.hoppang.adapter.common.exception.ErrorType.CHASSIS_TYPE_IS_MANDATORY;
 import static kr.hoppang.adapter.common.exception.ErrorType.COMPANY_TYPE_IS_MANDATORY;
+import static kr.hoppang.adapter.common.exception.ErrorType.CHASSIS_TYPE_IS_MANDATORY;
 import static kr.hoppang.adapter.common.util.CheckUtil.check;
 
+import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import kr.hoppang.application.command.chassis.commandresults.CalculateChassisPriceCommandHandlerCommandResult;
@@ -25,6 +26,7 @@ public class GetCalculatedChassisPriceWebDtoV1 {
                       String buildingNumber,
                       boolean isApartment,
                       boolean isExpanded,
+                      @NotNull
                       List<ReqCalculateChassisPrice> reqCalculateChassisPriceList) {
 
         public void validate() {

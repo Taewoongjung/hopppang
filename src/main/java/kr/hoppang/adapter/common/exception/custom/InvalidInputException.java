@@ -1,5 +1,6 @@
-package kr.hoppang.adapter.common.exception;
+package kr.hoppang.adapter.common.exception.custom;
 
+import kr.hoppang.adapter.common.exception.ErrorType;
 import lombok.Getter;
 
 @Getter
