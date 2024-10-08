@@ -63,7 +63,7 @@ public class SlackAlarm implements AlarmService {
                 blocks.add(section(section ->
                         section.text(
                                 markdownText(
-                                        "*QueryParam:* \n```" + errorEvent.queryParam() + "```"))
+                                        "*쿼리파람:* \n```" + errorEvent.queryParam() + "```"))
                 ));
                 blocks.add(divider());
             }
@@ -72,7 +72,7 @@ public class SlackAlarm implements AlarmService {
             if (errorEvent.requestedBody() != null && !"".equals(errorEvent.requestedBody())) {
                 blocks.add(section(section ->
                         section.text(
-                                markdownText("*Body:* \n```" + errorEvent.requestedBody() + "```"))
+                                markdownText("*바디:* \n```" + errorEvent.requestedBody() + "```"))
                 ));
                 blocks.add(divider());
             }
