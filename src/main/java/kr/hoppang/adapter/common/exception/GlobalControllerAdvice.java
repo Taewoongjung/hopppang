@@ -3,8 +3,10 @@ package kr.hoppang.adapter.common.exception;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import kr.hoppang.adapter.common.exception.custom.HoppangException;
+import kr.hoppang.adapter.common.exception.custom.HoppangLoginException;
 import kr.hoppang.adapter.common.exception.custom.InvalidInputException;
 import kr.hoppang.adapter.outbound.alarm.dto.ErrorAlarm;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +54,15 @@ public class GlobalControllerAdvice {
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getCode(), e.getMessage()));
     }
 
+    @ExceptionHandler(HoppangLoginException.class)
+    public ResponseEntity<ErrorResponse> handleValidException(final HttpServletRequest request, HoppangLoginException e)
+            throws IOException {
+
+        errorPrinter(request, e);
+
+        return ResponseEntity.badRequest().body(new ErrorResponse(e.getCode(), e.getMessage()));
+    }
+
     /**
      * validation 애노테이션(유효성) 예외를 최종적으로 이곳에서 처리할 수 있음.
      */
@@ -67,6 +78,7 @@ public class GlobalControllerAdvice {
                         "요청 형식이 맞지 않습니다."
                 ));
     }
+
 
     public void errorPrinter(final HttpServletRequest request, final Exception e) {
 

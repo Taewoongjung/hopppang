@@ -32,6 +32,7 @@ public class JWTFilter extends OncePerRequestFilter {
             "/api/chassis/calculations/prices"
             , "/api/kakao/signup/{code}"
             , "/api/kakao/auth"
+            , "/api/kakao/refresh"
 //      예시)
 //
 //            "/api/emails/validations"

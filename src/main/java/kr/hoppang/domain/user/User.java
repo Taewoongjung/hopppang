@@ -1,12 +1,19 @@
 package kr.hoppang.domain.user;
 
+import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_ACCESS_TOKEN;
+import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_REFRESH_TOKEN;
+import static kr.hoppang.adapter.common.exception.ErrorType.NO_HISTORY_PUBLISHED_REFRESH_TOKEN;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import kr.hoppang.adapter.common.exception.custom.HoppangLoginException;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,14 +32,16 @@ public class User extends Throwable implements UserDetails {
     private String tel;
     private UserRole userRole;
     private OauthType oauthType;
-    private String token;
     private String deviceId;
+
+    private List<UserToken> userTokenList = new ArrayList<>();
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime lastModified;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdAt;
+
 
     private User(
             final Long id,
@@ -42,8 +51,8 @@ public class User extends Throwable implements UserDetails {
             final String tel,
             final UserRole userRole,
             final OauthType oauthType,
-            final String token,
             final String deviceId,
+            final List<UserToken> userTokenList,
             final LocalDateTime lastModified,
             final LocalDateTime createdAt
     ) {
@@ -54,8 +63,8 @@ public class User extends Throwable implements UserDetails {
         this.tel = tel;
         this.userRole = userRole;
         this.oauthType = oauthType;
-        this.token = token;
         this.deviceId = deviceId;
+        this.userTokenList = userTokenList;
         this.lastModified = lastModified;
         this.createdAt = createdAt;
     }
@@ -67,13 +76,15 @@ public class User extends Throwable implements UserDetails {
             final String tel,
             final UserRole userRole,
             final OauthType oauthType,
-            final String token,
             final String deviceId,
+            final List<UserToken> userTokenList,
             final LocalDateTime lastModified,
             final LocalDateTime createdAt
     ) {
 
-        return new User(null, name, email, password, tel, userRole, oauthType, token, deviceId, lastModified, createdAt);
+        return new User(null, name, email, password,
+                tel, userRole, oauthType, deviceId,
+                userTokenList, lastModified, createdAt);
     }
 
     public static User of(
@@ -84,13 +95,14 @@ public class User extends Throwable implements UserDetails {
             final String tel,
             final UserRole userRole,
             final OauthType oauthType,
-            final String token,
             final String deviceId,
+            final List<UserToken> userTokenList,
             final LocalDateTime lastModified,
             final LocalDateTime createdAt
     ) {
 
-        return new User(id, name, email, password, tel, userRole, oauthType, token, deviceId, lastModified, createdAt);
+        return new User(id, name, email, password, tel, userRole, oauthType,
+                deviceId, userTokenList, lastModified, createdAt);
     }
 
     @Override
@@ -144,5 +156,43 @@ public class User extends Throwable implements UserDetails {
         }
         
         return this.email;
+    }
+
+    public boolean isLatestRefreshTokenValid() {
+        List<UserToken> orderReversedUserTokenList = this.getUserTokenList().stream()
+                .sorted(Comparator.comparing(UserToken::getCreatedAt).reversed())
+                .toList();
+
+        UserToken userToken = orderReversedUserTokenList.stream()
+                .filter(f -> TokenType.REFRESH.equals(f.getTokenType()))
+                .findFirst().orElseThrow(() -> new HoppangLoginException(NO_HISTORY_PUBLISHED_REFRESH_TOKEN));
+
+        return userToken.getExpireIn().isBefore(LocalDateTime.now());
+    }
+
+    public String getTheLatestRefreshToken() {
+        List<UserToken> orderReversedUserTokenList = this.getUserTokenList().stream()
+                .sorted(Comparator.comparing(UserToken::getCreatedAt).reversed())
+                .toList();
+
+        UserToken userToken = orderReversedUserTokenList.stream()
+                .filter(f -> TokenType.REFRESH.equals(f.getTokenType()))
+                .findFirst().orElseThrow(() -> new HoppangLoginException(NOT_EXIST_REFRESH_TOKEN));
+
+        return userToken.getToken();
+    }
+
+    public void reviseTheLatestAccessToken(
+            final String accessToken,
+            final LocalDateTime accessTokenExpireInLocalDateTime
+    ) {
+        UserToken userToken = this.getUserTokenList().stream()
+                .filter(f -> TokenType.ACCESS.equals(f.getTokenType()))
+                .findFirst().orElseThrow(() -> new HoppangLoginException(NOT_EXIST_ACCESS_TOKEN));
+
+        userToken.reviseToken(accessToken, accessTokenExpireInLocalDateTime);
+    }
+
+    public void refreshAccessToken() {
     }
 }

@@ -27,8 +27,6 @@ public class SignUpDtoWebDtoV1 {
             @NotNull
             OauthType oauthType,
 
-            String token,
-
             String deviceId
     ) {
 

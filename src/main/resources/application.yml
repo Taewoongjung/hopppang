@@ -71,6 +71,7 @@ slack:
     monitor:
       error: '#에러-dev'
       new-estimation: '#샤시견적-dev'
+      new-user: '#유저-인입-dev'
 
 login:
   kakao:
@@ -152,6 +153,7 @@ slack:
     monitor:
       error: '#에러'
       new-estimation: '#샤시견적'
+      new-user: '#유저-인입'
 
 login:
   kakao:

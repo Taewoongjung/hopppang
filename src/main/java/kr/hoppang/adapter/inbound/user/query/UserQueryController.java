@@ -41,14 +41,8 @@ public class UserQueryController {
     ) {
 
         User foundUser = loadUserByTokenCommandHandler.handle(
-                new LoadUserByTokenQuery(request.getHeader("authorization"))
+                new LoadUserByTokenQuery(request.getHeader("authorization"), isAdminPage)
         );
-
-        log.info("{} 고객님 접속 중", foundUser.getName());
-
-        if (isAdminPage) {
-            check(foundUser.getUserRole() != UserRole.ROLE_ADMIN, NOT_AUTHORIZED_USER);
-        }
 
         String authorities = foundUser.getAuthorities().stream().map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(", "));

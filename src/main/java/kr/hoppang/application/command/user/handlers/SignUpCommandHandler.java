@@ -1,12 +1,19 @@
 package kr.hoppang.application.command.user.handlers;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import kr.hoppang.abstraction.domain.ICommandHandler;
+import kr.hoppang.adapter.outbound.alarm.dto.NewUser;
 import kr.hoppang.application.command.user.commands.SignUpCommand;
+import kr.hoppang.domain.user.OauthType;
+import kr.hoppang.domain.user.TokenType;
 import kr.hoppang.domain.user.User;
+import kr.hoppang.domain.user.UserToken;
 import kr.hoppang.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,9 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, String> {
+public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User> {
 
     private final UserRepository userRepository;
+    private final ApplicationEventPublisher eventPublisher;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
@@ -26,25 +34,53 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, Stri
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public String handle(final SignUpCommand event) {
+    public User handle(final SignUpCommand event) {
         log.info("execute SignUpCommand = {}", event);
 
-        userRepository.checkIfExistUserByEmail(event.email());
+        userRepository.checkIfExistUserByEmail(event.email(), event.oauthType());
+
+        // 토큰 데이터 생성
+        UserToken forAccessToken = UserToken.of(
+                String.valueOf(event.providerUserId()),
+                TokenType.ACCESS,
+                event.accessToken(),
+                event.connectedAt(),
+                event.accessTokenExpireIn());
+
+        UserToken forRefreshToken = UserToken.of(
+                String.valueOf(event.providerUserId()),
+                TokenType.REFRESH,
+                event.refreshToken(),
+                event.connectedAt(),
+                event.refreshTokenExpireIn());
+
+        List<UserToken> userTokenList = new ArrayList<>();
+        userTokenList.add(forAccessToken);
+        userTokenList.add(forRefreshToken);
 
         User user = User.of(
-                event.name(), event.email(), bCryptPasswordEncoder.encode(event.password()),
+                event.name(),
+                event.email(),
+                OauthType.NON.equals(event.oauthType()) ?
+                        bCryptPasswordEncoder.encode(event.password()) : null,
                 event.tel(),
-                event.role(), event.oauthType(),
-                event.token(),
+                event.role(),
+                event.oauthType(),
                 event.deviceId(),
+                userTokenList,
                 LocalDateTime.now(), LocalDateTime.now());
 
-        User newUser = userRepository.save(user);
+        User registeredUser = userRepository.save(user);
 
-        if (newUser != null) {
+        if (registeredUser != null) {
 
 //            check(!cacheSmsValidationRedisRepository.getIsVerifiedByKey(event.tel()),
 //                    NOT_VERIFIED_PHONE);
+
+            // 새로운 유저 회원가입 시 알람 발송
+            eventPublisher.publishEvent(
+                    new NewUser(event.name(), event.email(), event.tel(), event.oauthType(),
+                            registeredUser.getCreatedAt()));
 
             // 새로운 유저 회원가입 시 해당 유저에게 알림톡 발송
 //            eventPublisher.publishEvent(
@@ -53,7 +89,7 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, Stri
 
             log.info("SignUpCommand executed successfully");
 
-            return newUser.getName();
+            return registeredUser;
         }
 
         return null;

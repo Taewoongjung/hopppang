@@ -12,10 +12,14 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import kr.hoppang.adapter.outbound.jpa.entity.BaseEntity;
 import kr.hoppang.domain.user.OauthType;
 import kr.hoppang.domain.user.User;
@@ -47,7 +51,7 @@ public class UserEntity extends BaseEntity {
     @Column(name = "password")
     private String password;
 
-    @Length(min = 10, max = 11)
+    @Length(min = 10, max = 20)
     @Column(name = "tel", nullable = false)
     private String tel;
 
@@ -59,12 +63,13 @@ public class UserEntity extends BaseEntity {
     @Column(name = "oauth_type", nullable = false, columnDefinition = "char(3)")
     private OauthType oauthType;
 
-    private String token;
-
     private String deviceId;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private UserAddressEntity userAddress;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserTokenEntity> userTokenEntityList = new ArrayList<>();
 
     private UserEntity(
             final Long id,
@@ -74,8 +79,8 @@ public class UserEntity extends BaseEntity {
             final String tel,
             final UserRole role,
             final OauthType oauthType,
-            final String token,
-            final String deviceId
+            final String deviceId,
+            final List<UserTokenEntity> userTokenEntityList
     ) {
         super(LocalDateTime.now(), LocalDateTime.now());
 
@@ -86,8 +91,8 @@ public class UserEntity extends BaseEntity {
         this.tel = tel;
         this.role = role;
         this.oauthType = oauthType;
-        this.token = token;
         this.deviceId = deviceId;
+        this.userTokenEntityList = userTokenEntityList;
     }
 
     public static UserEntity of(
@@ -98,11 +103,11 @@ public class UserEntity extends BaseEntity {
             final String tel,
             final UserRole userRole,
             final OauthType oauthType,
-            final String token,
             final String deviceId
     ) {
 
-        return new UserEntity(id, name, email, password, tel, userRole, oauthType, token, deviceId);
+        return new UserEntity(id, name, email, password, tel, userRole, oauthType, deviceId,
+                new ArrayList<>());
     }
 
     public static UserEntity of(
@@ -112,13 +117,30 @@ public class UserEntity extends BaseEntity {
             final String tel,
             final UserRole userRole,
             final OauthType oauthType,
-            final String token,
             final String deviceId
     ) {
 
         require(o -> name == null, name, INVALID_USER_INFO);
 
-        return new UserEntity(null, name, email, password, tel, userRole, oauthType, token, deviceId);
+        return new UserEntity(null, name, email, password, tel, userRole, oauthType, deviceId,
+                new ArrayList<>());
+    }
+
+    public static UserEntity of(
+            final String name,
+            final String email,
+            final String password,
+            final String tel,
+            final UserRole userRole,
+            final OauthType oauthType,
+            final String deviceId,
+            final List<UserTokenEntity> userTokenEntityList
+    ) {
+
+        require(o -> name == null, name, INVALID_USER_INFO);
+
+        return new UserEntity(null, name, email, password, tel, userRole, oauthType, deviceId,
+                userTokenEntityList);
     }
 
     // 모든 연관 관계 제외 한 POJO 객체 리턴
@@ -131,8 +153,10 @@ public class UserEntity extends BaseEntity {
                 getTel(),
                 getRole(),
                 getOauthType(),
-                getToken(),
                 getDeviceId(),
+                getUserTokenEntityList().stream()
+                        .map(UserTokenEntity::toPojo)
+                        .collect(Collectors.toList()),
                 getLastModified(),
                 getCreatedAt()
         );
@@ -148,8 +172,10 @@ public class UserEntity extends BaseEntity {
                 getTel(),
                 getRole(),
                 getOauthType(),
-                getToken(),
                 getDeviceId(),
+                getUserTokenEntityList().stream()
+                        .map(UserTokenEntity::toPojo)
+                        .collect(Collectors.toList()),
                 getLastModified(),
                 getCreatedAt()
         );

@@ -15,11 +15,15 @@ import com.slack.api.methods.request.chat.ChatPostMessageRequest;
 import com.slack.api.model.block.LayoutBlock;
 import java.io.IOException;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import kr.hoppang.adapter.outbound.alarm.AlarmService;
 import kr.hoppang.adapter.outbound.alarm.dto.ErrorAlarm;
 import kr.hoppang.adapter.outbound.alarm.dto.NewEstimation;
+import kr.hoppang.adapter.outbound.alarm.dto.NewUser;
+import kr.hoppang.domain.user.OauthType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
@@ -43,7 +47,11 @@ public class SlackAlarm implements AlarmService {
     @Value(value = "${slack.channel.monitor.new-estimation}")
     private String newEstimationChannel;
 
+    @Value(value = "${slack.channel.monitor.new-user}")
+    private String newUserChannel;
+
     @Async
+    @Override
     @EventListener
     public void sendErrorAlarm(final ErrorAlarm errorEvent) {
 
@@ -110,8 +118,9 @@ public class SlackAlarm implements AlarmService {
     }
 
     @Async
+    @Override
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void sendNewEstimation(final NewEstimation newEstimationEvent) {
+    public void sendNewEstimationAlarm(final NewEstimation newEstimationEvent) {
 
         try {
             List<LayoutBlock> blocks = new ArrayList<>();
@@ -155,6 +164,49 @@ public class SlackAlarm implements AlarmService {
 
         } catch (SlackApiException | IOException e) {
             log.info("{} 채널에 슬랙 메시지 전송 실패", newEstimationChannel);
+        }
+    }
+
+    @Async
+    @Override
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void sendNewUserAlarm(final NewUser newUser) {
+
+        try {
+            List<LayoutBlock> blocks = new ArrayList<>();
+
+            // Header block for title
+            blocks.add(header(header -> header.text(plainText("🎉 신규 유저 가입"))));
+            blocks.add(divider());
+
+            // User details
+            blocks.add(section(section -> section.text(markdownText(
+                    "*:bust_in_silhouette: 이름:* " + newUser.userName()))));
+            blocks.add(section(section -> section.text(markdownText(
+                    "*:email: 이메일:* " + newUser.userEmail()))));
+            blocks.add(section(section -> section.text(markdownText(
+                    "*:phone: 전화번호:* " + newUser.userTel()))));
+            blocks.add(section(section -> section.text(markdownText(
+                    "*:key: 가입 방식:* " + newUser.oauthType().getType()))));
+
+            blocks.add(divider());
+
+            // Footer
+            blocks.add(context(context -> context.elements(List.of(
+                    markdownText("가입 시간: " + newUser.createdAt()
+                            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+            ))));
+
+            MethodsClient methods = Slack.getInstance().methods(token);
+            ChatPostMessageRequest request = ChatPostMessageRequest.builder()
+                    .channel(newUserChannel)
+                    .blocks(blocks)
+                    .build();
+
+            methods.chatPostMessage(request);
+
+        } catch (SlackApiException | IOException e) {
+            log.info("{} 채널에 슬랙 메시지 전송 실패", newUserChannel);
         }
     }
 }

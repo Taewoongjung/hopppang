@@ -81,7 +81,9 @@ public class SecurityConfig {
                                 , "/api/kakao/signup/{code}"
                                 , "/api/chassis/calculations/prices"
                         ).permitAll()
-
+                        .requestMatchers(HttpMethod.PUT,
+                                "/api/kakao/refresh"
+                        ).permitAll()
 
                         // authorized
                         .requestMatchers(HttpMethod.GET,
@@ -96,7 +98,6 @@ public class SecurityConfig {
                                 , "/api/chassis/estimations/count"
                         ).authenticated()
 
-
                         .requestMatchers(HttpMethod.POST
                                 , "/api/chassis/prices"
 //                                , "/api/chassis/calculations/prices"
@@ -105,7 +106,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT
                                 , "/api/chassis/prices/additions/criteria"
                         ).authenticated()
-
 
                         .requestMatchers("/admin").hasRole("CUSTOMER")
                         .requestMatchers("/login").permitAll()
