@@ -100,7 +100,7 @@ public class SlackAlarm implements AlarmService {
 
             blocks.add(context(context ->
                     context.elements(asContextElements(
-                            markdownText(":clock1: 발생 시간: " + Instant.now())
+                            markdownText(":clock1: 발생 시간: " + LocalDateTime.now())
                     ))
             ));
 
