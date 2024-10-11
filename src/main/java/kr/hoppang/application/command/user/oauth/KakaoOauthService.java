@@ -10,6 +10,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Map;
 import kr.hoppang.application.command.user.commands.SignUpCommand;
 import kr.hoppang.application.command.user.oauth.dto.OAuthServiceLogInResultDto;
@@ -192,7 +193,10 @@ public class KakaoOauthService implements OAuthService {
 
         String accessToken = refreshedInfo.get("access_token").toString();
         String accessTokenExpireIn = refreshedInfo.get("expires_in").toString();
-        LocalDateTime accessTokenExpireInLocalDateTime = LocalDateTime.now().plusSeconds(
+
+        ZoneId seoulZoneId = ZoneId.of("Asia/Seoul");
+        LocalDateTime nowInSeoul = LocalDateTime.now(seoulZoneId);
+        LocalDateTime accessTokenExpireInLocalDateTime = nowInSeoul.plusSeconds(
                 (long) Double.parseDouble(accessTokenExpireIn));
 
         user.reviseTheLatestAccessToken(accessToken, accessTokenExpireInLocalDateTime);

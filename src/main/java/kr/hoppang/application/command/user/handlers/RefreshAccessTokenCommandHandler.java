@@ -60,8 +60,7 @@ public class RefreshAccessTokenCommandHandler implements
         String userEmail = expiredInfo.get("username");
 
         OAuthServiceLogInResultDto refreshingTokenInfo =
-                oAuthServiceEnumMap.get(command.oauthType())
-                        .refreshAccessToken(userEmail);
+                oAuthServiceEnumMap.get(command.oauthType()).refreshAccessToken(userEmail);
 
         return jwtUtil.createJwtForSso(
                 refreshingTokenInfo.email(),

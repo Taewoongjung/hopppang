@@ -18,6 +18,7 @@ public class VersatileUtil {
     }
 
     public static Date convertLocalDateTimeToDate(final LocalDateTime accessTokenExpireTime) {
-        return Date.from(accessTokenExpireTime.atZone(ZoneId.systemDefault()).toInstant());
+        ZoneId seoulZone = ZoneId.of("Asia/Seoul");
+        return Date.from(accessTokenExpireTime.atZone(seoulZone).toInstant());
     }
 }

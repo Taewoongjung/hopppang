@@ -96,19 +96,13 @@ public class JWTUtil {
             final String oauthType,
             final Date expireMs
     ) {
-        Date expirationDate = null;
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
-            expirationDate = sdf.parse("Fri Oct 11 03:23:51 KST 2024");
-        } catch (Exception e) {
 
-        }
         String response = Jwts.builder()
                 .claim("username", userName)
                 .claim("role", role)
                 .claim("oAuthType", oauthType)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(expirationDate)
+                .expiration(expireMs)
                 .signWith(secretKey)
                 .compact();
 
