@@ -23,7 +23,6 @@ services:
     depends_on:
       - back-end-app
       - web-front-end-app
-      - admin-front-end-app
 
   database-master:
     container_name: hoppang_database_master
@@ -87,10 +86,10 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-    container_name: hoppang_main_back
     restart: on-failure
+    platform: linux/x86_64
     expose:
-      - "9090"
+      - "9090-9093"
     depends_on:
       - database-master
       - database-slave
@@ -100,6 +99,7 @@ services:
       - chmod 777 /be-app/logs
       - chown root:root /be-app/logs
     environment:
+      - SERVER_ID=${HOSTNAME}
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
       - HOPPANG_SLACK_BOT_TOKEN=${HOPPANG_SLACK_BOT_TOKEN}
       - TZ=Asia/Seoul
@@ -108,15 +108,6 @@ services:
     volumes:
       - /home/twj/hoppang-app/logs:/be-app/logs
     user: root
-
-  admin-front-end-app:
-    container_name: hoppang_admin_front
-    image: dndxowjd/hoppang-admin-fe:0.01
-    restart: always
-    expose:
-      - "10234"
-    networks:
-      - server-connection
 
   web-front-end-app:
     container_name: hoppang_web_front
