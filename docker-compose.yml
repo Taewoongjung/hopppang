@@ -96,8 +96,8 @@ services:
       - cache-redis
     command:
       - ./gradlew bootRun
-      - chmod 777 /be-app/logs
-      - chown root:root /be-app/logs
+      - chmod 777 /app/logs
+      - chown root:root /app/logs
     environment:
       - SERVER_ID=${HOSTNAME}
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
@@ -106,7 +106,7 @@ services:
     networks:
       - server-connection
     volumes:
-      - /home/twj/hoppang-app/logs:/be-app/logs
+      - /home/twj/hoppang-app/logs:/app/logs
     user: root
 
   web-front-end-app:
