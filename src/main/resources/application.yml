@@ -62,6 +62,39 @@ spring:
     url: jdbc:mysql://localhost:3307/hoppang?useSSL=false&allowPublicKeyRetrieval=true
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+logging:
+  pattern:
+    console: "[%d{HH:mm:ss.SSS}][%-5level][%logger.%method:line%line] - %msg%n"
+    file: "[%d{yyyy-MM-dd HH:mm:ss.SSS}][%-5level][%logger.%method:line%line] - %msg%n"
+  level:
+    root: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  file:
+    name: /app/logs/server.log
+  rollingpolicy:
+    max-file-size: 10MB
+    max-history: 7
+    total-size-cap: 50MB
+  appenders:
+    file:
+      type: ch.qos.logback.core.FileAppender
+      file: ${logging.file.path}/${logging.file.name}
+      encoder:
+        pattern: ${logging.pattern.file}
+  logback:
+    rollingpolicy:
+      file-name-pattern: "/app/logs/server.%d{yyyy-MM-dd}.%i.log"
+
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: "prometheus"
+#  server:
+#    port: ${SECRET PORT}
+#    base-path: ${SECRET PATH}
+
 management:
   endpoints:
     web:
@@ -154,6 +187,30 @@ spring:
     password: 1234567
     url: jdbc:mysql://database-master:3306/hoppang?useSSL=false&allowPublicKeyRetrieval=true
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+logging:
+  pattern:
+    console: "[%d{HH:mm:ss.SSS}][%-5level][%logger.%method:line%line] - %msg%n"
+    file: "[%d{yyyy-MM-dd HH:mm:ss.SSS}][%-5level][%logger.%method:line%line] - %msg%n"
+  level:
+    root: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  file:
+    name: /app/logs/server.log
+  rollingpolicy:
+    max-file-size: 10MB
+    max-history: 7
+    total-size-cap: 50MB
+  appenders:
+    file:
+      type: ch.qos.logback.core.FileAppender
+      file: ${logging.file.path}/${logging.file.name}
+      encoder:
+        pattern: ${logging.pattern.file}
+  logback:
+    rollingpolicy:
+      file-name-pattern: "/app/logs/server.%d{yyyy-MM-dd}.%i.log"
 
 management:
   endpoints:
