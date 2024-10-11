@@ -70,7 +70,8 @@ public class SecurityConfig {
 
                         // all permitted
                         .requestMatchers(HttpMethod.GET,
-                                "/api/emails/validations"
+                                "/hoppang/health"
+                                , "/api/emails/validations"
                                 , "/api/phones/validations"
                                 , "/api/users/emails"
                         ).permitAll()
@@ -87,8 +88,7 @@ public class SecurityConfig {
 
                         // authorized
                         .requestMatchers(HttpMethod.GET,
-                                "/actuator/health"
-                                , "/api/me"
+                                "/api/me"
                         ).authenticated()
 
                         .requestMatchers(HttpMethod.GET,
