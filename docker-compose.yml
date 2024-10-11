@@ -6,8 +6,10 @@ networks:
 
 services:
   reverse-nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
     container_name: nginx-proxy-hoppang
-    image: nginx:latest
     restart: always
     ports:
       - "80:80"
