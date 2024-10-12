@@ -1,29 +1,39 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
+
+    <property name="CONSOLE_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %magenta([%thread]) %highlight([%-3level]) %logger{5} - %msg %n" />
+
+    <!-- Console appender 설정 -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} | %p | %logger{0}[%method:%line] - %m%n</pattern>
-        </layout>
-    </appender>
-    <appender name="SERVER_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/app/logs/server.log</file>
-        <append>true</append>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/app/logs/server-%d{yyyy-MM-dd_HH, ${logback.timezone:-Asia/Seoul}}.%i.log</fileNamePattern>
-            <maxHistory>3</maxHistory>
-            <totalSizeCap>3GB</totalSizeCap>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>1024MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
-        </rollingPolicy>
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
-        </filter>
         <encoder>
-            <pattern>{"server_name":"hoppang-be", "date":"%d{yyyy-MM-dd HH:mm:ss.SSS ZZZ}", "level":"%p", "message":"%m", "dd.trace_id":"%X{dd.trace_id}", "dd.span_id":"%X{dd.span_id}"}%n</pattern>
+            <Pattern>${CONSOLE_PATTERN}</Pattern>
         </encoder>
     </appender>
-    <shutdownHook class="ch.qos.logback.core.hook.DefaultShutdownHook"/>
 
-    <timestamp key="timestamp" datePattern="yyyy-MM-dd HH:mm:ss" timeZone="Asia/Seoul"/>
+
+    <logger name="jdbc" level="OFF" additive="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="jdbc.sqlonly" level="DEBUG" additive="false" >
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="jdbc.sqltiming" level="OFF" additive="false" >
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="org.hibernate.SQL" level="DEBUG" additive="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="com.example.todolist.controller" level="DEBUG" additive="false" >
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="com.example.todolist.service" level="DEBUG" additive="false" >
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="com.example.todolist.domain" level="DEBUG" additive="false" >
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
 </configuration>
