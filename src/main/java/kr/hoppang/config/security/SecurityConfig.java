@@ -70,7 +70,9 @@ public class SecurityConfig {
 
                         // all permitted
                         .requestMatchers(HttpMethod.GET,
-                                "/hoppang/health"
+                                "/hoppang/info"
+                                , "/hoppang/health"
+                                , "/hoppang/prometheus"
                                 , "/api/emails/validations"
                                 , "/api/phones/validations"
                                 , "/api/users/emails"

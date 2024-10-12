@@ -68,11 +68,18 @@ management:
     web:
       base-path: /hoppang
       exposure:
-        include: health
+        include: prometheus, health, info
     enabled-by-default: false
   endpoint:
-    health:
-      enabled: true
+      health:
+        enabled: true
+      prometheus:
+        enabled: true
+      info:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
@@ -168,16 +175,24 @@ logging:
     rollingpolicy:
       file-name-pattern: "/app/logs/server.%d{yyyy-MM-dd}.%i.log.gz" # 로그 파일을 gzip으로 압축
       max-history: 30  # 30일 동안 로그 보관
+
 management:
   endpoints:
     web:
       base-path: /hoppang
       exposure:
-        include: health
+        include: prometheus, health, info
     enabled-by-default: false
   endpoint:
     health:
       enabled: true
+    prometheus:
+      enabled: true
+    info:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
