@@ -16,13 +16,13 @@ WORKDIR /app
 # 빌더 이미지에서 jar 파일만 복사
 COPY --from=builder /build/build/libs/*-SNAPSHOT.jar ./app.jar
 
-# 엔트리포인트 스크립트 복사 및 권한 설정
-COPY ./scripts/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
 # root 대신 nobody 권한으로 실행
 USER nobody
-CMD ["java", "-jar", "-Djava.security.egd=file:/dev/./urandom", \
-     "-Dsun.net.inetaddr.ttl=0", \
-     "-Dspring.profiles.active=prod", \
-     "app.jar"]
+ENTRYPOINT [                                                \
+    "java",                                                 \
+    "-jar",                                                 \
+    "-Djava.security.egd=file:/dev/./urandom",              \
+    "-Dsun.net.inetaddr.ttl=0",                             \
+    "-Dspring.profiles.active=prod",                        \
+    "app.jar"              \
+]
