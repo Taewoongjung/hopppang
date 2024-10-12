@@ -5,11 +5,13 @@
             <pattern>%d{yyyy-MM-dd HH:mm:ss} | %p | %logger{0}[%method:%line] - %m%n</pattern>
         </layout>
     </appender>
+    <!--로그 파일 저장 위치-->
+    <property name="LOGS_PATH" value="./app/logs"/>
     <property name="SERVER_ID" value="${SERVER_ID:-unknown}"/>
     <appender name="SERVER_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/app/logs/server-${SERVER_ID}.log</file>
+        <file>${LOGS_PATH}/server-${SERVER_ID}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/app/logs/server-${SERVER_ID}-%d{yyyy-MM-dd_HH, ${logback.timezone:-Asia/Seoul}}.%i.log</fileNamePattern>
+            <fileNamePattern>${LOGS_PATH}/server-${SERVER_ID}-%d{yyyy-MM-dd_HH, ${logback.timezone:-Asia/Seoul}}.%i.log</fileNamePattern>
             <maxHistory>3</maxHistory>
             <totalSizeCap>3GB</totalSizeCap>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
