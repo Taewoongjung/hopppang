@@ -94,13 +94,9 @@ services:
       - database-slave
       - cache-redis
     command:
-      - /bin/sh
-      - -c
-      - |
-        mkdir -p /app/logs
-        chmod 777 /app/logs
-        chown root:root /app/logs
-        ./gradlew bootRun
+      - ./gradlew bootRun
+      - chmod 777 /be-app/logs
+      - chown root:root /be-app/logs
     environment:
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
       - HOPPANG_SLACK_BOT_TOKEN=${HOPPANG_SLACK_BOT_TOKEN}
