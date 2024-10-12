@@ -5,10 +5,11 @@
             <pattern>%d{yyyy-MM-dd HH:mm:ss} | %p | %logger{0}[%method:%line] - %m%n</pattern>
         </layout>
     </appender>
-    <!--로그 파일 저장 위치-->
     <appender name="SERVER_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/app/logs/server.log</file>
+        <append>true</append>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/zzz/log/server-%d{yyyy-MM-dd_HH, ${logback.timezone:-Asia/Seoul}}.%i.log</fileNamePattern>
+            <fileNamePattern>/app/logs/server-%d{yyyy-MM-dd_HH, ${logback.timezone:-Asia/Seoul}}.%i.log</fileNamePattern>
             <maxHistory>3</maxHistory>
             <totalSizeCap>3GB</totalSizeCap>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
@@ -19,8 +20,7 @@
             <level>INFO</level>
         </filter>
         <encoder>
-            <charset>UTF-8</charset>
-            <pattern>{"server_name":"hoppang-back", "date":"%d{yyyy-MM-dd HH:mm:ss.SSS ZZZ}", "level":"%p", "message":"%m", "dd.trace_id":"%X{dd.trace_id}", "dd.span_id":"%X{dd.span_id}"}%n</pattern>
+            <pattern>{"server_name":"hoppang-be", "date":"%d{yyyy-MM-dd HH:mm:ss.SSS ZZZ}", "level":"%p", "message":"%m", "dd.trace_id":"%X{dd.trace_id}", "dd.span_id":"%X{dd.span_id}"}%n</pattern>
         </encoder>
     </appender>
     <shutdownHook class="ch.qos.logback.core.hook.DefaultShutdownHook"/>
