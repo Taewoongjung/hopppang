@@ -20,6 +20,7 @@
             <level>INFO</level>
         </filter>
         <encoder>
+            <charset>UTF-8</charset>
             <pattern>{"server_name":"hoppang-back", "date":"%d{yyyy-MM-dd HH:mm:ss.SSS ZZZ}", "level":"%p", "message":"%m", "dd.trace_id":"%X{dd.trace_id}", "dd.span_id":"%X{dd.span_id}"}%n</pattern>
         </encoder>
     </appender>

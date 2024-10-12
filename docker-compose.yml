@@ -87,7 +87,6 @@ services:
       context: ./
       dockerfile: Dockerfile
     restart: on-failure
-    platform: linux/x86_64
     expose:
       - "9090-9093"
     depends_on:
@@ -95,9 +94,13 @@ services:
       - database-slave
       - cache-redis
     command:
-      - ./gradlew bootRun
-      - chmod 777 /app/logs
-      - chown root:root /app/logs
+      - /bin/sh
+      - -c
+      - |
+        mkdir -p /app/logs
+        chmod 777 /app/logs
+        chown root:root /app/logs
+        ./gradlew bootRun
     environment:
       - SERVER_ID=${HOSTNAME}
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
