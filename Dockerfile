@@ -20,6 +20,7 @@ COPY --from=builder /build/build/libs/*-SNAPSHOT.jar ./app.jar
 USER nobody
 ENTRYPOINT [                                                \
     "java",                                                 \
+    "-Dlogging.config=classpath:logback-spring.xml",        \
     "-jar",                                                 \
     "-Djava.security.egd=file:/dev/./urandom",              \
     "-Dsun.net.inetaddr.ttl=0",                             \
