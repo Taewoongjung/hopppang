@@ -89,6 +89,9 @@ dependencies {
 	// gson
 	implementation 'com.google.code.gson:gson:2.8.9'
 	implementation 'org.json:json:20231013'
+
+	// Log4JDBC
+	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
 }
 
 tasks.named('test') {

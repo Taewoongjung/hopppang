@@ -16,7 +16,7 @@ WORKDIR /app
 # 빌더 이미지에서 jar 파일만 복사
 COPY --from=builder /build/build/libs/*-SNAPSHOT.jar ./app.jar
 
-RUN mkdir -p /app/logs && chown -R nobody:nobody /app/logs
+RUN mkdir -p /app/logs && chown -R root:root /app/logs
 
 # root 대신 nobody 권한으로 실행
 USER nobody
