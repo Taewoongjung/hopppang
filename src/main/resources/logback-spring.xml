@@ -6,7 +6,7 @@
         </layout>
     </appender>
     <!--로그 파일 저장 위치-->
-    <property name="LOGS_PATH" value="./app/logs"/>
+    <property name="LOGS_PATH" value="/app/logs"/>
     <property name="SERVER_ID" value="${SERVER_ID:-unknown}"/>
     <appender name="SERVER_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOGS_PATH}/server-${SERVER_ID}.log</file>
