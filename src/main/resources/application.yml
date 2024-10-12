@@ -162,13 +162,12 @@ logging:
     name: /app/logs/server.log
   pattern:
     console: "[%d{HH:mm:ss.SSS}][%-5level][%highlight(%logger.%method:%line)] - %msg%n"
-    file:
+    file: "[%d{yyyy-MM-dd HH:mm:ss.SSS}][%-5level][%logger{36}] - %msg%n"
     level: DEBUG
   logback:
     rollingpolicy:
       file-name-pattern: "/app/logs/server.%d{yyyy-MM-dd}.%i.log.gz" # 로그 파일을 gzip으로 압축
       max-history: 30  # 30일 동안 로그 보관
-
 management:
   endpoints:
     web:
