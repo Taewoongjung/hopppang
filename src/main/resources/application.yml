@@ -25,6 +25,7 @@ spring:
           merge:
             entity_copy_observer: allow
     database: mysql
+    open-in-view: false
   datasource:
     master:
       jdbcUrl: jdbc:mysql://localhost:3307/hoppang?useSSL=false&allowPublicKeyRetrieval=true
@@ -118,6 +119,7 @@ spring:
           merge:
             entity_copy_observer: allow
     database: mysql
+    open-in-view: false
   datasource:
     master:
       jdbcUrl: jdbc:mysql://database-master:3306/hoppang?useSSL=false&allowPublicKeyRetrieval=true
