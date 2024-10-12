@@ -158,9 +158,28 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 logging:
+  level:
+    root: INFO
+    com.hoppang: DEBUG
   file:
-    path: /app/logs
     name: /app/logs/server.log
+  pattern:
+    console: "[%d{HH:mm:ss.SSS}][%-5level][%highlight(%logger.%method:%line)] - %msg%n"
+  appenders:
+    error-file:
+      type: ch.qos.logback.core.FileAppender
+      file: /app/logs/error.log
+      level: ERROR
+      encoder:
+        pattern: "[%d{yyyy-MM-dd HH:mm:ss.SSS}][%-5level][%logger.%method:%line] - %msg%n"
+    debug-file:
+      type: ch.qos.logback.core.FileAppender
+      file: /app/logs/debug.log
+      level: DEBUG
+      encoder:
+        pattern: "[%d{yyyy-MM-dd HH:mm:ss.SSS}][%-5level][%logger.%method:%line] - %msg%n"
+  rollingpolicy:
+    file-name-pattern: "/app/logs/server.%d{yyyy-MM-dd}.%i.log.gz" # 로그 파일을 gzip으로 압축
 
 management:
   endpoints:
