@@ -50,10 +50,15 @@ public class OAuthLoginCommandHandler implements ICommandHandler<OAuthLoginComma
     @Transactional
     public String handle(final OAuthLoginCommand command) {
 
+        log.info("[핸들러 - 소셜 ({}) 로그인] OAuthLoginCommand = {}", command.oauthType().getType(),
+                command);
+
         SignUpCommand signUpCommand = oAuthServiceEnumMap.get(command.oauthType())
                 .logIn(command.code(), command.deviceId());
 
         User registeredUser = signUpCommandHandler.handle(signUpCommand);
+
+        log.info("[핸들러 - 소셜 ({}) 로그인] 성공", command.oauthType().getType());
 
         // jwt 토큰을 반환한다.
         return jwtUtil.createJwtForSso(

@@ -1,7 +1,6 @@
 package kr.hoppang.application.command.user.handlers;
 
 import static kr.hoppang.adapter.common.exception.ErrorType.YET_EXPIRED_TOKEN;
-import static kr.hoppang.adapter.common.util.CheckUtil.check;
 import static kr.hoppang.adapter.common.util.CheckUtil.loginCheck;
 
 import jakarta.annotation.PostConstruct;
@@ -52,6 +51,9 @@ public class RefreshAccessTokenCommandHandler implements
     @Transactional
     public String handle(final RefreshAccessTokenCommand command) {
 
+        log.info("[핸들러 - 소셜 ({}) 로그인 토큰 갱신] RefreshAccessTokenCommand = {}", command.oauthType().getType(),
+                command);
+
         Map<String, String> expiredInfo = jwtUtil.isExpiredReturnWithExpiredUserInfo(
                 jwtUtil.getTokenWithoutBearer(command.expiredToken()));
 
@@ -61,6 +63,8 @@ public class RefreshAccessTokenCommandHandler implements
 
         OAuthServiceLogInResultDto refreshingTokenInfo =
                 oAuthServiceEnumMap.get(command.oauthType()).refreshAccessToken(userEmail);
+
+        log.info("[핸들러 - 소셜 ({}) 로그인 토큰 갱신])", command.oauthType().getType());
 
         return jwtUtil.createJwtForSso(
                 refreshingTokenInfo.email(),

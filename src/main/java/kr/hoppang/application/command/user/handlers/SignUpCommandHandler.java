@@ -35,7 +35,7 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
     @Override
     @Transactional(rollbackFor = Exception.class)
     public User handle(final SignUpCommand event) {
-        log.info("execute SignUpCommand = {}", event);
+        log.info("[핸들러 - 회원 생성] SignUpCommand = {}", event);
 
         userRepository.checkIfExistUserByEmail(event.email(), event.oauthType());
 
@@ -87,7 +87,7 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
 //                    new SendAlimTalk(null, null, KakaoMsgTemplateType.COMPLETE_SIGNUP, event.tel(),
 //                            event.name(), null, null, null));
 
-            log.info("SignUpCommand executed successfully");
+            log.info("[핸들러 - 회원 생성] 성공");
 
             return registeredUser;
         }
