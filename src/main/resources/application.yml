@@ -160,7 +160,7 @@ spring:
 logging:
   file:
     path: /app/logs
-    name: server.log
+    name: /app/logs/server.log
 
 management:
   endpoints:
