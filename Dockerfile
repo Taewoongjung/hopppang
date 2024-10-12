@@ -21,5 +21,5 @@ COPY ./scripts/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # root 대신 nobody 권한으로 실행
-USER nobody
+USER root
 ENTRYPOINT ["/entrypoint.sh"]

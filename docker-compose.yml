@@ -102,7 +102,6 @@ services:
         chown root:root /app/logs
         ./gradlew bootRun
     environment:
-      - SERVER_ID=${HOSTNAME}
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
       - HOPPANG_SLACK_BOT_TOKEN=${HOPPANG_SLACK_BOT_TOKEN}
       - TZ=Asia/Seoul
