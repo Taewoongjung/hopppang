@@ -22,7 +22,6 @@ RUN mkdir -p /app/logs && chown -R root:root /app/logs
 USER nobody
 ENTRYPOINT [                                                \
     "java",                                                 \
-    "-Dlogging.config=classpath:logback-spring.xml",        \
     "-jar",                                                 \
     "-Djava.security.egd=file:/dev/./urandom",              \
     "-Dsun.net.inetaddr.ttl=0",                             \
