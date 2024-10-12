@@ -29,7 +29,8 @@ public class FindChassisPriceInfoByTypeAndCompanyTypeQueryHandler implements IQu
             unless = "#result.isEmpty()"
     )
     public List<ChassisPriceInfo> handle(final FindChassisPriceInfoByCompanyTypeQuery event) {
-
+        log.info("executed FindChassisPriceInfoByCompanyTypeQuery = {}", event);
+        
         return chassisPriceInfoRepository.findByTypeAndCompanyType(event.chassisType(), event.companyType());
     }
 }

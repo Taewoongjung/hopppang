@@ -24,13 +24,13 @@ public class AddChassisEstimationInfoCommandHandler implements ICommandHandler<A
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Long handle(final AddChassisEstimationInfoCommand command) {
-        log.info("[핸들러 - 샤시 견적] AddChassisEstimationInfoCommand 수행");
+        log.info("[핸들러 - 샤시 저장] AddChassisEstimationInfoCommand 수행");
 
         long registeredEstimationId = chassisEstimationRepository.registerChassisEstimation(
                 command.makeChassisEstimationInfo(),
                 command.makeChassisEstimationSizeInfo());
 
-        log.info("[핸들러 - 샤시 견적] 성공");
+        log.info("[핸들러 - 샤시 저장] 성공");
 
         return registeredEstimationId;
     }

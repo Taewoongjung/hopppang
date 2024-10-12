@@ -29,13 +29,15 @@ public class ReviseChassisPriceAdditionalCriteriaCommandHandler
     @Override
     @Transactional
     @CacheEvict(value = "additionalChassisPriceCriteria", key = "additionalChassisPriceCriteria", allEntries = true)
-    public Boolean handle(final ReviseChassisPriceAdditionalCriteriaCommand command) {
+    public Boolean handle(final ReviseChassisPriceAdditionalCriteriaCommand event) {
+
+        log.info("[핸들러 - 부가 가격 정보 수정] ReviseChassisPriceAdditionalCriteriaCommand = {}", event);
 
         List<AdditionalChassisPriceCriteria> beforeModificationInfos = additionalChassisPriceCriteriaRepository.findAll();
 
         List<AdditionalChassisPriceCriteria> reviseRepositoryDto = new ArrayList<>();
 
-        for (ReviseChassisPriceAdditionalCriteria revisingTarget : command.reqList()) {
+        for (ReviseChassisPriceAdditionalCriteria revisingTarget : event.reqList()) {
             beforeModificationInfos.stream()
                     .filter(f -> f.getType().equals(revisingTarget.type()))
                     .filter(f2 -> !f2.comparePriceWithTarget(revisingTarget.revisingPrice()))
@@ -45,7 +47,11 @@ public class ReviseChassisPriceAdditionalCriteriaCommandHandler
                     });
         }
 
-        return additionalChassisPriceCriteriaRepository
+        boolean isSuccess = additionalChassisPriceCriteriaRepository
                 .reviseAdditionalChassisPriceCriteria(reviseRepositoryDto);
+
+        log.info("[핸들러 - 부가 가격 정보 수정] 성공");
+
+        return isSuccess;
     }
 }

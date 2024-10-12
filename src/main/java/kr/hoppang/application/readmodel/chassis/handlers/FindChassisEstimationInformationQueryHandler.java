@@ -33,6 +33,7 @@ public class FindChassisEstimationInformationQueryHandler
     @Transactional(readOnly = true)
     public List<FindChassisEstimationInformationQueryHandlerResult> handle(
             final FindChassisEstimationInformationQuery query) {
+        log.info("executed FindChassisEstimationInformationQuery = {}", query);
 
         List<FindChassisEstimationInfosResult> foundList =
                 chassisEstimationRepository.findChassisEstimationInfosBy(

@@ -29,7 +29,8 @@ public class FindChassisPriceAdditionalCriteriaQueryHandler implements
             cacheManager = "cacheManager"
     )
     public List<AdditionalChassisPriceCriteria> handle(final FindChassisPriceAdditionalCriteriaQuery event) {
-
+        log.info("executed FindChassisPriceAdditionalCriteriaQuery = {}", event);
+        
         return additionalChassisPriceCriteriaRepository.findAll();
     }
 }
