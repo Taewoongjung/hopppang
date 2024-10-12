@@ -46,7 +46,7 @@ public class CalculateChassisPriceCommandHandler implements
     @Transactional(readOnly = true)
     public CalculateChassisPriceCommandHandlerCommandResult handle(final CalculateChassisPriceCommand event) {
 
-        log.info("[핸들러 - 샤시 내기 ] CalculateChassisPriceCommand = {}", event);
+        log.info("[핸들러 - 샤시 내기] CalculateChassisPriceCommand = {}", event);
 
         List<CalculateChassisPrice> reqList = event.calculateChassisPriceList();
 
