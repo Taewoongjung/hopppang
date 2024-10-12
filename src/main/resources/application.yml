@@ -62,22 +62,22 @@ spring:
     url: jdbc:mysql://localhost:3307/hoppang?useSSL=false&allowPublicKeyRetrieval=true
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-logging:
-  pattern:
-    console: "[%d{HH:mm:ss.SSS}][%-5level][%logger.%method:line%line] - %msg%n"
-    file: "[%d{yyyy-MM-dd HH:mm:ss.SSS}][%-5level][%logger.%method:line%line] - %msg%n"
-  level:
-    root: INFO
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-  file:
-    name: /app/logs/server.log
-  logback:
-    rolling policy:
-      file-name-pattern: "/app/logs/server.%d{yyyy-MM-dd}.%i.log"
-      max-history: 7
-      max-file-size: 10MB
-      total-size-cap: 50MB
+#logging:
+#  pattern:
+#    console: "[%d{HH:mm:ss.SSS}][%-5level][%logger.%method:line%line] - %msg%n"
+#    file: "[%d{yyyy-MM-dd HH:mm:ss.SSS}][%-5level][%logger.%method:line%line] - %msg%n"
+#  level:
+#    root: INFO
+#    org.hibernate.SQL: DEBUG
+#    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+#  file:
+#    name: /app/logs/server.log
+#  logback:
+#    rolling policy:
+#      file-name-pattern: "/app/logs/server.%d{yyyy-MM-dd}.%i.log"
+#      max-history: 7
+#      max-file-size: 10MB
+#      total-size-cap: 50MB
 
 #management:
 #  endpoints:
@@ -181,22 +181,22 @@ spring:
     url: jdbc:mysql://database-master:3306/hoppang?useSSL=false&allowPublicKeyRetrieval=true
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-logging:
-  pattern:
-    console: "[%d{HH:mm:ss.SSS}][%-5level][%logger.%method:line%line] - %msg%n"
-    file: "[%d{yyyy-MM-dd HH:mm:ss.SSS}][%-5level][%logger.%method:line%line] - %msg%n"
-  level:
-    root: INFO
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-  file:
-    name: /app/logs/server.log
-  logback:
-    rolling policy:
-      file-name-pattern: "/app/logs/server.%d{yyyy-MM-dd}.%i.log"
-      max-history: 7
-      max-file-size: 10MB
-      total-size-cap: 50MB
+#logging:
+#  pattern:
+#    console: "[%d{HH:mm:ss.SSS}][%-5level][%logger.%method:line%line] - %msg%n"
+#    file: "[%d{yyyy-MM-dd HH:mm:ss.SSS}][%-5level][%logger.%method:line%line] - %msg%n"
+#  level:
+#    root: INFO
+#    org.hibernate.SQL: DEBUG
+#    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+#  file:
+#    name: /app/logs/server.log
+#  logback:
+#    rolling policy:
+#      file-name-pattern: "/app/logs/server.%d{yyyy-MM-dd}.%i.log"
+#      max-history: 7
+#      max-file-size: 10MB
+#      total-size-cap: 50MB
 
 management:
   endpoints:
