@@ -141,6 +141,8 @@ services:
     ports:
       - "3000:3000"
     restart: always
+    volumes:
+      - /home/twj/hopppang/grafana/volume:/var/lib/grafana
     networks:
       - server-connection
 
