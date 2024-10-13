@@ -125,7 +125,6 @@ services:
     container_name: prometheus
     volumes:
       - /home/twj/hopppang/src/main/resources/monitoring/prometheus:/etc/prometheus
-      - /home/twj/hoppang/prometheus/volume/data:/prometheus/data
     ports:
       - "8080:8080"
     command:
