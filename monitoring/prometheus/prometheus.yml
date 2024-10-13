@@ -12,13 +12,7 @@ rule_files:
 
 scrape_configs:
   - job_name: "prometheus"
-    static_configs:
-      - targets:
-          - "prometheus:8080"
-  - job_name: "springboot"
     metrics_path: "/hoppang/prometheus"
-    scheme: 'http'
     scrape_interval: 5s
     static_configs:
-      - targets:
-          - "back-end-app:9090"
+      - targets: ["back-end-app:9090"]
