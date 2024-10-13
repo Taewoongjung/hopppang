@@ -7,9 +7,6 @@ global:
     monitor: 'hoppang-backend-monitor'
   query_log_file: query_log_file.log
 
-rule_files:
-  - "rule.yml"
-
 scrape_configs:
   - job_name: "prometheus"
     metrics_path: "/hoppang/prometheus"
