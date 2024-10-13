@@ -124,7 +124,7 @@ services:
     image: prom/prometheus:v2.37.6
     container_name: prometheus
     volumes:
-      - ./monitoring/prometheus:/etc/prometheus
+      - /home/twj/hopppang/src/main/resources/monitoring/prometheus:/etc/prometheus
     ports:
       - "8080:8080"
     command:
