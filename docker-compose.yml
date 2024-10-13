@@ -129,7 +129,7 @@ services:
       - "8080:8080"
     command:
       - '--web.enable-lifecycle'
-      - '--config.file=/etc/prometheus/prometheus.yaml'
+      - '--config.file=/etc/prometheus/prometheus.yml'
     restart: always
     networks:
       - server-connection
