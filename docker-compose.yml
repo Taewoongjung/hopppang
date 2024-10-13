@@ -154,3 +154,4 @@ volumes:
     external: true
   my-db-master:
   my-db-slave:
+  grafana-storage:
