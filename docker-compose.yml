@@ -125,12 +125,18 @@ services:
     container_name: prometheus
     user: "$UID:$GID"
     volumes:
-      - /home/twj/hopppang/src/main/resources/monitoring/prometheus:/prometheus
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus:/prometheus
     ports:
       - "8080:8080"
     command:
-      - '--web.enable-lifecycle'
-      - '--config.file=/prometheus/prometheus.yml'
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=90d # 90일보다 오래된 metrics는 삭제
+      - --storage.tsdb.retention.size=10GB # 10GB를 넘을 시 오래된 metrics 삭제
+      - --web.console.libraries=/usr/share/prometheus/console_libraries
+      - --web.console.templates=/usr/share/proemtheus/consoles
+      - --web.enable-admin-api
     restart: always
     networks:
       - server-connection
@@ -140,7 +146,7 @@ services:
     container_name: grafana
     user: "$UID:$GID"
     volumes:
-      - /home/twj/hopppang/grafana/volume:/var/lib/grafana
+      - ./grafana:/var/lib/grafana
     ports:
       - "3000:3000"
     restart: always
