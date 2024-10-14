@@ -66,17 +66,8 @@ spring:
 management:
   endpoints:
     web:
-      base-path: /hoppang
       exposure:
         include: prometheus, health, info
-    enabled-by-default: false
-  endpoint:
-      health:
-        enabled: true
-      prometheus:
-        enabled: true
-      info:
-        enabled: true
   metrics:
     tags:
       application: ${spring.application.name}
@@ -179,17 +170,8 @@ logging:
 management:
   endpoints:
     web:
-      base-path: /hoppang
       exposure:
         include: prometheus, health, info
-    enabled-by-default: false
-  endpoint:
-    health:
-      enabled: true
-    prometheus:
-      enabled: true
-    info:
-      enabled: true
   metrics:
     tags:
       application: ${spring.application.name}
