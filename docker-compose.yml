@@ -88,7 +88,10 @@ services:
       dockerfile: Dockerfile
     restart: on-failure
     expose:
-      - "9090-9093"
+      - "9090:9090"
+      - "9091:9091"
+      - "9092:9092"
+      - "9093:9093"
     depends_on:
       - database-master
       - database-slave
