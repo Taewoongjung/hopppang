@@ -67,10 +67,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: prometheus, health, info
-  metrics:
-    tags:
-      application: ${spring.application.name}
+        include: prometheus
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
@@ -171,10 +168,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: prometheus, health, info
-  metrics:
-    tags:
-      application: ${spring.application.name}
+        include: prometheus
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}

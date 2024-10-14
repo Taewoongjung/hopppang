@@ -4,8 +4,12 @@ global:
   evaluation_interval: 2m
 
 scrape_configs:
+  - job_name: "prometheus"
+    static_configs:
+      - targets:
+          - "localhost:8080"
   - job_name: 'back-end-app'
     scrape_interval: 5s
     static_configs:
       - metric_path: '/actuator/prometheus'
-      - targets: ['back-end-app:9090']
+      - targets: ['host.docker.internal:9090']
