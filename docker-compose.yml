@@ -87,7 +87,7 @@ services:
       context: ./
       dockerfile: Dockerfile
     restart: on-failure
-    expose:
+    ports:
       - "9090:9090"
       - "9091:9091"
       - "9092:9092"
