@@ -53,6 +53,8 @@ public class JWTFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
+        log.info("requested API = {}", request.getServletPath());
+
         for (String api : EXCLUDED_PATH) {
             if (antPathMatcher.match(api, request.getServletPath())) {
                 filterChain.doFilter(request, response);
