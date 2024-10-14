@@ -70,13 +70,10 @@ public class SecurityConfig {
 
                         // all permitted
                         .requestMatchers(HttpMethod.GET,
-                                "/actuator/info"
-                                , "/actuator/health"
-                                , "/actuator/prometheus"
+                                "/actuator/prometheus"
                                 , "/api/emails/validations"
                                 , "/api/phones/validations"
                                 , "/api/users/emails"
-                                , "/api/v1/**"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST,
                                 "/api/login"
