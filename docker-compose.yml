@@ -174,7 +174,7 @@ services:
     container_name: promtail
     user: "$UID:$GID"
     volumes:
-      - /home/twj/hoppang-app/logs:/logs
+      - /home/twj/hoppang-app/logs:/app/logs
       - ./promtail-config.yml:/etc/promtail/config.yml
     command: -config.file=/etc/promtail/config.yml
     networks:
