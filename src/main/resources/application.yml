@@ -183,5 +183,5 @@ slack:
 
 login:
   kakao:
-    rest-api-key: ${HOPPANG_KAKAO_REST_API_KEY}
+    rest-api-key: da09bfccea21381b988c8ede053a85c5
     redirect-uri: https://hoppang.store/chassis/calculator
