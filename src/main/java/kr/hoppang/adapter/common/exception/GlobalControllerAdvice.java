@@ -3,8 +3,8 @@ package kr.hoppang.adapter.common.exception;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Enumeration;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+import kr.hoppang.adapter.common.exception.custom.HoppangDuplicatedLoginException;
 import kr.hoppang.adapter.common.exception.custom.HoppangException;
 import kr.hoppang.adapter.common.exception.custom.HoppangLoginException;
 import kr.hoppang.adapter.common.exception.custom.InvalidInputException;
@@ -42,6 +42,21 @@ public class GlobalControllerAdvice {
                 .body(new ErrorResponse(
                         0,
                         "Database connection error. Please try again later.")
+                );
+    }
+
+    @ExceptionHandler(HoppangDuplicatedLoginException.class)
+    public ResponseEntity<ErrorResponseForDuplicateSso> handleDuplicatedSsoLoginError(
+            final HttpServletRequest request, final HoppangDuplicatedLoginException e) {
+
+        errorPrinter(request, e);
+
+        return ResponseEntity.internalServerError()
+                .body(new ErrorResponseForDuplicateSso(
+                        e.getCode(),
+                        e.getEmail(),
+                        e.getOauthType(),
+                        e.getMessage())
                 );
     }
 

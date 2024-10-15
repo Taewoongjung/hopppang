@@ -40,9 +40,9 @@ public class UserRepositoryAdapter implements UserRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public User checkIfAlreadyLoggedIn(final String deviceId, final OauthType oauthType) {
+    public User checkIfAlreadyLoggedIn(final String deviceId) {
 
-        UserEntity user = userJpaRepository.findByDeviceIdAndOauthType(deviceId, oauthType);
+        UserEntity user = userJpaRepository.findByDeviceId(deviceId);
 
         return user != null ? user.toPojoWithRelations() : null;
     }

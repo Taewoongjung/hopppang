@@ -4,7 +4,7 @@ import kr.hoppang.adapter.common.exception.ErrorType;
 import lombok.Getter;
 
 @Getter
-public class HoppangLoginException extends RuntimeException{
+public class HoppangLoginException extends RuntimeException {
 
     private final int code;
 

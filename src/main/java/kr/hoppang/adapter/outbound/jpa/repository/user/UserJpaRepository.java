@@ -12,5 +12,5 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
 
     UserEntity findByTel(final String phoneNumber);
 
-    UserEntity findByDeviceIdAndOauthType(final String deviceId, final OauthType oauthType);
+    UserEntity findByDeviceId(final String deviceId);
 }
