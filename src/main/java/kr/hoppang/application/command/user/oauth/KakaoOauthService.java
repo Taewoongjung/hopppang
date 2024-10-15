@@ -114,7 +114,6 @@ public class KakaoOauthService implements OAuthService {
         LocalDateTime refreshTokenExpireInLocalDateTime = connectedAtLocalDateTime.plusSeconds(
                 (long) Double.parseDouble(refreshTokenExpireIn));
 
-//        SignUpCommand signUpCommand = new SignUpCommand(
         return new SignUpCommand(
                 userName,
                 null,
@@ -129,11 +128,6 @@ public class KakaoOauthService implements OAuthService {
                 accessTokenExpireInLocalDateTime,
                 refreshToken,
                 refreshTokenExpireInLocalDateTime);
-
-//        User registeredUser = signUpCommandHandler.handle(signUpCommand);
-//
-//        return new ResultOfSsoLogin(registeredUser.getEmail(), registeredUser.getUserRole(),
-//                registeredUser.getOauthType(), accessTokenExpireInLocalDateTime);
     }
 
     private Map<String, Object> getDataFromResponseJson(final String response) {

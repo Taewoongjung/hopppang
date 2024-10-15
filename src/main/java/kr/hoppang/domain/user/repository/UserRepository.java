@@ -9,6 +9,8 @@ public interface UserRepository {
 
     User findByEmail(final String email);
 
+    User checkIfAlreadyLoggedIn(final String deviceId, final OauthType oauthType);
+
     void checkIfExistUserByEmail(final String email, final OauthType oauthType);
 
     User save(final User user);
