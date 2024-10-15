@@ -63,17 +63,18 @@ public class OAuthLoginCommandHandler implements ICommandHandler<OAuthLoginComma
         // 해당 sso로 가입 된 아이디 가있으면 해당 토큰 리턴 start
         User alreadyExistToken = userRepository.checkIfAlreadyLoggedIn(command.deviceId());
 
-        // 이미 다른 소셜 계정으로 로그인을 했을 때
-        duplicatedSsoLoginCheck(!command.oauthType().equals(alreadyExistToken.getOauthType()),
-                alreadyExistToken.getEmail(), alreadyExistToken.getOauthType());
-
         if (alreadyExistToken != null) {
-            log.info("[핸들러 - 소셜 ({}) 로그인] 성공", command.oauthType().getType());
+
+            // 이미 다른 소셜 계정으로 로그인을 했을 때
+            duplicatedSsoLoginCheck(!command.oauthType().equals(alreadyExistToken.getOauthType()),
+                    alreadyExistToken.getEmail(), alreadyExistToken.getOauthType());
 
             UserToken userAccessToken = alreadyExistToken.getUserTokenList().stream()
                     .filter(f -> TokenType.ACCESS.equals(f.getTokenType()))
                     .findFirst()
                     .orElseThrow(() -> new HoppangLoginException(ErrorType.NOT_EXIST_ACCESS_TOKEN));
+
+            log.info("[핸들러 - 소셜 ({}) 로그인] 성공", command.oauthType().getType());
 
             return jwtUtil.createJwtForSso(
                     alreadyExistToken.getEmail(),
