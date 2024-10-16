@@ -13,4 +13,6 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
     UserEntity findByTel(final String phoneNumber);
 
     UserEntity findByDeviceId(final String deviceId);
+
+    Boolean existsByTel(final String tel);
 }

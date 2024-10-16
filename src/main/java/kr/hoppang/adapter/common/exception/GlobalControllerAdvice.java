@@ -30,7 +30,7 @@ public class GlobalControllerAdvice {
 
         errorPrinter(request, e);
 
-        return ResponseEntity.badRequest().body(new ErrorResponse(-1, e.toString()));
+        return ResponseEntity.badRequest().body(new ErrorResponse(-2, e.toString()));
     }
 
     @ExceptionHandler(DataAccessException.class)
@@ -49,7 +49,7 @@ public class GlobalControllerAdvice {
     public ResponseEntity<ErrorResponseForDuplicateSso> handleDuplicatedSsoLoginError(
             final HttpServletRequest request, final HoppangDuplicatedLoginException e) {
 
-        errorPrinter(request, e);
+        onlyPrintError(request, e);
 
         return ResponseEntity.internalServerError()
                 .body(new ErrorResponseForDuplicateSso(
@@ -60,8 +60,17 @@ public class GlobalControllerAdvice {
                 );
     }
 
-    @ExceptionHandler({HoppangException.class, InvalidInputException.class})
+    @ExceptionHandler(HoppangException.class)
     public ResponseEntity<ErrorResponse> inputBadRequestExceptionHandler(
+            final HttpServletRequest request, final HoppangException e) {
+
+        errorPrinter(request, e);
+
+        return ResponseEntity.badRequest().body(new ErrorResponse(e.getCode(), e.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidInputException.class)
+    public ResponseEntity<ErrorResponse> invalidInputExceptionHandler(
             final HttpServletRequest request, final InvalidInputException e) {
 
         errorPrinter(request, e);
@@ -70,8 +79,8 @@ public class GlobalControllerAdvice {
     }
 
     @ExceptionHandler(HoppangLoginException.class)
-    public ResponseEntity<ErrorResponse> handleValidException(final HttpServletRequest request, HoppangLoginException e)
-            throws IOException {
+    public ResponseEntity<ErrorResponse> handleValidException(final HttpServletRequest request,
+            HoppangLoginException e) {
 
         errorPrinter(request, e);
 
@@ -82,14 +91,14 @@ public class GlobalControllerAdvice {
      * validation 애노테이션(유효성) 예외를 최종적으로 이곳에서 처리할 수 있음.
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidException(final HttpServletRequest request, MethodArgumentNotValidException e)
-            throws IOException {
+    public ResponseEntity<ErrorResponse> handleValidException(final HttpServletRequest request,
+            MethodArgumentNotValidException e) {
 
         errorPrinter(request, e);
 
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse(
-                        1,
+                        -1,
                         "요청 형식이 맞지 않습니다."
                 ));
     }
@@ -122,6 +131,41 @@ public class GlobalControllerAdvice {
 
         eventPublisher.publishEvent(
                 new ErrorAlarm("[ " + httpMethod + " ] " + apiUrl, queryString, body, e.toString()));
+
+        log.error(
+                "\n # HEADER={}\n # METHOD={}\n # PATH={}\n # PARAMETER={}\n # BODY=\n{}\n # ERRMSG={}",
+                header,
+                httpMethod,
+                apiUrl,
+                queryString,
+                body,
+                e.toString());
+    }
+
+    public void onlyPrintError(final HttpServletRequest request, final Exception e) {
+
+        String requestBody = null;
+        try {
+            if (request instanceof CachedBodyHttpServletRequest cachedRequest) {
+                requestBody = cachedRequest.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+            }
+        } catch (IOException ioException) {
+            log.error("Failed to read request body", ioException);
+        }
+
+         String httpMethod = request.getMethod();
+         String apiUrl = request.getRequestURI();
+         String queryString = request.getQueryString();
+         String body = requestBody;
+
+         // header 설정
+        StringBuilder header = new StringBuilder();
+        Enumeration<String> headerNames = request.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String name = headerNames.nextElement();
+            String value = request.getHeader(name);
+            header.append("\n    ").append(name).append(": ").append(value);
+        }
 
         log.error(
                 "\n # HEADER={}\n # METHOD={}\n # PATH={}\n # PARAMETER={}\n # BODY=\n{}\n # ERRMSG={}",

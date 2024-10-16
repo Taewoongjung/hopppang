@@ -13,6 +13,7 @@ import kr.hoppang.adapter.common.exception.custom.HoppangLoginException;
 import kr.hoppang.application.command.user.commands.OAuthLoginCommand;
 import kr.hoppang.application.command.user.commands.SignUpCommand;
 import kr.hoppang.application.command.user.oauth.OAuthService;
+import kr.hoppang.application.command.user.oauth.dto.OAuthLoginResultDto;
 import kr.hoppang.config.security.jwt.JWTUtil;
 import kr.hoppang.domain.user.OauthType;
 import kr.hoppang.domain.user.TokenType;
@@ -60,36 +61,64 @@ public class OAuthLoginCommandHandler implements ICommandHandler<OAuthLoginComma
         log.info("[핸들러 - 소셜 ({}) 로그인] OAuthLoginCommand = {}", command.oauthType().getType(),
                 command);
 
-        // 해당 sso로 가입 된 아이디 가있으면 해당 토큰 리턴 start
-        User alreadyExistToken = userRepository.checkIfAlreadyLoggedIn(command.deviceId());
+        /**
+         * 현재는 deviceId로 유저를 찾아 와서 해당 유저가 이미 회원가입이 된 유저인지 아닌지 판별한다.
+         * 이거는 웹에서는 못한다. deviceId가 없기 때문이다. 그래서 만약 웹도 확대 한다고 하면 추후 대응을 해야 할 것이다.
+         * */
 
-        if (alreadyExistToken != null) {
+        // 해당 sso로 가입 된 아이디가 있으면 해당 토큰 리턴 start
+        if (command.deviceId() != null) {
 
-            // 이미 다른 소셜 계정으로 로그인을 했을 때
-            duplicatedSsoLoginCheck(!command.oauthType().equals(alreadyExistToken.getOauthType()),
-                    alreadyExistToken.getEmail(), alreadyExistToken.getOauthType());
+            User alreadyExistToken = userRepository.checkIfAlreadyLoggedIn(command.deviceId());
 
-            UserToken userAccessToken = alreadyExistToken.getUserTokenList().stream()
-                    .filter(f -> TokenType.ACCESS.equals(f.getTokenType()))
-                    .findFirst()
-                    .orElseThrow(() -> new HoppangLoginException(ErrorType.NOT_EXIST_ACCESS_TOKEN));
+            if (alreadyExistToken != null) {
 
-            log.info("[핸들러 - 소셜 ({}) 로그인] 성공", command.oauthType().getType());
+                // 이미 다른 소셜 계정으로 로그인을 했을 때
+                duplicatedSsoLoginCheck(
+                        !command.oauthType().equals(alreadyExistToken.getOauthType()) &&
+                                !OauthType.NON.equals(alreadyExistToken.getOauthType()),
+                        alreadyExistToken.getEmail(), alreadyExistToken.getOauthType());
 
-            return jwtUtil.createJwtForSso(
-                    alreadyExistToken.getEmail(),
-                    alreadyExistToken.getUserRole().name(),
-                    alreadyExistToken.getOauthType().name(),
-                    convertLocalDateTimeToDate(userAccessToken.getExpireIn()));
+                UserToken userAccessToken = alreadyExistToken.getUserTokenList().stream()
+                        .filter(f -> TokenType.ACCESS.equals(f.getTokenType()))
+                        .findFirst()
+                        .orElseThrow(() -> new HoppangLoginException(ErrorType.NOT_EXIST_ACCESS_TOKEN));
+
+                log.info("[핸들러 - 소셜 ({}) 로그인] 성공", command.oauthType().getType());
+
+                return jwtUtil.createJwtForSso(
+                        alreadyExistToken.getEmail(),
+                        alreadyExistToken.getUserRole().name(),
+                        alreadyExistToken.getOauthType().name(),
+                        convertLocalDateTimeToDate(userAccessToken.getExpireIn()));
+            }
         }
         // 해당 sso로 가입 된 아이디 가있으면 해당 토큰 리턴 end
 
         // 여기서 부터는 가입 안 된 유저이니 카카오로 부터 토큰(액세스,리프래스) 요청 하고 회원 테이블에 쌓기
         // 클라이언트로 부터 받은 code 값으로 유저 정보 파싱
-        SignUpCommand signUpCommand = oAuthServiceEnumMap.get(command.oauthType())
-                .logIn(command.code(), command.deviceId());
+        OAuthLoginResultDto oAuthLoginResult = oAuthServiceEnumMap.get(command.oauthType())
+                .logIn(command.code(), command.userPhoneNumber(), command.deviceId());
 
-        User registeredUser = signUpCommandHandler.handle(signUpCommand);
+        User registeredUser = signUpCommandHandler.handle(new SignUpCommand(
+                oAuthLoginResult.name(),
+                oAuthLoginResult.password(),
+                oAuthLoginResult.email(),
+                oAuthLoginResult.tel(),
+                oAuthLoginResult.role(),
+                oAuthLoginResult.oauthType(),
+                oAuthLoginResult.deviceId(),
+                oAuthLoginResult.providerUserId(),
+                oAuthLoginResult.connectedAt(),
+                oAuthLoginResult.accessToken(),
+                oAuthLoginResult.accessTokenExpireIn(),
+                oAuthLoginResult.refreshToken(),
+                oAuthLoginResult.refreshTokenExpireIn(),
+                command.address(),
+                command.subAddress(),
+                command.buildingNumber(),
+                command.isPushOn()
+        ));
 
         log.info("[핸들러 - 소셜 ({}) 로그인] 성공", command.oauthType().getType());
 
@@ -98,6 +127,6 @@ public class OAuthLoginCommandHandler implements ICommandHandler<OAuthLoginComma
                 registeredUser.getEmail(),
                 registeredUser.getUserRole().name(),
                 registeredUser.getOauthType().name(),
-                convertLocalDateTimeToDate(signUpCommand.accessTokenExpireIn()));
+                convertLocalDateTimeToDate(oAuthLoginResult.accessTokenExpireIn()));
     }
 }

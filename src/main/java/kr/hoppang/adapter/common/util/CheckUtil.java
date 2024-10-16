@@ -3,6 +3,7 @@ package kr.hoppang.adapter.common.util;
 import java.util.function.Predicate;
 import kr.hoppang.adapter.common.exception.ErrorType;
 import kr.hoppang.adapter.common.exception.custom.HoppangDuplicatedLoginException;
+import kr.hoppang.adapter.common.exception.custom.HoppangException;
 import kr.hoppang.adapter.common.exception.custom.HoppangLoginException;
 import kr.hoppang.adapter.common.exception.custom.InvalidInputException;
 import kr.hoppang.domain.user.OauthType;
@@ -16,7 +17,7 @@ public class CheckUtil {
 
     public static void check(final boolean condition, final ErrorType errorType) {
         if (condition) {
-            throw new InvalidInputException(errorType);
+            throw new HoppangException(errorType);
         }
     }
 

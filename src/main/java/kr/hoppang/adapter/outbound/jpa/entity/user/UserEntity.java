@@ -2,6 +2,7 @@ package kr.hoppang.adapter.outbound.jpa.entity.user;
 
 import static kr.hoppang.adapter.common.exception.ErrorType.INVALID_USER_INFO;
 import static kr.hoppang.adapter.common.util.CheckUtil.require;
+import static kr.hoppang.util.converter.user.UserEntityConverter.userAddressToEntity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 import kr.hoppang.adapter.outbound.jpa.entity.BaseEntity;
 import kr.hoppang.domain.user.OauthType;
 import kr.hoppang.domain.user.User;
+import kr.hoppang.domain.user.UserAddress;
 import kr.hoppang.domain.user.UserRole;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -183,5 +185,9 @@ public class UserEntity extends BaseEntity {
 
     public void resetPassword(final String targetPwd) {
         this.password = targetPwd;
+    }
+
+    public void setUserAddress(final UserAddress userAddress) {
+        this.userAddress = userAddressToEntity(id, userAddress);
     }
 }

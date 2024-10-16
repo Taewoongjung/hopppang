@@ -19,6 +19,8 @@ public interface UserRepository {
 
     User findByPhoneNumber(final String phoneNumber);
 
+    User findIfExistUserByPhoneNumber(final String tel);
+
     void updateToken(final String email, final TokenType tokenType, final String token,
             final LocalDateTime expireTime);
 }

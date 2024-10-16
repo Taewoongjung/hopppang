@@ -108,6 +108,8 @@ services:
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
       - HOPPANG_SLACK_BOT_TOKEN=${HOPPANG_SLACK_BOT_TOKEN}
       - HOPPANG_KAKAO_REST_API_KEY=${HOPPANG_KAKAO_REST_API_KEY}
+      - ALIGO_KEY=${ALIGO_KEY}
+      - ALIGO_USER_ID=${ALIGO_USER_ID}
       - TZ=Asia/Seoul
     networks:
       - server-connection

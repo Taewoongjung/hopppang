@@ -2,12 +2,16 @@ package kr.hoppang.adapter.inbound.user.command;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import kr.hoppang.adapter.inbound.user.webdto.RequestValidationWebDtoV1;
 import kr.hoppang.adapter.inbound.user.webdto.SignUpDtoWebDtoV1;
+import kr.hoppang.adapter.inbound.user.webdto.SsoSignUpWebDtoV1;
 import kr.hoppang.application.command.user.commands.OAuthLoginCommand;
 import kr.hoppang.application.command.user.commands.RefreshAccessTokenCommand;
+import kr.hoppang.application.command.user.commands.SendPhoneValidationSmsCommand;
 import kr.hoppang.application.command.user.commands.SignUpCommand;
 import kr.hoppang.application.command.user.handlers.OAuthLoginCommandHandler;
 import kr.hoppang.application.command.user.handlers.RefreshAccessTokenCommandHandler;
+import kr.hoppang.application.command.user.handlers.SendPhoneValidationSmsCommandHandler;
 import kr.hoppang.application.command.user.handlers.SignUpCommandHandler;
 import kr.hoppang.domain.user.OauthType;
 import kr.hoppang.domain.user.User;
@@ -32,6 +36,7 @@ public class UserCommandController {
     private final SignUpCommandHandler signUpCommandHandler;
     private final OAuthLoginCommandHandler oAuthLoginCommandHandler;
     private final RefreshAccessTokenCommandHandler refreshAccessTokenCommandHandler;
+    private final SendPhoneValidationSmsCommandHandler sendPhoneValidationSmsCommandHandler;
 
     @PostMapping(value = "/api/signup")
     public ResponseEntity<SignUpDtoWebDtoV1.Res> signup(
@@ -46,7 +51,11 @@ public class UserCommandController {
                         req.role(),
                         req.oauthType(),
                         req.deviceId(),
-                        null, null, null, null, null, null
+                        null, null, null, null, null, null,
+                        req.address(),
+                        req.subAddress(),
+                        req.buildingNumber(),
+                        req.isPushOn()
                 )
         );
 
@@ -66,15 +75,22 @@ public class UserCommandController {
     @PostMapping(value = "/api/kakao/signup/{code}")
     public ResponseEntity<Boolean> kakaoSignUp(
             @PathVariable(value = "code") final String code,
-            @RequestParam(value = "deviceId") final String deviceId,
+            @RequestBody final SsoSignUpWebDtoV1.Req req,
             HttpServletResponse response) {
 
         log.info("카카오 로그인 = {}", code);
 
-        // 토큰이 만료 됐는지 검증하는 핸들러
-
-        String jwt = oAuthLoginCommandHandler.handle(new OAuthLoginCommand(code, deviceId ,
-                OauthType.KKO));
+        String jwt = oAuthLoginCommandHandler.handle(
+                new OAuthLoginCommand(
+                        code,
+                        req.deviceId(),
+                        req.userPhoneNumber(),
+                        req.address(),
+                        req.subAddress(),
+                        req.buildingNumber(),
+                        req.isPushOn(),
+                        OauthType.KKO
+                ));
 
         response.addHeader("Authorization", "Bearer " + jwt);
 
@@ -95,4 +111,14 @@ public class UserCommandController {
         return ResponseEntity.status(HttpStatus.OK).body(true);
     }
 
+    @PostMapping(value = "/api/phones/validations")
+    public ResponseEntity<Boolean> requestValidationPhone(
+            @RequestBody final RequestValidationWebDtoV1.PhoneValidationReq req
+    ) throws Exception {
+
+        sendPhoneValidationSmsCommandHandler.handle(
+                new SendPhoneValidationSmsCommand(req.targetPhoneNumber(), req.validationType()));
+
+        return ResponseEntity.status(HttpStatus.OK).body(true);
+    }
 }

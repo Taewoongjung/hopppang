@@ -1,14 +1,20 @@
 package kr.hoppang.application.command.user.handlers;
 
+import static kr.hoppang.adapter.common.exception.ErrorType.NOT_VERIFIED_PHONE;
+import static kr.hoppang.adapter.common.util.CheckUtil.check;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import kr.hoppang.abstraction.domain.ICommandHandler;
 import kr.hoppang.adapter.outbound.alarm.dto.NewUser;
+import kr.hoppang.adapter.outbound.cache.common.TearDownBucketByKey;
+import kr.hoppang.adapter.outbound.cache.sms.CacheSmsValidationRedisRepository;
 import kr.hoppang.application.command.user.commands.SignUpCommand;
 import kr.hoppang.domain.user.OauthType;
 import kr.hoppang.domain.user.TokenType;
 import kr.hoppang.domain.user.User;
+import kr.hoppang.domain.user.UserAddress;
 import kr.hoppang.domain.user.UserToken;
 import kr.hoppang.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +32,7 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
     private final UserRepository userRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final CacheSmsValidationRedisRepository cacheSmsValidationRedisRepository;
 
     @Override
     public boolean isCommandHandler() {
@@ -39,7 +46,7 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
 
         userRepository.checkIfExistUserByEmail(event.email(), event.oauthType());
 
-        // 토큰 데이터 생성
+        // 토큰 데이터 생성 start
         UserToken forAccessToken = UserToken.of(
                 String.valueOf(event.providerUserId()),
                 TokenType.ACCESS,
@@ -57,6 +64,15 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
         List<UserToken> userTokenList = new ArrayList<>();
         userTokenList.add(forAccessToken);
         userTokenList.add(forRefreshToken);
+        // 토큰 데이터 생성 end
+
+        // 유저 주소 객체 생성 start
+        UserAddress userAddress = UserAddress.of(
+                event.address(),
+                event.subAddress(),
+                event.buildingNumber()
+        );
+        // 유저 주소 객체 생성 end
 
         User user = User.of(
                 event.name(),
@@ -68,24 +84,24 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
                 event.oauthType(),
                 event.deviceId(),
                 userTokenList,
+                userAddress,
                 LocalDateTime.now(), LocalDateTime.now());
 
         User registeredUser = userRepository.save(user);
 
         if (registeredUser != null) {
 
-//            check(!cacheSmsValidationRedisRepository.getIsVerifiedByKey(event.tel()),
-//                    NOT_VERIFIED_PHONE);
+            // 휴대폰 검증이 되었는지 확인
+            check(!cacheSmsValidationRedisRepository.getIsVerifiedByKey(event.tel()),
+                    NOT_VERIFIED_PHONE);
+
+            // 검증 후 해당 버킷 삭제
+            eventPublisher.publishEvent(new TearDownBucketByKey(event.tel()));
 
             // 새로운 유저 회원가입 시 알람 발송
             eventPublisher.publishEvent(
                     new NewUser(event.name(), event.email(), event.tel(), event.oauthType(),
                             registeredUser.getCreatedAt()));
-
-            // 새로운 유저 회원가입 시 해당 유저에게 알림톡 발송
-//            eventPublisher.publishEvent(
-//                    new SendAlimTalk(null, null, KakaoMsgTemplateType.COMPLETE_SIGNUP, event.tel(),
-//                            event.name(), null, null, null));
 
             log.info("[핸들러 - 회원 생성] 성공");
 

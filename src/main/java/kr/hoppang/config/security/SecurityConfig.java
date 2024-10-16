@@ -79,6 +79,7 @@ public class SecurityConfig {
                                 "/api/login"
                                 , "/api/signup"
                                 , "/api/kakao/auth"
+                                , "/api/phones/validations"
                                 , "/api/kakao/signup/{code}"
                                 , "/api/chassis/calculations/prices"
                         ).permitAll()

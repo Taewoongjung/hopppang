@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Map;
-import kr.hoppang.application.command.user.commands.SignUpCommand;
+import kr.hoppang.application.command.user.oauth.dto.OAuthLoginResultDto;
 import kr.hoppang.application.command.user.oauth.dto.OAuthServiceLogInResultDto;
 import kr.hoppang.domain.user.OauthType;
 import kr.hoppang.domain.user.TokenType;
@@ -50,14 +50,14 @@ public class KakaoOauthService implements OAuthService {
     }
 
     @Override
-    public SignUpCommand logIn(final String code, final String deviceId) {
+    public OAuthLoginResultDto logIn(final String code, final String phoneNumber, final String deviceId) {
 
         String tokenInfoFromKakao = getTokenInfoFromKakao(code);
 
-        return getUserInfoFromKakaoAndMakeUserObject(tokenInfoFromKakao, deviceId);
+        return getUserInfoFromKakaoAndMakeUserObject(tokenInfoFromKakao, phoneNumber, deviceId);
     }
 
-    private String getTokenInfoFromKakao(final String code) {
+    public String getTokenInfoFromKakao(final String code) {
         return webClient.post()
                 .uri("https://kauth.kakao.com/oauth/token")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -69,8 +69,9 @@ public class KakaoOauthService implements OAuthService {
                 .bodyToMono(String.class).block();
     }
 
-    private SignUpCommand getUserInfoFromKakaoAndMakeUserObject(
+    private OAuthLoginResultDto getUserInfoFromKakaoAndMakeUserObject(
             final String tokenInfoFromKakao,
+            final String phoneNumber,
             final String deviceId
     ) {
 
@@ -82,19 +83,9 @@ public class KakaoOauthService implements OAuthService {
         String refreshTokenExpireIn = resultMap.get("refresh_token_expires_in")
                 .toString();
 
-        Mono<String> responseOfUserInfoFromKakao = webClient.post()
-            .uri("https://kapi.kakao.com/v2/user/me")
-            .header("Authorization", "Bearer " + accessToken)
-            .retrieve()
-            .bodyToMono(String.class)
-            .onErrorResume(e -> {
-                // 에러 처리 로직
-                log.error("Error occurred while processing Kakao response: ", e);
-                return Mono.empty(); // 또는 기본값 반환
-            });
+        String responseOfUserInfoFromKakao = getUserInfoFromKakao(accessToken);
 
-        Map<String, Object> userInfo = getDataFromResponseJson(
-                responseOfUserInfoFromKakao.block());
+        Map<String, Object> userInfo = getDataFromResponseJson(responseOfUserInfoFromKakao);
 
         Long providerUserId = convertObjectToLong(userInfo.get("id"));
 
@@ -104,9 +95,11 @@ public class KakaoOauthService implements OAuthService {
         Map<String, Object> accountInfo = getDataFromResponseJson(
                 JSONStringer.valueToString(kakaoAccount));
 
-        String userName = accountInfo.get("name").toString();
+        Map<String, Object> userProfile = getDataFromResponseJson(
+                JSONStringer.valueToString(accountInfo.get("profile")));
+
         String userEmail = accountInfo.get("email").toString();
-        String userTelNumber = formatPhoneNumber(accountInfo.get("phone_number").toString());
+        String userName = userProfile.get("nickname").toString();
 
         LocalDateTime connectedAtLocalDateTime = convertStringToLocalDateTime2(connectedAt);
         LocalDateTime accessTokenExpireInLocalDateTime = connectedAtLocalDateTime.plusSeconds(
@@ -114,11 +107,11 @@ public class KakaoOauthService implements OAuthService {
         LocalDateTime refreshTokenExpireInLocalDateTime = connectedAtLocalDateTime.plusSeconds(
                 (long) Double.parseDouble(refreshTokenExpireIn));
 
-        return new SignUpCommand(
+        return new OAuthLoginResultDto(
                 userName,
                 null,
                 userEmail,
-                userTelNumber,
+                phoneNumber,
                 UserRole.ROLE_CUSTOMER,
                 OauthType.KKO,
                 deviceId,
@@ -130,7 +123,20 @@ public class KakaoOauthService implements OAuthService {
                 refreshTokenExpireInLocalDateTime);
     }
 
-    private Map<String, Object> getDataFromResponseJson(final String response) {
+    public String getUserInfoFromKakao(final String accessToken) {
+        return webClient.post()
+                .uri("https://kapi.kakao.com/v2/user/me")
+                .header("Authorization", "Bearer " + accessToken)
+                .retrieve()
+                .bodyToMono(String.class)
+                .onErrorResume(e -> {
+                    // 에러 처리 로직
+                    log.error("Error occurred while processing Kakao response: ", e);
+                    return Mono.empty();
+                }).block();
+    }
+
+    public Map<String, Object> getDataFromResponseJson(final String response) {
         Gson gson = new Gson();
         Type mapType = new TypeToken<Map<String, Object>>() {}.getType();
 
@@ -155,24 +161,6 @@ public class KakaoOauthService implements OAuthService {
         }
 
         return providerUserId;
-    }
-
-    // +82 10-0000-000 이렇게 들어 오는 전화번호 데이터를 정제한다
-    private String formatPhoneNumber(final String phoneNumber) {
-        // 입력된 전화번호에서 특수문자 제거
-        String cleanedNumber = phoneNumber.replaceAll("[^0-9]", "");
-
-        // 국가 코드 제거 (맨 앞의 82 제거)
-        if (cleanedNumber.startsWith("82")) {
-            cleanedNumber = cleanedNumber.substring(2);
-        }
-
-        // 맨 앞에 0 추가
-        if (!cleanedNumber.startsWith("0")) {
-            cleanedNumber = "0" + cleanedNumber;
-        }
-
-        return cleanedNumber;
     }
 
     @Override

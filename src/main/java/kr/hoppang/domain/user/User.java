@@ -36,6 +36,8 @@ public class User extends Throwable implements UserDetails {
 
     private List<UserToken> userTokenList = new ArrayList<>();
 
+    private UserAddress userAddress;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime lastModified;
 
@@ -53,6 +55,7 @@ public class User extends Throwable implements UserDetails {
             final OauthType oauthType,
             final String deviceId,
             final List<UserToken> userTokenList,
+            final UserAddress userAddress,
             final LocalDateTime lastModified,
             final LocalDateTime createdAt
     ) {
@@ -65,6 +68,7 @@ public class User extends Throwable implements UserDetails {
         this.oauthType = oauthType;
         this.deviceId = deviceId;
         this.userTokenList = userTokenList;
+        this.userAddress = userAddress;
         this.lastModified = lastModified;
         this.createdAt = createdAt;
     }
@@ -78,13 +82,14 @@ public class User extends Throwable implements UserDetails {
             final OauthType oauthType,
             final String deviceId,
             final List<UserToken> userTokenList,
+            final UserAddress userAddress,
             final LocalDateTime lastModified,
             final LocalDateTime createdAt
     ) {
 
         return new User(null, name, email, password,
                 tel, userRole, oauthType, deviceId,
-                userTokenList, lastModified, createdAt);
+                userTokenList, userAddress, lastModified, createdAt);
     }
 
     public static User of(
@@ -102,7 +107,7 @@ public class User extends Throwable implements UserDetails {
     ) {
 
         return new User(id, name, email, password, tel, userRole, oauthType,
-                deviceId, userTokenList, lastModified, createdAt);
+                deviceId, userTokenList, null, lastModified, createdAt);
     }
 
     @Override
@@ -191,8 +196,5 @@ public class User extends Throwable implements UserDetails {
                 .findFirst().orElseThrow(() -> new HoppangLoginException(NOT_EXIST_ACCESS_TOKEN));
 
         userToken.reviseToken(accessToken, accessTokenExpireInLocalDateTime);
-    }
-
-    public void refreshAccessToken() {
     }
 }

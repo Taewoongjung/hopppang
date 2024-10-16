@@ -10,24 +10,22 @@ public class SignUpDtoWebDtoV1 {
     public record Req(
             @NotNull
             String name,
-
             @NotNull
             String password,
-
             @NotNull
             @Email
             String email,
-
             @NotNull
             String tel,
-
             @NotNull
             UserRole role,
-
             @NotNull
             OauthType oauthType,
-
-            String deviceId
+            String deviceId,
+            String address,
+            String subAddress,
+            String buildingNumber,
+            Boolean isPushOn
     ) {
 
     }

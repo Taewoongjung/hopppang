@@ -24,12 +24,23 @@ public enum ErrorType {
     LOGIN_FAIL(100, "로그인 실패, 아이디 또는 비밀번호를 확인해주세요."),
     EXPIRED_ACCESS_TOKEN(101, "만료 된 토큰입니다."),
     INVALID_SIGNUP_REQUEST_DUPLICATE_EMAIL(102, "이미 존재하는 이메일 입니다."),
+    INVALID_SIGNUP_REQUEST_DUPLICATE_TEL(103, "이미 존재하는 휴대폰번호 입니다."),
 
     NOT_EXIST_CHASSIS_PRICE_INFO(200, "샤시 가격 정보가 존재하지않습니다."),
     NOT_EXIST_ADDITIONAL_CRITERIA_PRICE_INFO(201, "가격 필수 참고 기준값이 존재하지 않습니다."),
     NOT_AVAILABLE_MANUFACTURE(202, "너비/높이 최소 단위가 있으므로 제작이 불가합니다."),
     CHASSIS_TYPE_IS_MANDATORY(203, "샤시 종류 정보는 필수값 입니다."),
-    COMPANY_TYPE_IS_MANDATORY(204, "샤시 회사 정보는 필수값 입니다.")
+    COMPANY_TYPE_IS_MANDATORY(204, "샤시 회사 정보는 필수값 입니다."),
+    NOT_6DIGIT_VERIFY_NUMBER(205, "6자리 인증숫자가 아닙니다."),
+    EMPTY_VERIFY_NUMBER(206, "인증숫자가 빈값입니다."),
+
+
+    UNABLE_TO_SEND_SMS(300, "SMS 보내기에 실패했습니다."),
+    INVALID_PHONE_CHECK_NUMBER(301, "sms 인증에 실패하였습니다."),
+    EXPIRED_PHONE_CHECK_REQUEST(302, "휴대폰 검증 확인 시간이 지났습니다."),
+    EMPTY_VALIDATION_NUMBER(303, "템플릿에 인증번호는 필수입니다."),
+
+    NOT_VERIFIED_PHONE(400, "휴대폰 검증이 선행 되어야 합니다."),
     ;
 
     private final int code;

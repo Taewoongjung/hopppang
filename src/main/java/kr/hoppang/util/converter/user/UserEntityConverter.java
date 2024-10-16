@@ -1,9 +1,11 @@
 package kr.hoppang.util.converter.user;
 
 import java.util.stream.Collectors;
+import kr.hoppang.adapter.outbound.jpa.entity.user.UserAddressEntity;
 import kr.hoppang.adapter.outbound.jpa.entity.user.UserEntity;
 import kr.hoppang.adapter.outbound.jpa.entity.user.UserTokenEntity;
 import kr.hoppang.domain.user.User;
+import kr.hoppang.domain.user.UserAddress;
 import kr.hoppang.domain.user.UserToken;
 
 public class UserEntityConverter {
@@ -54,5 +56,16 @@ public class UserEntityConverter {
                 userToken.getToken(),
                 userToken.getConnectedAt(),
                 userToken.getExpireIn());
+    }
+
+    public static UserAddressEntity userAddressToEntity(final Long userId,
+            final UserAddress userAddress) {
+
+        return UserAddressEntity.of(
+                userId,
+                userAddress.getAddress(),
+                userAddress.getSubAddress(),
+                userAddress.getBuildingNumber()
+        );
     }
 }
