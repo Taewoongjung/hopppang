@@ -11,8 +11,4 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
     Boolean existsByEmailAndOauthType(final String email, final OauthType oauthType);
 
     UserEntity findByTel(final String phoneNumber);
-
-    UserEntity findByDeviceId(final String deviceId);
-
-    Boolean existsByTel(final String tel);
 }

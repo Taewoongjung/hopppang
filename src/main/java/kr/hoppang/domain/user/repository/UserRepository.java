@@ -9,7 +9,7 @@ public interface UserRepository {
 
     User findByEmail(final String email);
 
-    User checkIfAlreadyLoggedIn(final String deviceId);
+    User checkIfAlreadyLoggedIn(final String phoneNumber);
 
     void checkIfExistUserByEmail(final String email, final OauthType oauthType);
 

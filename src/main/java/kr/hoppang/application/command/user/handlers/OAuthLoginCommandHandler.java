@@ -67,9 +67,9 @@ public class OAuthLoginCommandHandler implements ICommandHandler<OAuthLoginComma
          * */
 
         // 해당 sso로 가입 된 아이디가 있으면 해당 토큰 리턴 start
-        if (command.deviceId() != null) {
+        if (command.userPhoneNumber() != null) {
 
-            User alreadyExistToken = userRepository.checkIfAlreadyLoggedIn(command.deviceId());
+            User alreadyExistToken = userRepository.checkIfAlreadyLoggedIn(command.userPhoneNumber());
 
             if (alreadyExistToken != null) {
 
