@@ -9,8 +9,10 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Base64;
 import java.util.Map;
 import kr.hoppang.application.command.user.oauth.dto.OAuthLoginResultDto;
 import kr.hoppang.application.command.user.oauth.dto.OAuthServiceLogInResultDto;
@@ -36,6 +38,7 @@ public class KakaoOauthService implements OAuthService {
 
     private final WebClient webClient;
     private final UserRepository userRepository;
+    private final SecureRandom random = new SecureRandom();
 
     @Value(value = "${login.kakao.rest-api-key}")
     public String restApiKey;
@@ -99,7 +102,14 @@ public class KakaoOauthService implements OAuthService {
                 JSONStringer.valueToString(accountInfo.get("profile")));
 
         String userEmail = accountInfo.get("email").toString();
-        String userName = userProfile.get("nickname").toString();
+        String userName = "";
+
+        if (userProfile != null) {
+            userName = userProfile.get("nickname") != null ? userProfile.get("nickname").toString()
+                    : "호빵유저" + generateRandomNumber(9);
+        } else {
+            userName = "호빵유저" + generateRandomNumber(9);
+        }
 
         LocalDateTime connectedAtLocalDateTime = convertStringToLocalDateTime2(connectedAt);
         LocalDateTime accessTokenExpireInLocalDateTime = connectedAtLocalDateTime.plusSeconds(
@@ -121,6 +131,12 @@ public class KakaoOauthService implements OAuthService {
                 accessTokenExpireInLocalDateTime,
                 refreshToken,
                 refreshTokenExpireInLocalDateTime);
+    }
+
+    private String generateRandomNumber(final int length) {
+        byte[] bytes = new byte[length];
+        random.nextBytes(bytes);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
 
     public String getUserInfoFromKakao(final String accessToken) {
