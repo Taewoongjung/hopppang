@@ -7,6 +7,7 @@ import kr.hoppang.abstraction.serviceutill.IThirdPartyValidationCheckSender;
 import kr.hoppang.adapter.common.exception.custom.HoppangDuplicatedLoginException;
 import kr.hoppang.adapter.inbound.user.webdto.ValidationType;
 import kr.hoppang.application.command.user.commands.SendPhoneValidationSmsCommand;
+import kr.hoppang.domain.user.OauthType;
 import kr.hoppang.domain.user.User;
 import kr.hoppang.domain.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +45,8 @@ public class SendPhoneValidationSmsCommandHandler implements
             // 존재하는 휴대폰 번호 인지 검증
             User user = userRepository.findIfExistUserByPhoneNumber(event.targetPhoneNumber());
             if (user != null) {
-                duplicatedSsoLoginCheck(true, user.getEmail(), user.getOauthType());
+                duplicatedSsoLoginCheck(!OauthType.NON.equals(user.getOauthType()), user.getEmail(),
+                        user.getOauthType());
             }
         }
 
