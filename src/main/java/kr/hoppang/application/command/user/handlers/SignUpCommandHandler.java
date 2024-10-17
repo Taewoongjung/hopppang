@@ -80,7 +80,7 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
 
         User registeredUser = userRepository.save(user);
 
-        // 소셜 로그인 최초에는 유저 전화번호가 빈값일 것이기 때문이다.
+        // 소셜 로그인 최초에는 유저 전화번호가 빈값일 것이기 때문이다. (전화번호가 있는건 이메일 로그인(NON)이다.)
         if ("".equals(event.tel())) {
             return registeredUser;
         }

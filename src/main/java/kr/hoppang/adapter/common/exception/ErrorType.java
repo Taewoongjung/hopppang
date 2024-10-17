@@ -25,6 +25,7 @@ public enum ErrorType {
     EXPIRED_ACCESS_TOKEN(101, "만료 된 토큰입니다."),
     INVALID_SIGNUP_REQUEST_DUPLICATE_EMAIL(102, "이미 존재하는 이메일 입니다."),
     INVALID_SIGNUP_REQUEST_DUPLICATE_TEL(103, "이미 존재하는 휴대폰번호 입니다."),
+    FAIL_WHILE_LOGIN(104, "로그인중 에러가 발생했습니다."),
 
     NOT_EXIST_CHASSIS_PRICE_INFO(200, "샤시 가격 정보가 존재하지않습니다."),
     NOT_EXIST_ADDITIONAL_CRITERIA_PRICE_INFO(201, "가격 필수 참고 기준값이 존재하지 않습니다."),

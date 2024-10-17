@@ -27,6 +27,6 @@ public interface UserRepository {
     void updateToken(final String email, final TokenType tokenType, final String token,
             final LocalDateTime expireTime);
 
-    String updatePhoneNumberAndAddressAndPush(String userEmail, String phoneNumber,
+    User updatePhoneNumberAndAddressAndPush(String userEmail, String phoneNumber,
             UserAddress userAddress, boolean isPushOn);
 }

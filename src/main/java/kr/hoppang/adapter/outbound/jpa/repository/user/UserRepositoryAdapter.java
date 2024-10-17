@@ -123,7 +123,7 @@ public class UserRepositoryAdapter implements UserRepository {
 
     @Override
     @Transactional
-    public String updatePhoneNumberAndAddressAndPush(
+    public User updatePhoneNumberAndAddressAndPush(
             final String userEmail,
             final String phoneNumber,
             final UserAddress userAddress,
@@ -135,6 +135,6 @@ public class UserRepositoryAdapter implements UserRepository {
 
         entity.updatePhoneNumberAndAddress(phoneNumber, userAddress);
 
-        return entity.getEmail();
+        return entity.toPojo();
     }
 }
