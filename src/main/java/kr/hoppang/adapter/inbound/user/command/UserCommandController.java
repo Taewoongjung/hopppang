@@ -4,15 +4,20 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import kr.hoppang.adapter.inbound.user.webdto.RequestValidationWebDtoV1;
 import kr.hoppang.adapter.inbound.user.webdto.SignUpDtoWebDtoV1;
+import kr.hoppang.adapter.inbound.user.webdto.SocialSignUpFinalWebDtoV1;
 import kr.hoppang.adapter.inbound.user.webdto.SsoSignUpWebDtoV1;
+import kr.hoppang.adapter.inbound.user.webdto.SsoSignUpWebDtoV1.Res;
+import kr.hoppang.application.command.user.commandresults.OAuthLoginCommandResult;
 import kr.hoppang.application.command.user.commands.OAuthLoginCommand;
 import kr.hoppang.application.command.user.commands.RefreshAccessTokenCommand;
 import kr.hoppang.application.command.user.commands.SendPhoneValidationSmsCommand;
 import kr.hoppang.application.command.user.commands.SignUpCommand;
+import kr.hoppang.application.command.user.commands.SocialSignUpFinalCommand;
 import kr.hoppang.application.command.user.handlers.OAuthLoginCommandHandler;
 import kr.hoppang.application.command.user.handlers.RefreshAccessTokenCommandHandler;
 import kr.hoppang.application.command.user.handlers.SendPhoneValidationSmsCommandHandler;
 import kr.hoppang.application.command.user.handlers.SignUpCommandHandler;
+import kr.hoppang.application.command.user.handlers.SocialSignUpFinalCommandHandler;
 import kr.hoppang.domain.user.OauthType;
 import kr.hoppang.domain.user.User;
 import kr.hoppang.util.auth.kakao.KakaoAuthUtil;
@@ -35,6 +40,7 @@ public class UserCommandController {
     private final KakaoAuthUtil kakaoAuthUtil;
     private final SignUpCommandHandler signUpCommandHandler;
     private final OAuthLoginCommandHandler oAuthLoginCommandHandler;
+    private final SocialSignUpFinalCommandHandler socialSignUpFinalCommandHandler;
     private final RefreshAccessTokenCommandHandler refreshAccessTokenCommandHandler;
     private final SendPhoneValidationSmsCommandHandler sendPhoneValidationSmsCommandHandler;
 
@@ -51,11 +57,7 @@ public class UserCommandController {
                         req.role(),
                         req.oauthType(),
                         req.deviceId(),
-                        null, null, null, null, null, null,
-                        req.address(),
-                        req.subAddress(),
-                        req.buildingNumber(),
-                        req.isPushOn()
+                        null, null, null, null, null, null
                 )
         );
 
@@ -66,6 +68,22 @@ public class UserCommandController {
                 ));
     }
 
+    @PutMapping(value = "/api/social/users")
+    public ResponseEntity<SocialSignUpFinalWebDtoV1.Res> socialSignUpFinal(
+            final @RequestBody SocialSignUpFinalWebDtoV1.Req req) {
+
+        String email = socialSignUpFinalCommandHandler.handle(new SocialSignUpFinalCommand(
+                req.userEmail(),
+                req.userPhoneNumber(),
+                req.address(),
+                req.subAddress(),
+                req.buildingNumber(),
+                req.isPushOn()
+        ));
+
+        return ResponseEntity.status(HttpStatus.OK).body(new SocialSignUpFinalWebDtoV1.Res(email));
+    }
+
     @PostMapping(value = "/api/kakao/auth")
     public ResponseEntity<String> requestKakaoAuthBeforeSignUp() {
 
@@ -73,28 +91,27 @@ public class UserCommandController {
     }
 
     @PostMapping(value = "/api/kakao/signup/{code}")
-    public ResponseEntity<Boolean> kakaoSignUp(
+    public ResponseEntity<SsoSignUpWebDtoV1.Res> kakaoSignUp(
             @PathVariable(value = "code") final String code,
             @RequestBody final SsoSignUpWebDtoV1.Req req,
             HttpServletResponse response) {
 
         log.info("카카오 로그인 = {}", code);
 
-        String jwt = oAuthLoginCommandHandler.handle(
+        OAuthLoginCommandResult oAuthLoginCommandResult = oAuthLoginCommandHandler.handle(
                 new OAuthLoginCommand(
                         code,
                         req.deviceId(),
-                        req.userPhoneNumber(),
-                        req.address(),
-                        req.subAddress(),
-                        req.buildingNumber(),
-                        req.isPushOn(),
                         OauthType.KKO
                 ));
 
-        response.addHeader("Authorization", "Bearer " + jwt);
+        response.addHeader("Authorization", "Bearer " + oAuthLoginCommandResult.jwt());
 
-        return ResponseEntity.status(HttpStatus.OK).body(true);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new Res(
+                        true,
+                        oAuthLoginCommandResult.isTheFirstLogIn(),
+                        oAuthLoginCommandResult.userEmail()));
     }
 
     @PutMapping(value = "/api/kakao/refresh")

@@ -8,7 +8,7 @@ public interface OAuthService {
 
     OauthType getOauthType();
 
-    OAuthLoginResultDto logIn(final String code, final String phoneNumber, final String deviceId);
+    OAuthLoginResultDto logIn(final String code, final String deviceId);
 
     OAuthServiceLogInResultDto refreshAccessToken(final String userEmail);
 }

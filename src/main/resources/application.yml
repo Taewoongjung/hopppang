@@ -83,7 +83,7 @@ slack:
 login:
   kakao:
     rest-api-key: da09bfccea21381b988c8ede053a85c5
-    redirect-uri: http://localhost:3000/login/first
+    redirect-uri: http://localhost:3000/chassis/calculator
 
 sms:
   aligo:
@@ -189,7 +189,7 @@ slack:
 login:
   kakao:
     rest-api-key: 08b5d4bb7ce13fc1251ff099bb5f2fee
-    redirect-uri: https://hoppang.store/login/first
+    redirect-uri: https://hoppang.store/chassis/calculator
 
 sms:
   aligo:

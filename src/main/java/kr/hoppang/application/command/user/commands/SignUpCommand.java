@@ -17,11 +17,7 @@ public record SignUpCommand(String name,
                             String accessToken,
                             LocalDateTime accessTokenExpireIn,
                             String refreshToken,
-                            LocalDateTime refreshTokenExpireIn,
-                            String address,
-                            String subAddress,
-                            String buildingNumber,
-                            Boolean isPushOn)
+                            LocalDateTime refreshTokenExpireIn)
         implements ICommand {
 
 }

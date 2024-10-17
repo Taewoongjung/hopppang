@@ -1,11 +1,9 @@
 package kr.hoppang.adapter.outbound.jpa.repository.user;
 
 import static kr.hoppang.adapter.common.exception.ErrorType.INVALID_SIGNUP_REQUEST_DUPLICATE_EMAIL;
-import static kr.hoppang.adapter.common.exception.ErrorType.INVALID_SIGNUP_REQUEST_DUPLICATE_TEL;
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_TOKEN;
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_USER;
 import static kr.hoppang.adapter.common.util.CheckUtil.check;
-import static kr.hoppang.adapter.common.util.CheckUtil.duplicatedSsoLoginCheck;
 import static kr.hoppang.util.converter.user.UserEntityConverter.userToEntity;
 import static kr.hoppang.util.converter.user.UserEntityConverter.userTokenToEntity;
 
@@ -16,6 +14,7 @@ import kr.hoppang.adapter.outbound.jpa.entity.user.UserTokenEntity;
 import kr.hoppang.domain.user.OauthType;
 import kr.hoppang.domain.user.TokenType;
 import kr.hoppang.domain.user.User;
+import kr.hoppang.domain.user.UserAddress;
 import kr.hoppang.domain.user.UserToken;
 import kr.hoppang.domain.user.repository.UserRepository;
 import lombok.Getter;
@@ -49,6 +48,14 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
+    public User findIfExistUserByEmail(final String email, final OauthType oauthType) {
+
+        UserEntity user = userJpaRepository.findByEmailAndOauthType(email, oauthType);
+
+        return user != null ? user.toPojo() : null;
+    }
+
+    @Override
     public void checkIfExistUserByEmail(final String email, final OauthType oauthType) {
 
         check(userJpaRepository.existsByEmailAndOauthType(email, oauthType),
@@ -64,7 +71,9 @@ public class UserRepositoryAdapter implements UserRepository {
             entity.getUserTokenEntityList().add(userTokenToEntity(entity.getId(), userToken));
         }
 
-        entity.setUserAddress(user.getUserAddress());
+        if (user.getUserAddress() != null) {
+            entity.setUserAddress(user.getUserAddress());
+        }
 
         return entity.toPojoWithRelations();
     }
@@ -110,5 +119,22 @@ public class UserRepositoryAdapter implements UserRepository {
                 .orElseThrow(() -> new HoppangLoginException(NOT_EXIST_TOKEN));
 
         userToken.reviseToken(token, expireTime);
+    }
+
+    @Override
+    @Transactional
+    public String updatePhoneNumberAndAddressAndPush(
+            final String userEmail,
+            final String phoneNumber,
+            final UserAddress userAddress,
+            final boolean isPushOn) {
+
+        UserEntity entity = userJpaRepository.findByEmail(userEmail);
+
+        check(entity == null, NOT_EXIST_USER);
+
+        entity.updatePhoneNumberAndAddress(phoneNumber, userAddress);
+
+        return entity.getEmail();
     }
 }

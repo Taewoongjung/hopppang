@@ -14,7 +14,6 @@ import kr.hoppang.application.command.user.commands.SignUpCommand;
 import kr.hoppang.domain.user.OauthType;
 import kr.hoppang.domain.user.TokenType;
 import kr.hoppang.domain.user.User;
-import kr.hoppang.domain.user.UserAddress;
 import kr.hoppang.domain.user.UserToken;
 import kr.hoppang.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -66,14 +65,6 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
         userTokenList.add(forRefreshToken);
         // 토큰 데이터 생성 end
 
-        // 유저 주소 객체 생성 start
-        UserAddress userAddress = UserAddress.of(
-                event.address(),
-                event.subAddress(),
-                event.buildingNumber()
-        );
-        // 유저 주소 객체 생성 end
-
         User user = User.of(
                 event.name(),
                 event.email(),
@@ -84,10 +75,15 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
                 event.oauthType(),
                 event.deviceId(),
                 userTokenList,
-                userAddress,
+                null,
                 LocalDateTime.now(), LocalDateTime.now());
 
         User registeredUser = userRepository.save(user);
+
+        // 소셜 로그인 최초에는 유저 전화번호가 빈값일 것이기 때문이다.
+        if ("".equals(event.tel())) {
+            return registeredUser;
+        }
 
         if (registeredUser != null) {
 

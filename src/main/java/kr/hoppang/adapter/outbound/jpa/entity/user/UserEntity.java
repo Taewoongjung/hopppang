@@ -30,7 +30,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Getter
@@ -53,7 +52,6 @@ public class UserEntity extends BaseEntity {
     @Column(name = "password")
     private String password;
 
-    @Length(min = 10, max = 20)
     @Column(name = "tel", nullable = false)
     private String tel;
 
@@ -189,5 +187,17 @@ public class UserEntity extends BaseEntity {
 
     public void setUserAddress(final UserAddress userAddress) {
         this.userAddress = userAddressToEntity(id, userAddress);
+    }
+
+    public void updatePhoneNumberAndAddress(final String phoneNumber,
+            final UserAddress userAddress) {
+
+        this.tel = phoneNumber;
+        this.userAddress = UserAddressEntity.of(
+                this.id,
+                userAddress.getAddress(),
+                userAddress.getSubAddress(),
+                userAddress.getBuildingNumber()
+        );
     }
 }

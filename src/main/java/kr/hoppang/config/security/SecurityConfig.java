@@ -106,6 +106,7 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.PUT
                                 , "/api/chassis/prices/additions/criteria"
+                                , "/api/social/users"
                         ).authenticated()
 
                         .requestMatchers("/admin").hasRole("CUSTOMER")
