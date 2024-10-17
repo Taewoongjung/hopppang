@@ -10,7 +10,7 @@ public interface UserRepository {
 
     User findByEmail(final String email);
 
-    User checkIfAlreadyLoggedIn(final String phoneNumber);
+    User checkIfAlreadyLoggedIn(final String deviceId);
 
     User findIfExistUserByEmail(final String email, final OauthType oauthType);
 
