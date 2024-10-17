@@ -127,7 +127,7 @@ public class OAuthLoginCommandHandler implements ICommandHandler<OAuthLoginComma
 
         // jwt 토큰을 반환한다.
         return new OAuthLoginCommandResult(
-                true,
+                registeredUser.isFirstLogin(),
                 jwtUtil.createJwtForSso(
                         registeredUser.getEmail(),
                         registeredUser.getUserRole().name(),

@@ -43,6 +43,8 @@ public class User extends Throwable implements UserDetails {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdAt;
 
+    // 첫 번째 로그인인지 확인.
+    private boolean isFirstLogin = true;
 
     private User(
             final Long id,
@@ -194,5 +196,9 @@ public class User extends Throwable implements UserDetails {
                 .findFirst().orElseThrow(() -> new HoppangLoginException(NOT_EXIST_ACCESS_TOKEN));
 
         userToken.reviseToken(accessToken, accessTokenExpireInLocalDateTime);
+    }
+
+    public void setNotTheFirstLogin() {
+        this.isFirstLogin = false;
     }
 }
