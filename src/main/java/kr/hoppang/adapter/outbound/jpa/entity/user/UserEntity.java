@@ -216,6 +216,10 @@ public class UserEntity extends BaseEntity {
 
     public void setUserDeviceInfo(final UserDevice userDevice) {
 
-        this.userDeviceEntityList.add(userDeviceToEntity(this.id, userDevice));
+        if (getUserDeviceEntityList().stream()
+                .noneMatch(f -> userDevice.getDeviceId().equals(f.getDeviceId()))) {
+
+            this.userDeviceEntityList.add(userDeviceToEntity(this.id, userDevice));
+        }
     }
 }

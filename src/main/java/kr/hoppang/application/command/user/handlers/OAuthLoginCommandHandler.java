@@ -62,43 +62,6 @@ public class OAuthLoginCommandHandler implements ICommandHandler<OAuthLoginComma
         log.info("[핸들러 - 소셜 ({}) 로그인] OAuthLoginCommand = {}", command.oauthType().getType(),
                 command);
 
-//        /**
-//         * 현재는 deviceId로 유저를 찾아 와서 해당 유저가 이미 회원가입이 된 유저인지 아닌지 판별한다.
-//         * 이거는 웹에서는 못한다. deviceId가 없기 때문이다. 그래서 만약 웹도 확대 한다고 하면 추후 대응을 해야 할 것이다.
-//         * */
-//
-//        // 해당 sso로 가입 된 아이디가 있으면 해당 토큰 리턴 start
-//        if (command.deviceId() != null) {
-//
-//            User alreadyExistToken = userRepository.checkIfAlreadyLoggedIn(command.deviceId());
-//
-//            if (alreadyExistToken != null) {
-//
-//                // 이미 다른 소셜 계정으로 로그인을 했을 때
-//                duplicatedSsoLoginCheck(
-//                        !command.oauthType().equals(alreadyExistToken.getOauthType()) &&
-//                                !OauthType.NON.equals(alreadyExistToken.getOauthType()),
-//                        alreadyExistToken.getEmail(), alreadyExistToken.getOauthType());
-//
-//                UserToken userAccessToken = alreadyExistToken.getUserTokenList().stream()
-//                        .filter(f -> TokenType.ACCESS.equals(f.getTokenType()))
-//                        .findFirst()
-//                        .orElseThrow(() -> new HoppangLoginException(ErrorType.NOT_EXIST_ACCESS_TOKEN));
-//
-//                log.info("[핸들러 - 소셜 ({}) 로그인] 성공", command.oauthType().getType());
-//
-//                return new OAuthLoginCommandResult(
-//                        false,
-//                        jwtUtil.createJwtForSso(
-//                                alreadyExistToken.getEmail(),
-//                                alreadyExistToken.getUserRole().name(),
-//                                alreadyExistToken.getOauthType().name(),
-//                                convertLocalDateTimeToDate(userAccessToken.getExpireIn())),
-//                        alreadyExistToken.getEmail());
-//            }
-//        }
-//        // 해당 sso로 가입 된 아이디 가있으면 해당 토큰 리턴 end
-
         // (최초 로그인)
         // 여기서 부터는 가입 안 된 유저이니 카카오로 부터 토큰(액세스,리프래스) 요청 하고 회원 테이블에 쌓기
         // 클라이언트로 부터 받은 code 값으로 유저 정보 파싱
