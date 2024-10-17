@@ -57,6 +57,7 @@ public class UserCommandController {
                         req.role(),
                         req.oauthType(),
                         req.deviceId(),
+                        req.deviceType(),
                         null, null, null, null, null, null
                 )
         );
@@ -102,6 +103,7 @@ public class UserCommandController {
                 new OAuthLoginCommand(
                         code,
                         req.deviceId(),
+                        req.deviceType(),
                         OauthType.KKO
                 ));
 

@@ -53,11 +53,11 @@ public class KakaoOauthService implements OAuthService {
     }
 
     @Override
-    public OAuthLoginResultDto logIn(final String code, final String deviceId) {
+    public OAuthLoginResultDto logIn(final String code) {
 
         String tokenInfoFromKakao = getTokenInfoFromKakao(code);
 
-        return getUserInfoFromKakaoAndMakeUserObject(tokenInfoFromKakao, deviceId);
+        return getUserInfoFromKakaoAndMakeUserObject(tokenInfoFromKakao);
     }
 
     public String getTokenInfoFromKakao(final String code) {
@@ -72,10 +72,7 @@ public class KakaoOauthService implements OAuthService {
                 .bodyToMono(String.class).block();
     }
 
-    private OAuthLoginResultDto getUserInfoFromKakaoAndMakeUserObject(
-            final String tokenInfoFromKakao,
-            final String deviceId
-    ) {
+    private OAuthLoginResultDto getUserInfoFromKakaoAndMakeUserObject(final String tokenInfoFromKakao) {
 
         Map<String, Object> resultMap = getDataFromResponseJson(tokenInfoFromKakao);
 
@@ -123,7 +120,6 @@ public class KakaoOauthService implements OAuthService {
                 "",
                 UserRole.ROLE_CUSTOMER,
                 OauthType.KKO,
-                deviceId,
                 providerUserId.toString(),
                 convertStringToLocalDateTime2(connectedAt),
                 accessToken,

@@ -75,6 +75,10 @@ public class UserRepositoryAdapter implements UserRepository {
             entity.setUserAddress(user.getUserAddress());
         }
 
+        if (!user.getUserDeviceList().isEmpty()) {
+            entity.setUserDeviceInfo(user.getUserDeviceList());
+        }
+
         return entity.toPojoWithRelations();
     }
 

@@ -5,6 +5,7 @@ import kr.hoppang.domain.user.OauthType;
 
 public record OAuthLoginCommand(String code,
                                 String deviceId,
+                                String deviceType,
                                 OauthType oauthType) implements ICommand {
 
 }

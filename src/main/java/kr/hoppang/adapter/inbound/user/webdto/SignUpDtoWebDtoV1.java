@@ -22,6 +22,7 @@ public class SignUpDtoWebDtoV1 {
             @NotNull
             OauthType oauthType,
             String deviceId,
+            String deviceType,
             String address,
             String subAddress,
             String buildingNumber,

@@ -103,10 +103,7 @@ public class OAuthLoginCommandHandler implements ICommandHandler<OAuthLoginComma
         // 여기서 부터는 가입 안 된 유저이니 카카오로 부터 토큰(액세스,리프래스) 요청 하고 회원 테이블에 쌓기
         // 클라이언트로 부터 받은 code 값으로 유저 정보 파싱
         OAuthLoginResultDto oAuthLoginResult = oAuthServiceEnumMap.get(command.oauthType())
-                .logIn(command.code(), command.deviceId());
-
-//        User user = userRepository.findIfExistUserByEmail(oAuthLoginResult.email(),
-//                oAuthLoginResult.oauthType());
+                .logIn(command.code());
 
         User registeredUser = signUpCommandHandler.handle(
                 new SignUpCommand(
@@ -116,7 +113,8 @@ public class OAuthLoginCommandHandler implements ICommandHandler<OAuthLoginComma
                         oAuthLoginResult.tel(),
                         oAuthLoginResult.role(),
                         oAuthLoginResult.oauthType(),
-                        oAuthLoginResult.deviceId(),
+                        command.deviceId(),
+                        command.deviceType(),
                         oAuthLoginResult.providerUserId(),
                         oAuthLoginResult.connectedAt(),
                         oAuthLoginResult.accessToken(),

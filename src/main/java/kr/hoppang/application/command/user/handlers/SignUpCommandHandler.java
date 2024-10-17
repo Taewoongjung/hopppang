@@ -14,6 +14,7 @@ import kr.hoppang.application.command.user.commands.SignUpCommand;
 import kr.hoppang.domain.user.OauthType;
 import kr.hoppang.domain.user.TokenType;
 import kr.hoppang.domain.user.User;
+import kr.hoppang.domain.user.UserDevice;
 import kr.hoppang.domain.user.UserToken;
 import kr.hoppang.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -65,6 +66,11 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
         userTokenList.add(forRefreshToken);
         // 토큰 데이터 생성 end
 
+        // 유저 디바이스 정보 생성 start
+        List<UserDevice> userDeviceList = new ArrayList<>();
+        userDeviceList.add(UserDevice.of(event.deviceType(), event.deviceId()));
+        // 유저 디바이스 정보 생성 end
+
         User user = User.of(
                 event.name(),
                 event.email(),
@@ -73,8 +79,8 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
                 event.tel(),
                 event.role(),
                 event.oauthType(),
-                event.deviceId(),
                 userTokenList,
+                userDeviceList,
                 null,
                 LocalDateTime.now(), LocalDateTime.now());
 

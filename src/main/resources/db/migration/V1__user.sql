@@ -8,14 +8,10 @@ CREATE TABLE user
     role          VARCHAR(20)         NOT NULL COMMENT '유저 역할',
     oauth_type    CHAR(3)             NOT NULL COMMENT '소셜로그인 타입',
     token         VARCHAR(100)            NULL COMMENT 'oauth 토큰',
-    device_id     VARCHAR(100)            NULL COMMENT '디바이스 id',
     created_at    DATETIME(6) DEFAULT CURRENT_TIMESTAMP(6) NOT NULL,
     last_modified DATETIME(6) DEFAULT CURRENT_TIMESTAMP(6) NOT NULL ON UPDATE CURRENT_TIMESTAMP(6),
     PRIMARY KEY (`id`),
     CONSTRAINT unique_email UNIQUE (email),
     CONSTRAINT unique_tel UNIQUE (tel)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT '유저 정보' ;
-
-CREATE INDEX `idx-user-device_id`
-    ON user (device_id);
+  DEFAULT CHARSET = utf8mb4 COMMENT '유저 정보';

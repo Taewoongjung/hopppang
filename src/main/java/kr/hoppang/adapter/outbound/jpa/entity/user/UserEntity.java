@@ -3,6 +3,7 @@ package kr.hoppang.adapter.outbound.jpa.entity.user;
 import static kr.hoppang.adapter.common.exception.ErrorType.INVALID_USER_INFO;
 import static kr.hoppang.adapter.common.util.CheckUtil.require;
 import static kr.hoppang.util.converter.user.UserEntityConverter.userAddressToEntity;
+import static kr.hoppang.util.converter.user.UserEntityConverter.userDeviceToEntity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -25,6 +26,7 @@ import kr.hoppang.adapter.outbound.jpa.entity.BaseEntity;
 import kr.hoppang.domain.user.OauthType;
 import kr.hoppang.domain.user.User;
 import kr.hoppang.domain.user.UserAddress;
+import kr.hoppang.domain.user.UserDevice;
 import kr.hoppang.domain.user.UserRole;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -63,13 +65,14 @@ public class UserEntity extends BaseEntity {
     @Column(name = "oauth_type", nullable = false, columnDefinition = "char(3)")
     private OauthType oauthType;
 
-    private String deviceId;
-
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private UserAddressEntity userAddress;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserTokenEntity> userTokenEntityList = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserDeviceEntity> userDeviceEntityList = new ArrayList<>();
 
     private UserEntity(
             final Long id,
@@ -79,7 +82,6 @@ public class UserEntity extends BaseEntity {
             final String tel,
             final UserRole role,
             final OauthType oauthType,
-            final String deviceId,
             final List<UserTokenEntity> userTokenEntityList
     ) {
         super(LocalDateTime.now(), LocalDateTime.now());
@@ -91,7 +93,6 @@ public class UserEntity extends BaseEntity {
         this.tel = tel;
         this.role = role;
         this.oauthType = oauthType;
-        this.deviceId = deviceId;
         this.userTokenEntityList = userTokenEntityList;
     }
 
@@ -102,11 +103,10 @@ public class UserEntity extends BaseEntity {
             final String password,
             final String tel,
             final UserRole userRole,
-            final OauthType oauthType,
-            final String deviceId
+            final OauthType oauthType
     ) {
 
-        return new UserEntity(id, name, email, password, tel, userRole, oauthType, deviceId,
+        return new UserEntity(id, name, email, password, tel, userRole, oauthType,
                 new ArrayList<>());
     }
 
@@ -116,13 +116,12 @@ public class UserEntity extends BaseEntity {
             final String password,
             final String tel,
             final UserRole userRole,
-            final OauthType oauthType,
-            final String deviceId
+            final OauthType oauthType
     ) {
 
         require(o -> name == null, name, INVALID_USER_INFO);
 
-        return new UserEntity(null, name, email, password, tel, userRole, oauthType, deviceId,
+        return new UserEntity(null, name, email, password, tel, userRole, oauthType,
                 new ArrayList<>());
     }
 
@@ -133,13 +132,12 @@ public class UserEntity extends BaseEntity {
             final String tel,
             final UserRole userRole,
             final OauthType oauthType,
-            final String deviceId,
             final List<UserTokenEntity> userTokenEntityList
     ) {
 
         require(o -> name == null, name, INVALID_USER_INFO);
 
-        return new UserEntity(null, name, email, password, tel, userRole, oauthType, deviceId,
+        return new UserEntity(null, name, email, password, tel, userRole, oauthType,
                 userTokenEntityList);
     }
 
@@ -153,9 +151,11 @@ public class UserEntity extends BaseEntity {
                 getTel(),
                 getRole(),
                 getOauthType(),
-                getDeviceId(),
                 getUserTokenEntityList().stream()
                         .map(UserTokenEntity::toPojo)
+                        .collect(Collectors.toList()),
+                getUserDeviceEntityList().stream()
+                        .map(UserDeviceEntity::toPojo)
                         .collect(Collectors.toList()),
                 getLastModified(),
                 getCreatedAt()
@@ -172,9 +172,11 @@ public class UserEntity extends BaseEntity {
                 getTel(),
                 getRole(),
                 getOauthType(),
-                getDeviceId(),
                 getUserTokenEntityList().stream()
                         .map(UserTokenEntity::toPojo)
+                        .collect(Collectors.toList()),
+                getUserDeviceEntityList().stream()
+                        .map(UserDeviceEntity::toPojo)
                         .collect(Collectors.toList()),
                 getLastModified(),
                 getCreatedAt()
@@ -199,5 +201,16 @@ public class UserEntity extends BaseEntity {
                 userAddress.getSubAddress(),
                 userAddress.getBuildingNumber()
         );
+    }
+
+    public void setUserDeviceInfo(final List<UserDevice> userDeviceList) {
+
+        List<UserDeviceEntity> userDeviceEntityListToBeSet = new ArrayList<>();
+
+        for (UserDevice userDevice : userDeviceList) {
+            userDeviceEntityListToBeSet.add(userDeviceToEntity(this.id, userDevice));
+        }
+
+        this.userDeviceEntityList = userDeviceEntityListToBeSet;
     }
 }
