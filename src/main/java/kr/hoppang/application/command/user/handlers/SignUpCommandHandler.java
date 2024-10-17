@@ -44,7 +44,14 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
     public User handle(final SignUpCommand event) {
         log.info("[핸들러 - 회원 생성] SignUpCommand = {}", event);
 
-        userRepository.checkIfExistUserByEmail(event.email(), event.oauthType());
+        boolean isUserExist = userRepository.checkIfExistUserByEmail(event.email(), event.oauthType());
+
+        // 이미 회원이 있고, 해당 회원이 다른 디바이스에서 소셜 로그인을 했을 때 (해당 메소드는 소셜 로그인에서 요청 하기 때문에 해당 처리를 함)
+        if (isUserExist) {
+
+            return userRepository.updateDeviceInfo(event.email(),
+                    UserDevice.of(event.deviceType(), event.deviceId()));
+        }
 
         // 토큰 데이터 생성 start
         UserToken forAccessToken = UserToken.of(

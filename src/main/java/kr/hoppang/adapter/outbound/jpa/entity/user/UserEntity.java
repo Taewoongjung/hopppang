@@ -213,4 +213,9 @@ public class UserEntity extends BaseEntity {
 
         this.userDeviceEntityList = userDeviceEntityListToBeSet;
     }
+
+    public void setUserDeviceInfo(final UserDevice userDevice) {
+
+        this.userDeviceEntityList.add(userDeviceToEntity(this.id, userDevice));
+    }
 }

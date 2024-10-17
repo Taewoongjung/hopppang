@@ -15,6 +15,7 @@ import kr.hoppang.domain.user.OauthType;
 import kr.hoppang.domain.user.TokenType;
 import kr.hoppang.domain.user.User;
 import kr.hoppang.domain.user.UserAddress;
+import kr.hoppang.domain.user.UserDevice;
 import kr.hoppang.domain.user.UserToken;
 import kr.hoppang.domain.user.repository.UserRepository;
 import lombok.Getter;
@@ -56,10 +57,9 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
-    public void checkIfExistUserByEmail(final String email, final OauthType oauthType) {
+    public boolean checkIfExistUserByEmail(final String email, final OauthType oauthType) {
 
-        check(userJpaRepository.existsByEmailAndOauthType(email, oauthType),
-                INVALID_SIGNUP_REQUEST_DUPLICATE_EMAIL);
+        return userJpaRepository.existsByEmailAndOauthType(email, oauthType);
     }
 
     @Override
@@ -138,6 +138,19 @@ public class UserRepositoryAdapter implements UserRepository {
         check(entity == null, NOT_EXIST_USER);
 
         entity.updatePhoneNumberAndAddress(phoneNumber, userAddress);
+
+        return entity.toPojo();
+    }
+
+    @Override
+    @Transactional
+    public User updateDeviceInfo(final String userEmail, final UserDevice userDevice) {
+
+        UserEntity entity = userJpaRepository.findByEmail(userEmail);
+
+        check(entity == null, NOT_EXIST_USER);
+
+        entity.setUserDeviceInfo(userDevice);
 
         return entity.toPojo();
     }
