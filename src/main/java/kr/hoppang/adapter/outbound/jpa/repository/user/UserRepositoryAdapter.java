@@ -148,4 +148,17 @@ public class UserRepositoryAdapter implements UserRepository {
 
         return entity.toPojo();
     }
+
+    @Override
+    @Transactional
+    public boolean updateRequiredReLogin(final String userEmail) {
+
+        UserEntity entity = userJpaRepository.findByEmail(userEmail);
+
+        check(entity == null, NOT_EXIST_USER);
+
+        entity.updateToBeRequiredReLogin();
+
+        return true;
+    }
 }

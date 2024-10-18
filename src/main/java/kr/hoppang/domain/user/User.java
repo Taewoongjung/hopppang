@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import kr.hoppang.adapter.common.exception.custom.HoppangLoginException;
+import kr.hoppang.util.common.BoolType;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
@@ -32,6 +33,7 @@ public class User extends Throwable implements UserDetails {
     private String tel;
     private UserRole userRole;
     private OauthType oauthType;
+    private BoolType requiredReLogin;
 
     private UserAddress userAddress;
     private List<UserToken> userTokenList = new ArrayList<>();
@@ -54,6 +56,7 @@ public class User extends Throwable implements UserDetails {
             final String tel,
             final UserRole userRole,
             final OauthType oauthType,
+            final BoolType requiredReLogin,
             final List<UserToken> userTokenList,
             final List<UserDevice> userDeviceList,
             final UserAddress userAddress,
@@ -67,6 +70,7 @@ public class User extends Throwable implements UserDetails {
         this.tel = tel;
         this.userRole = userRole;
         this.oauthType = oauthType;
+        this.requiredReLogin = requiredReLogin;
         this.userTokenList = userTokenList;
         this.userDeviceList = userDeviceList;
         this.userAddress = userAddress;
@@ -81,6 +85,7 @@ public class User extends Throwable implements UserDetails {
             final String tel,
             final UserRole userRole,
             final OauthType oauthType,
+            final BoolType requiredReLogin,
             final List<UserToken> userTokenList,
             final List<UserDevice> userDeviceList,
             final UserAddress userAddress,
@@ -88,8 +93,8 @@ public class User extends Throwable implements UserDetails {
             final LocalDateTime createdAt
     ) {
 
-        return new User(null, name, email, password, tel, userRole, oauthType, userTokenList,
-                userDeviceList, userAddress, lastModified, createdAt);
+        return new User(null, name, email, password, tel, userRole, oauthType, requiredReLogin,
+                userTokenList, userDeviceList, userAddress, lastModified, createdAt);
     }
 
     public static User of(
@@ -100,14 +105,15 @@ public class User extends Throwable implements UserDetails {
             final String tel,
             final UserRole userRole,
             final OauthType oauthType,
+            final BoolType requiredReLogin,
             final List<UserToken> userTokenList,
             final List<UserDevice> userDeviceList,
             final LocalDateTime lastModified,
             final LocalDateTime createdAt
     ) {
 
-        return new User(id, name, email, password, tel, userRole, oauthType, userTokenList,
-                userDeviceList, null, lastModified, createdAt);
+        return new User(id, name, email, password, tel, userRole, oauthType, requiredReLogin,
+                userTokenList, userDeviceList, null, lastModified, createdAt);
     }
 
     @Override

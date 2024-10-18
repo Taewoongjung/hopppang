@@ -28,6 +28,7 @@ import kr.hoppang.domain.user.User;
 import kr.hoppang.domain.user.UserAddress;
 import kr.hoppang.domain.user.UserDevice;
 import kr.hoppang.domain.user.UserRole;
+import kr.hoppang.util.common.BoolType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -65,6 +66,10 @@ public class UserEntity extends BaseEntity {
     @Column(name = "oauth_type", nullable = false, columnDefinition = "char(3)")
     private OauthType oauthType;
 
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "required_re_login", nullable = false, columnDefinition = "char(1)")
+    private BoolType requiredReLogin;
+
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private UserAddressEntity userAddress;
 
@@ -82,6 +87,7 @@ public class UserEntity extends BaseEntity {
             final String tel,
             final UserRole role,
             final OauthType oauthType,
+            final BoolType requiredReLogin,
             final List<UserTokenEntity> userTokenEntityList
     ) {
         super(LocalDateTime.now(), LocalDateTime.now());
@@ -93,6 +99,7 @@ public class UserEntity extends BaseEntity {
         this.tel = tel;
         this.role = role;
         this.oauthType = oauthType;
+        this.requiredReLogin = requiredReLogin;
         this.userTokenEntityList = userTokenEntityList;
     }
 
@@ -103,25 +110,11 @@ public class UserEntity extends BaseEntity {
             final String password,
             final String tel,
             final UserRole userRole,
-            final OauthType oauthType
+            final OauthType oauthType,
+            final BoolType requiredReLogin
     ) {
 
-        return new UserEntity(id, name, email, password, tel, userRole, oauthType,
-                new ArrayList<>());
-    }
-
-    public static UserEntity of(
-            final String name,
-            final String email,
-            final String password,
-            final String tel,
-            final UserRole userRole,
-            final OauthType oauthType
-    ) {
-
-        require(o -> name == null, name, INVALID_USER_INFO);
-
-        return new UserEntity(null, name, email, password, tel, userRole, oauthType,
+        return new UserEntity(id, name, email, password, tel, userRole, oauthType, requiredReLogin,
                 new ArrayList<>());
     }
 
@@ -132,13 +125,30 @@ public class UserEntity extends BaseEntity {
             final String tel,
             final UserRole userRole,
             final OauthType oauthType,
+            final BoolType requiredReLogin
+    ) {
+
+        require(o -> name == null, name, INVALID_USER_INFO);
+
+        return new UserEntity(null, name, email, password, tel, userRole, oauthType,
+                requiredReLogin, new ArrayList<>());
+    }
+
+    public static UserEntity of(
+            final String name,
+            final String email,
+            final String password,
+            final String tel,
+            final UserRole userRole,
+            final OauthType oauthType,
+            final BoolType requiredReLogin,
             final List<UserTokenEntity> userTokenEntityList
     ) {
 
         require(o -> name == null, name, INVALID_USER_INFO);
 
         return new UserEntity(null, name, email, password, tel, userRole, oauthType,
-                userTokenEntityList);
+                requiredReLogin, userTokenEntityList);
     }
 
     // 모든 연관 관계 제외 한 POJO 객체 리턴
@@ -151,6 +161,7 @@ public class UserEntity extends BaseEntity {
                 getTel(),
                 getRole(),
                 getOauthType(),
+                getRequiredReLogin(),
                 getUserTokenEntityList().stream()
                         .map(UserTokenEntity::toPojo)
                         .collect(Collectors.toList()),
@@ -172,6 +183,7 @@ public class UserEntity extends BaseEntity {
                 getTel(),
                 getRole(),
                 getOauthType(),
+                getRequiredReLogin(),
                 getUserTokenEntityList().stream()
                         .map(UserTokenEntity::toPojo)
                         .collect(Collectors.toList()),
@@ -221,5 +233,9 @@ public class UserEntity extends BaseEntity {
 
             this.userDeviceEntityList.add(userDeviceToEntity(this.id, userDevice));
         }
+    }
+
+    public void updateToBeRequiredReLogin() {
+        this.requiredReLogin = BoolType.T;
     }
 }

@@ -31,4 +31,5 @@ public interface UserRepository {
 
     User updateDeviceInfo(final String userEmail, final UserDevice userDevice);
 
+    boolean updateRequiredReLogin(final String userEmail);
 }

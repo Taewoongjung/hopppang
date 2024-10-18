@@ -20,7 +20,8 @@ public class UserEntityConverter {
                 user.getPassword(),
                 user.getTel(),
                 user.getUserRole(),
-                user.getOauthType()
+                user.getOauthType(),
+                user.getRequiredReLogin()
         );
     }
 
@@ -33,6 +34,7 @@ public class UserEntityConverter {
                 user.getTel(),
                 user.getUserRole(),
                 user.getOauthType(),
+                user.getRequiredReLogin(),
                 user.getUserTokenList().stream()
                         .map(UserEntityConverter::userTokenToEntity)
                         .collect(Collectors.toList())

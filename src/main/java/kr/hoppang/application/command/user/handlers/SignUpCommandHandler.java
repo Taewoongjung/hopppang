@@ -19,6 +19,7 @@ import kr.hoppang.domain.user.User;
 import kr.hoppang.domain.user.UserDevice;
 import kr.hoppang.domain.user.UserToken;
 import kr.hoppang.domain.user.repository.UserRepository;
+import kr.hoppang.util.common.BoolType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -47,6 +48,11 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
         log.info("[핸들러 - 회원 생성] SignUpCommand = {}", event);
 
         User isUserExist = userRepository.findIfExistUserByEmail(event.email(), event.oauthType());
+
+        // 모든 토큰이 만료 되어서 다시 로그인이 필요한 유저
+        if (BoolType.T.equals(isUserExist.getRequiredReLogin())) {
+
+        }
 
         // 이미 회원이 있고, 해당 회원이 다른 디바이스에서 소셜 로그인을 했을 때 (해당 메소드는 소셜 로그인에서 요청 하기 때문에 해당 처리를 함)
         if (isUserExist != null) {
@@ -95,6 +101,7 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
                 event.tel(),
                 event.role(),
                 event.oauthType(),
+                BoolType.F,
                 userTokenList,
                 userDeviceList,
                 null,
@@ -131,6 +138,13 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
 
     private void checkIfLoggedInUserWithExpiredRefreshToken(final User isUserExist) {
         UserToken userToken = isUserExist.getTheLatestRefreshToken();
+
+        boolean isRefreshTokenExpired = userToken.getExpireIn().isBefore(LocalDateTime.now());
+
+        if (isRefreshTokenExpired) {
+            userRepository.updateRequiredReLogin(isUserExist.getEmail());
+        }
+
         expiredRefreshedTokenCheck(userToken.getExpireIn().isBefore(LocalDateTime.now()), PLEASE_LOGIN_AGAIN);
     }
 }
