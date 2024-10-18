@@ -74,11 +74,12 @@ public class SecurityConfig {
                                 , "/api/emails/validations"
                                 , "/api/phones/validations"
                                 , "/api/users/emails"
+                                , "/api/kakao/auth"
+                                , "/api/apple/auth"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST,
                                 "/api/login"
                                 , "/api/signup"
-                                , "/api/kakao/auth"
                                 , "/api/phones/validations"
                                 , "/api/kakao/signup/{code}"
                                 , "/api/chassis/calculations/prices"

@@ -1,4 +1,4 @@
-package kr.hoppang.util.auth.kakao;
+package kr.hoppang.util.auth;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

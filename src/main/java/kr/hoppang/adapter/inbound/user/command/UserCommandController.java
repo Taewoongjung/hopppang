@@ -20,7 +20,6 @@ import kr.hoppang.application.command.user.handlers.SignUpCommandHandler;
 import kr.hoppang.application.command.user.handlers.SocialSignUpFinalCommandHandler;
 import kr.hoppang.domain.user.OauthType;
 import kr.hoppang.domain.user.User;
-import kr.hoppang.util.auth.kakao.KakaoAuthUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -37,7 +36,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserCommandController {
 
-    private final KakaoAuthUtil kakaoAuthUtil;
     private final SignUpCommandHandler signUpCommandHandler;
     private final OAuthLoginCommandHandler oAuthLoginCommandHandler;
     private final SocialSignUpFinalCommandHandler socialSignUpFinalCommandHandler;
@@ -83,12 +81,6 @@ public class UserCommandController {
         ));
 
         return ResponseEntity.status(HttpStatus.OK).body(new SocialSignUpFinalWebDtoV1.Res(email));
-    }
-
-    @PostMapping(value = "/api/kakao/auth")
-    public ResponseEntity<String> requestKakaoAuthBeforeSignUp() {
-
-        return ResponseEntity.status(HttpStatus.OK).body(kakaoAuthUtil.getReqLoginUrl());
     }
 
     @PostMapping(value = "/api/kakao/signup/{code}")

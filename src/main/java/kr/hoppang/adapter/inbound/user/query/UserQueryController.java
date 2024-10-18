@@ -8,6 +8,8 @@ import kr.hoppang.application.readmodel.user.handlers.ValidationCheckOfPhoneNumb
 import kr.hoppang.application.readmodel.user.queries.LoadUserByTokenQuery;
 import kr.hoppang.application.readmodel.user.queries.ValidationCheckOfPhoneNumberQuery;
 import kr.hoppang.domain.user.User;
+import kr.hoppang.util.auth.AppleAuthUtil;
+import kr.hoppang.util.auth.KakaoAuthUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserQueryController {
 
+    private final AppleAuthUtil appleAuthUtil;
+    private final KakaoAuthUtil kakaoAuthUtil;
 //    private final VerifyUserQueryHandler verifyUserQueryHandler;
 //    private final GetUserEmailQueryHandler getUserEmailQueryHandler;
     private final LoadUserByTokenQueryHandler loadUserByTokenCommandHandler;
@@ -60,5 +64,17 @@ public class UserQueryController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(validationCheckOfPhoneNumberQueryHandler.handle(
                         new ValidationCheckOfPhoneNumberQuery(targetPhoneNumber, compNumber)));
+    }
+
+    @GetMapping(value = "/api/kakao/auth")
+    public ResponseEntity<String> requestKakaoAuthBeforeSignUp() {
+
+        return ResponseEntity.status(HttpStatus.OK).body(kakaoAuthUtil.getReqLoginUrl());
+    }
+
+    @GetMapping(value = "/api/apple/auth")
+    public ResponseEntity<String> requestAppleAuthBeforeSignUp() {
+
+        return ResponseEntity.status(HttpStatus.OK).body(appleAuthUtil.getReqLoginUrl());
     }
 }
