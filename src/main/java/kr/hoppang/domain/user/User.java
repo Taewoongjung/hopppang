@@ -164,10 +164,12 @@ public class User extends Throwable implements UserDetails {
     }
 
     public boolean isLatestRefreshTokenValid() {
+        // 토큰 리스트를 생성일시의 내림차순으로 정렬한다.
         List<UserToken> orderReversedUserTokenList = this.getUserTokenList().stream()
                 .sorted(Comparator.comparing(UserToken::getCreatedAt).reversed())
                 .toList();
 
+        // 제일 최근 리프레스 토큰을 찾는다.
         UserToken userToken = orderReversedUserTokenList.stream()
                 .filter(f -> TokenType.REFRESH.equals(f.getTokenType()))
                 .findFirst().orElseThrow(() -> new HoppangLoginException(NO_HISTORY_PUBLISHED_REFRESH_TOKEN));
