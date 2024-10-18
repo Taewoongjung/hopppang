@@ -11,15 +11,9 @@ public interface UserRepository {
 
     User findByEmail(final String email);
 
-    User checkIfAlreadyLoggedIn(final String deviceId);
-
     User findIfExistUserByEmail(final String email, final OauthType oauthType);
 
     User save(final User user);
-
-    User findById(final Long id);
-
-    User findByPhoneNumber(final String phoneNumber);
 
     User findIfExistUserByPhoneNumber(final String tel);
 

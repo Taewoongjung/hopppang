@@ -1,6 +1,5 @@
 package kr.hoppang.adapter.outbound.jpa.repository.user;
 
-import static kr.hoppang.adapter.common.exception.ErrorType.INVALID_SIGNUP_REQUEST_DUPLICATE_EMAIL;
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_TOKEN;
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_USER;
 import static kr.hoppang.adapter.common.util.CheckUtil.check;
@@ -40,15 +39,6 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public User checkIfAlreadyLoggedIn(final String deviceId) {
-
-        UserEntity user = userJpaRepository.findByDeviceId(deviceId);
-
-        return user != null ? user.toPojoWithRelations() : null;
-    }
-
-    @Override
     public User findIfExistUserByEmail(final String email, final OauthType oauthType) {
 
         UserEntity user = userJpaRepository.findByEmailAndOauthType(email, oauthType);
@@ -74,24 +64,6 @@ public class UserRepositoryAdapter implements UserRepository {
         }
 
         return entity.toPojoWithRelations();
-    }
-
-    @Override
-    public User findById(final Long id) {
-        UserEntity entity = userJpaRepository.findById(id).orElse(null);
-
-        check(entity == null, NOT_EXIST_USER);
-
-        return entity.toPojo();
-    }
-
-    @Override
-    public User findByPhoneNumber(final String phoneNumber) {
-        UserEntity entity = userJpaRepository.findByTel(phoneNumber);
-
-        check(entity == null, NOT_EXIST_USER);
-
-        return entity.toPojo();
     }
 
     @Override
