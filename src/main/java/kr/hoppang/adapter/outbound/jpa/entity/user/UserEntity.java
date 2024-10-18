@@ -20,7 +20,9 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import kr.hoppang.adapter.outbound.jpa.entity.BaseEntity;
 import kr.hoppang.domain.user.OauthType;
@@ -220,7 +222,10 @@ public class UserEntity extends BaseEntity {
         List<UserDeviceEntity> userDeviceEntityListToBeSet = new ArrayList<>();
 
         for (UserDevice userDevice : userDeviceList) {
-            userDeviceEntityListToBeSet.add(userDeviceToEntity(this.id, userDevice));
+            if (this.userDeviceEntityList.stream()
+                    .noneMatch(e -> userDevice.getDeviceId().equals(e.getDeviceId()))) {
+                userDeviceEntityListToBeSet.add(userDeviceToEntity(this.id, userDevice));
+            }
         }
 
         this.userDeviceEntityList = userDeviceEntityListToBeSet;
