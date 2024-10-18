@@ -194,7 +194,7 @@ login:
     rest-api-key: 08b5d4bb7ce13fc1251ff099bb5f2fee
     redirect-uri: https://hoppang.store/chassis/calculator
   apple:
-    client-id: com.intro.hoppang
+    client-id: hoppang
     redirect-uri: https://hoppang.store/chassis/calculator
 
 sms:
