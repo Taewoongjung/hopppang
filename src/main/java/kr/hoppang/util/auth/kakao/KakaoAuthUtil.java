@@ -7,17 +7,17 @@ import org.springframework.stereotype.Component;
 public class KakaoAuthUtil {
 
     @Value(value = "${login.kakao.rest-api-key}")
-    public String restApiKey;
+    public String kakaoRestApiKey;
 
     @Value(value = "${login.kakao.redirect-uri}")
-    public String redirectUri;
+    public String kakaoRedirectUri;
 
 
     public String getReqLoginUrl() {
         String baseUrl = "https://kauth.kakao.com/oauth/authorize?";
 
-        String clientId = "client_id=" + restApiKey;
-        String redirection = "&redirect_uri=" + redirectUri;
+        String clientId = "client_id=" + kakaoRestApiKey;
+        String redirection = "&redirect_uri=" + kakaoRedirectUri;
         String extra = "&response_type=code";
 
         return baseUrl + clientId + redirection + extra;

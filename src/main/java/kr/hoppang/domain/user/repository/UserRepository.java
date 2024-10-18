@@ -15,8 +15,6 @@ public interface UserRepository {
 
     User findIfExistUserByEmail(final String email, final OauthType oauthType);
 
-    boolean checkIfExistUserByEmail(final String email, final OauthType oauthType);
-
     User save(final User user);
 
     User findById(final Long id);

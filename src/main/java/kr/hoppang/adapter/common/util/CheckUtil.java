@@ -4,6 +4,7 @@ import java.util.function.Predicate;
 import kr.hoppang.adapter.common.exception.ErrorType;
 import kr.hoppang.adapter.common.exception.custom.HoppangDuplicatedLoginException;
 import kr.hoppang.adapter.common.exception.custom.HoppangException;
+import kr.hoppang.adapter.common.exception.custom.HoppangExpiredRefreshToken;
 import kr.hoppang.adapter.common.exception.custom.HoppangLoginException;
 import kr.hoppang.adapter.common.exception.custom.InvalidInputException;
 import kr.hoppang.domain.user.OauthType;
@@ -31,6 +32,12 @@ public class CheckUtil {
             final OauthType oauthType) {
         if (condition) {
             throw new HoppangDuplicatedLoginException(email, oauthType);
+        }
+    }
+
+    public static void expiredRefreshedTokenCheck(final boolean condition, final ErrorType errorType) {
+        if (condition) {
+            throw new HoppangExpiredRefreshToken(errorType.getCode());
         }
     }
 }

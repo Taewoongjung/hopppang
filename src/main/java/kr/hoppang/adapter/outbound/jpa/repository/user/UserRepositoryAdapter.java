@@ -53,13 +53,7 @@ public class UserRepositoryAdapter implements UserRepository {
 
         UserEntity user = userJpaRepository.findByEmailAndOauthType(email, oauthType);
 
-        return user != null ? user.toPojo() : null;
-    }
-
-    @Override
-    public boolean checkIfExistUserByEmail(final String email, final OauthType oauthType) {
-
-        return userJpaRepository.existsByEmailAndOauthType(email, oauthType);
+        return user != null ? user.toPojoWithRelations() : null;
     }
 
     @Override

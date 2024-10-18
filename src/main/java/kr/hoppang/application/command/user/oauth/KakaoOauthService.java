@@ -1,7 +1,7 @@
 package kr.hoppang.application.command.user.oauth;
 
 import static kr.hoppang.adapter.common.exception.ErrorType.PLEASE_LOGIN_AGAIN;
-import static kr.hoppang.adapter.common.util.CheckUtil.check;
+import static kr.hoppang.adapter.common.util.CheckUtil.expiredRefreshedTokenCheck;
 import static kr.hoppang.adapter.common.util.VersatileUtil.convertLocalDateTimeToDate;
 import static kr.hoppang.adapter.common.util.VersatileUtil.convertStringToLocalDateTime2;
 
@@ -179,10 +179,10 @@ public class KakaoOauthService implements OAuthService {
 
         User user = userRepository.findByEmail(userEmail);
 
-        check(user.isLatestRefreshTokenValid(), PLEASE_LOGIN_AGAIN);
+        expiredRefreshedTokenCheck(user.isLatestRefreshTokenValid(), PLEASE_LOGIN_AGAIN);
 
         Map<String, Object> refreshedInfo = getAccessTokenToRefresh(
-                user.getTheLatestRefreshToken());
+                user.getTheLatestRefreshToken().getToken());
 
         String accessToken = refreshedInfo.get("access_token").toString();
         String accessTokenExpireIn = refreshedInfo.get("expires_in").toString();

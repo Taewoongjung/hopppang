@@ -6,6 +6,7 @@ import java.util.Enumeration;
 import java.util.stream.Collectors;
 import kr.hoppang.adapter.common.exception.custom.HoppangDuplicatedLoginException;
 import kr.hoppang.adapter.common.exception.custom.HoppangException;
+import kr.hoppang.adapter.common.exception.custom.HoppangExpiredRefreshToken;
 import kr.hoppang.adapter.common.exception.custom.HoppangLoginException;
 import kr.hoppang.adapter.common.exception.custom.InvalidInputException;
 import kr.hoppang.adapter.outbound.alarm.dto.ErrorAlarm;
@@ -85,6 +86,15 @@ public class GlobalControllerAdvice {
         errorPrinter(request, e);
 
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getCode(), e.getMessage()));
+    }
+
+    @ExceptionHandler(HoppangExpiredRefreshToken.class)
+    public ResponseEntity<ErrorResponse> handleValidException(final HttpServletRequest request,
+            HoppangExpiredRefreshToken e) {
+
+        onlyPrintError(request, e);
+
+        return ResponseEntity.badRequest().body(new ErrorResponse(e.getCode(), e.getMessage(), e.getRedirectUrl()));
     }
 
     /**

@@ -177,16 +177,14 @@ public class User extends Throwable implements UserDetails {
         return userToken.getExpireIn().isBefore(LocalDateTime.now());
     }
 
-    public String getTheLatestRefreshToken() {
+    public UserToken getTheLatestRefreshToken() {
         List<UserToken> orderReversedUserTokenList = this.getUserTokenList().stream()
                 .sorted(Comparator.comparing(UserToken::getCreatedAt).reversed())
                 .toList();
 
-        UserToken userToken = orderReversedUserTokenList.stream()
+        return orderReversedUserTokenList.stream()
                 .filter(f -> TokenType.REFRESH.equals(f.getTokenType()))
                 .findFirst().orElseThrow(() -> new HoppangLoginException(NOT_EXIST_REFRESH_TOKEN));
-
-        return userToken.getToken();
     }
 
     public void reviseTheLatestAccessToken(

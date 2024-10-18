@@ -1,13 +1,25 @@
 package kr.hoppang.adapter.common.exception;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import lombok.Getter;
 
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@JsonInclude(Include.NON_NULL)
 public class ErrorResponse {
 
-    private int errorCode;
-    private String errorMessage;
+    private final int errorCode;
+    private final String errorMessage;
+    private String redirectUrl;
+
+    public ErrorResponse(int errorCode, String errorMessage) {
+        this.errorCode = errorCode;
+        this.errorMessage = errorMessage;
+    }
+
+    public ErrorResponse(int errorCode, String errorMessage, String redirectUrl) {
+        this.errorCode = errorCode;
+        this.errorMessage = errorMessage;
+        this.redirectUrl = redirectUrl;
+    }
 }

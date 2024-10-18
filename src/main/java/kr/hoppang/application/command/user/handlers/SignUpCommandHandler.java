@@ -1,7 +1,9 @@
 package kr.hoppang.application.command.user.handlers;
 
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_VERIFIED_PHONE;
+import static kr.hoppang.adapter.common.exception.ErrorType.PLEASE_LOGIN_AGAIN;
 import static kr.hoppang.adapter.common.util.CheckUtil.check;
+import static kr.hoppang.adapter.common.util.CheckUtil.expiredRefreshedTokenCheck;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -44,12 +46,15 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
     public User handle(final SignUpCommand event) {
         log.info("[핸들러 - 회원 생성] SignUpCommand = {}", event);
 
-        boolean isUserExist = userRepository.checkIfExistUserByEmail(event.email(), event.oauthType());
+        User isUserExist = userRepository.findIfExistUserByEmail(event.email(), event.oauthType());
 
         // 이미 회원이 있고, 해당 회원이 다른 디바이스에서 소셜 로그인을 했을 때 (해당 메소드는 소셜 로그인에서 요청 하기 때문에 해당 처리를 함)
-        if (isUserExist) {
+        if (isUserExist != null) {
 
-            User updatedUser =userRepository.updateDeviceInfo(event.email(),
+            // 여기에서 이미 회원이 있고 리프레시 토큰이 만료 되었으면 에러 던짐. (에러에 /api/kakao/auth 응답값을. 그래서 유저가 해당 uri를 타고 가서 로그인할 수 있게 유도 함.) - ** 애플 로그인 추가 될 거까지 생각 해야 함 **
+            checkIfLoggedInUserWithExpiredRefreshToken(isUserExist);
+
+            User updatedUser = userRepository.updateDeviceInfo(event.email(),
                     UserDevice.of(event.deviceType(), event.deviceId()));
 
             updatedUser.setNotTheFirstLogin();
@@ -122,5 +127,10 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
         }
 
         return null;
+    }
+
+    private void checkIfLoggedInUserWithExpiredRefreshToken(final User isUserExist) {
+        UserToken userToken = isUserExist.getTheLatestRefreshToken();
+        expiredRefreshedTokenCheck(userToken.getExpireIn().isBefore(LocalDateTime.now()), PLEASE_LOGIN_AGAIN);
     }
 }
