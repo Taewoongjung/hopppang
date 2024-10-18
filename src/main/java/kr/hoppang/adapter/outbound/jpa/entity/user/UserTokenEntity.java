@@ -116,4 +116,9 @@ public class UserTokenEntity extends BaseEntity {
         this.expireIn = newExpireIn;
         this.updateLastModifiedAsNow();
     }
+
+    public void updateTokenAndExpireTime(final String updateToken, final LocalDateTime updateTime) {
+        this.token = updateToken;
+        this.expireIn = updateTime;
+    }
 }

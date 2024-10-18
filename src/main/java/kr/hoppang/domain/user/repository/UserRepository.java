@@ -1,11 +1,13 @@
 package kr.hoppang.domain.user.repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import kr.hoppang.domain.user.OauthType;
 import kr.hoppang.domain.user.TokenType;
 import kr.hoppang.domain.user.User;
 import kr.hoppang.domain.user.UserAddress;
 import kr.hoppang.domain.user.UserDevice;
+import kr.hoppang.domain.user.UserToken;
 
 public interface UserRepository {
 
@@ -26,4 +28,6 @@ public interface UserRepository {
     User updateDeviceInfo(final String userEmail, final UserDevice userDevice);
 
     boolean updateRequiredReLogin(final String userEmail);
+
+    User updateUserTokenInfo(final String userEmail, final List<UserToken> userTokens);
 }

@@ -238,4 +238,8 @@ public class UserEntity extends BaseEntity {
     public void updateToBeRequiredReLogin() {
         this.requiredReLogin = BoolType.T;
     }
+
+    public void updateNotToBeRequiredReLogin() {
+        this.requiredReLogin = BoolType.F;
+    }
 }

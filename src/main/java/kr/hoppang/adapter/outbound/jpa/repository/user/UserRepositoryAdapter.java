@@ -7,6 +7,7 @@ import static kr.hoppang.util.converter.user.UserEntityConverter.userToEntity;
 import static kr.hoppang.util.converter.user.UserEntityConverter.userTokenToEntity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import kr.hoppang.adapter.common.exception.custom.HoppangLoginException;
 import kr.hoppang.adapter.outbound.jpa.entity.user.UserEntity;
 import kr.hoppang.adapter.outbound.jpa.entity.user.UserTokenEntity;
@@ -20,6 +21,7 @@ import kr.hoppang.domain.user.repository.UserRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Getter
@@ -122,7 +124,7 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public boolean updateRequiredReLogin(final String userEmail) {
 
         UserEntity entity = userJpaRepository.findByEmail(userEmail);
@@ -132,5 +134,26 @@ public class UserRepositoryAdapter implements UserRepository {
         entity.updateToBeRequiredReLogin();
 
         return true;
+    }
+
+    @Override
+    @Transactional
+    public User updateUserTokenInfo(final String userEmail, final List<UserToken> userTokens) {
+
+        UserEntity entity = userJpaRepository.findByEmail(userEmail);
+
+        check(entity == null, NOT_EXIST_USER);
+
+        for (UserToken userToken : userTokens) {
+            entity.getUserTokenEntityList().stream()
+                    .filter(f -> f.getTokenType().equals(userToken.getTokenType()))
+                    .forEach(e -> e.updateTokenAndExpireTime(
+                            userToken.getToken(),
+                            userToken.getExpireIn()));
+        }
+
+        entity.updateNotToBeRequiredReLogin();
+
+        return entity.toPojo();
     }
 }

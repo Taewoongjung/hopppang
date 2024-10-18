@@ -20,6 +20,7 @@ import kr.hoppang.domain.user.OauthType;
 import kr.hoppang.domain.user.TokenType;
 import kr.hoppang.domain.user.User;
 import kr.hoppang.domain.user.UserRole;
+import kr.hoppang.domain.user.UserToken;
 import kr.hoppang.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ import org.json.JSONStringer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -175,11 +177,12 @@ public class KakaoOauthService implements OAuthService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public OAuthServiceLogInResultDto refreshAccessToken(final String userEmail) {
 
         User user = userRepository.findByEmail(userEmail);
 
-        expiredRefreshedTokenCheck(user.isLatestRefreshTokenValid(), PLEASE_LOGIN_AGAIN);
+        checkIfLoggedInUserWithExpiredRefreshToken(user);
 
         Map<String, Object> refreshedInfo = getAccessTokenToRefresh(
                 user.getTheLatestRefreshToken().getToken());
@@ -220,6 +223,18 @@ public class KakaoOauthService implements OAuthService {
                 });
 
         return getDataFromResponseJson(response.block());
+    }
+
+    private void checkIfLoggedInUserWithExpiredRefreshToken(final User isUserExist) {
+        UserToken userToken = isUserExist.getTheLatestRefreshToken();
+
+        boolean isRefreshTokenExpired = userToken.getExpireIn().isBefore(LocalDateTime.now());
+
+        if (isRefreshTokenExpired) {
+            userRepository.updateRequiredReLogin(isUserExist.getEmail());
+        }
+
+        expiredRefreshedTokenCheck(isRefreshTokenExpired, PLEASE_LOGIN_AGAIN);
     }
 }
 
