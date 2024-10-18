@@ -4,7 +4,6 @@ import java.util.List;
 import kr.hoppang.abstraction.domain.ICommand;
 import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
-import kr.hoppang.util.common.BoolType;
 
 public record CalculateChassisPriceCommand(
         String zipCode,

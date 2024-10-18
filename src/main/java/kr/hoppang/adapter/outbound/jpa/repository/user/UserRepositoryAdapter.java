@@ -125,15 +125,13 @@ public class UserRepositoryAdapter implements UserRepository {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public boolean updateRequiredReLogin(final String userEmail) {
+    public void updateRequiredReLogin(final String userEmail) {
 
         UserEntity entity = userJpaRepository.findByEmail(userEmail);
 
         check(entity == null, NOT_EXIST_USER);
 
         entity.updateToBeRequiredReLogin();
-
-        return true;
     }
 
     @Override

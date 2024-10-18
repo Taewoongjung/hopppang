@@ -27,7 +27,7 @@ public interface UserRepository {
 
     User updateDeviceInfo(final String userEmail, final UserDevice userDevice);
 
-    boolean updateRequiredReLogin(final String userEmail);
+    void updateRequiredReLogin(final String userEmail);
 
     User updateUserTokenInfo(final String userEmail, final List<UserToken> userTokens);
 }
