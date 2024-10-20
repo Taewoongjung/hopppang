@@ -1,8 +1,12 @@
 package kr.hoppang.adapter.inbound.user.query;
 
+import static kr.hoppang.domain.user.OauthType.APL;
+import static kr.hoppang.domain.user.OauthType.KKO;
+
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.stream.Collectors;
 import kr.hoppang.adapter.inbound.user.webdto.LoadUserWebDtoV1;
+import kr.hoppang.application.command.user.oauth.OAuthServiceAdapter;
 import kr.hoppang.application.readmodel.user.handlers.LoadUserByTokenQueryHandler;
 import kr.hoppang.application.readmodel.user.handlers.ValidationCheckOfPhoneNumberQueryHandler;
 import kr.hoppang.application.readmodel.user.queries.LoadUserByTokenQuery;
@@ -26,10 +30,8 @@ public class UserQueryController {
 
     private final AppleAuthUtil appleAuthUtil;
     private final KakaoAuthUtil kakaoAuthUtil;
-//    private final VerifyUserQueryHandler verifyUserQueryHandler;
-//    private final GetUserEmailQueryHandler getUserEmailQueryHandler;
+    private final OAuthServiceAdapter oAuthServiceAdapter;
     private final LoadUserByTokenQueryHandler loadUserByTokenCommandHandler;
-//    private final ValidationCheckOfEmailQueryHandler validationCheckOfEmailQueryHandler;
     private final ValidationCheckOfPhoneNumberQueryHandler validationCheckOfPhoneNumberQueryHandler;
 
 
@@ -69,12 +71,12 @@ public class UserQueryController {
     @GetMapping(value = "/api/kakao/auth")
     public ResponseEntity<String> requestKakaoAuthBeforeSignUp() {
 
-        return ResponseEntity.status(HttpStatus.OK).body(kakaoAuthUtil.getReqLoginUrl());
+        return ResponseEntity.status(HttpStatus.OK).body(oAuthServiceAdapter.getReqLoginUrl(KKO));
     }
 
     @GetMapping(value = "/api/apple/auth")
     public ResponseEntity<String> requestAppleAuthBeforeSignUp() {
 
-        return ResponseEntity.status(HttpStatus.OK).body(appleAuthUtil.getReqLoginUrl());
+        return ResponseEntity.status(HttpStatus.OK).body(oAuthServiceAdapter.getReqLoginUrl(APL));
     }
 }

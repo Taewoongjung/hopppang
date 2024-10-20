@@ -48,11 +48,23 @@ public class KakaoOauthService implements OAuthService {
     @Value(value = "${login.kakao.redirect-uri}")
     public String redirectUri;
 
-
     @Override
     public OauthType getOauthType() {
         return OauthType.KKO;
     }
+
+    @Override
+    public String getReqLoginUrl() {
+
+        String baseUrl = "https://kauth.kakao.com/oauth/authorize?";
+
+        String clientId = "client_id=" + restApiKey;
+        String redirection = "&redirect_uri=" + redirectUri;
+        String extra = "&response_type=code";
+
+        return baseUrl + clientId + redirection + extra;
+    }
+
 
     @Override
     public OAuthLoginResultDto logIn(final String code) {

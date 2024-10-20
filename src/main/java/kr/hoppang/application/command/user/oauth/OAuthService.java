@@ -8,6 +8,8 @@ public interface OAuthService {
 
     OauthType getOauthType();
 
+    String getReqLoginUrl();
+
     OAuthLoginResultDto logIn(final String code);
 
     OAuthServiceLogInResultDto refreshAccessToken(final String userEmail);
