@@ -12,6 +12,7 @@ import kr.hoppang.application.command.chassis.commands.CalculateChassisPriceComm
 import kr.hoppang.application.command.chassis.commands.CalculateChassisPriceCommand.CalculateChassisPrice;
 import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
+import kr.hoppang.domain.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -33,7 +34,7 @@ public class GetCalculatedChassisPriceWebDtoV1 {
             this.reqCalculateChassisPriceList.forEach(ReqCalculateChassisPrice::checkIfNull);
         }
 
-        public CalculateChassisPriceCommand toQuery() {
+        public CalculateChassisPriceCommand toQuery(final User user) {
             List<CalculateChassisPrice> queryList = new ArrayList<>();
 
             this.reqCalculateChassisPriceList.forEach(e -> {
@@ -58,7 +59,8 @@ public class GetCalculatedChassisPriceWebDtoV1 {
                     queryList,
                     reqCalculateChassisPriceList.get(0).floorCustomerLiving,
                     reqCalculateChassisPriceList.get(0).isScheduledForDemolition,
-                    reqCalculateChassisPriceList.get(0).isResident
+                    reqCalculateChassisPriceList.get(0).isResident,
+                    user
             );
         }
     }

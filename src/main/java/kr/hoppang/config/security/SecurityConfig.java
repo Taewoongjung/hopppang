@@ -83,7 +83,6 @@ public class SecurityConfig {
                                 , "/api/phones/validations"
                                 , "/api/kakao/signup/{code}"
                                 , "/api/apple/signup/{code}"
-                                , "/api/chassis/calculations/prices"
                         ).permitAll()
                         .requestMatchers(HttpMethod.PUT,
                                 "/api/kakao/refresh"
@@ -103,7 +102,7 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.POST
                                 , "/api/chassis/prices"
-//                                , "/api/chassis/calculations/prices"
+                                , "/api/chassis/calculations/prices"
                         ).authenticated()
 
                         .requestMatchers(HttpMethod.PUT

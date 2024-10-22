@@ -11,10 +11,12 @@ import kr.hoppang.application.command.chassis.handlers.CalculateChassisPriceComm
 import kr.hoppang.application.command.chassis.handlers.ReviseChassisPriceAdditionalCriteriaCommandHandler;
 import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
+import kr.hoppang.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -55,13 +57,14 @@ public class ChassisCommandController {
 
     @PostMapping(value = "/calculations/prices")
     public ResponseEntity<GetCalculatedChassisPriceWebDtoV1.Res> getCalculatedChassisPrice(
-            @RequestBody final GetCalculatedChassisPriceWebDtoV1.Req req
+            @RequestBody final GetCalculatedChassisPriceWebDtoV1.Req req,
+            @AuthenticationPrincipal final User user
     ) {
         req.validate();
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(GetCalculatedChassisPriceWebDtoV1.Res.of(
-                        calculateChassisPriceQueryHandler.handle(req.toQuery())));
+                        calculateChassisPriceQueryHandler.handle(req.toQuery(user))));
     }
 
     @PutMapping(value = "/prices/additions/criteria")

@@ -44,7 +44,8 @@ public class CalculateChassisPriceCommandHandler implements
 
     @Override
     @Transactional(readOnly = true)
-    public CalculateChassisPriceCommandHandlerCommandResult handle(final CalculateChassisPriceCommand event) {
+    public CalculateChassisPriceCommandHandlerCommandResult handle(
+            final CalculateChassisPriceCommand event) {
 
         log.info("[핸들러 - 샤시 내기] CalculateChassisPriceCommand = {}", event);
 
@@ -85,7 +86,8 @@ public class CalculateChassisPriceCommandHandler implements
 
             ChassisPriceInfo chassisPriceInfo =
                     chassisPriceInfoRepository.findByTypeAndCompanyTypeAndWidthAndHeight(
-                            chassis.chassisType(), chassis.companyType(), approxWidth, approxHeight);
+                            chassis.chassisType(), chassis.companyType(), approxWidth,
+                            approxHeight);
 
             chassisPrice = chassisPriceCalculator.calculateMaterialPrice(
                     chassisPriceInfo.getPrice(),
@@ -131,7 +133,7 @@ public class CalculateChassisPriceCommandHandler implements
 
         // 슬랙 알림 발송
         eventPublisher.publishEvent(NewEstimation.of(
-            null, null,
+                event.user().getName(), event.user().getUserAddress().getAddress(),
                 reqList.get(0).companyType(),
                 event.calculateChassisPriceList()
         ));
@@ -140,7 +142,8 @@ public class CalculateChassisPriceCommandHandler implements
         if (laborFee != 0) {
             int dividedLaborFeeByCountOfChassis = laborFee / chassisPriceResultList.size();
 
-            chassisPriceResultList.forEach(e -> e.addLaborFeeToChassisPrice(dividedLaborFeeByCountOfChassis));
+            chassisPriceResultList.forEach(
+                    e -> e.addLaborFeeToChassisPrice(dividedLaborFeeByCountOfChassis));
         }
 
         // 각 비용 최종 가격

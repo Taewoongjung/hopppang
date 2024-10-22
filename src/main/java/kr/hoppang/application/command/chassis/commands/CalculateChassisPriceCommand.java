@@ -4,6 +4,7 @@ import java.util.List;
 import kr.hoppang.abstraction.domain.ICommand;
 import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
+import kr.hoppang.domain.user.User;
 
 public record CalculateChassisPriceCommand(
         String zipCode,
@@ -18,7 +19,8 @@ public record CalculateChassisPriceCommand(
         List<CalculateChassisPrice> calculateChassisPriceList,
         int floorCustomerLiving,
         boolean isScheduledForDemolition,
-        boolean isResident
+        boolean isResident,
+        User user
 
 ) implements ICommand {
 
