@@ -49,7 +49,7 @@ public class UserTokenEntity extends BaseEntity {
     @Column(name = "connected_at", nullable = false, columnDefinition = "datetime(6)")
     private LocalDateTime connectedAt;
 
-    @Column(name = "expire_in", nullable = false, columnDefinition = "datetime(6)")
+    @Column(name = "expire_in", columnDefinition = "datetime(6)")
     private LocalDateTime expireIn;
 
     @JsonBackReference

@@ -87,7 +87,7 @@ public class UserCommandController {
     public ResponseEntity<SsoSignUpWebDtoV1.Res> kakaoSignUp(
             @PathVariable(value = "code") final String code,
             @RequestBody final SsoSignUpWebDtoV1.Req req,
-            HttpServletResponse response) {
+            HttpServletResponse response) throws Exception {
 
         log.info("카카오 로그인 = {}", code);
 
@@ -112,10 +112,49 @@ public class UserCommandController {
     public ResponseEntity<Boolean> kakaoLoginRefreshAccessTokenWhenExpired(
             @RequestParam(value = "expiredToken") final String expiredToken,
             HttpServletResponse response
-    ) {
+    ) throws Exception {
 
         String jwt = refreshAccessTokenCommandHandler.handle(
                 new RefreshAccessTokenCommand(expiredToken, OauthType.KKO));
+
+        response.addHeader("Authorization", "Bearer " + jwt);
+
+        return ResponseEntity.status(HttpStatus.OK).body(true);
+    }
+
+    @PostMapping(value = "/api/apple/signup/{code}")
+    public ResponseEntity<SsoSignUpWebDtoV1.Res> appleSignUp(
+            @PathVariable(value = "code") final String code,
+            @RequestBody final SsoSignUpWebDtoV1.Req req,
+            HttpServletResponse response) throws Exception {
+
+        log.info("애플 로그인 = {}", code);
+
+        OAuthLoginCommandResult oAuthLoginCommandResult = oAuthLoginCommandHandler.handle(
+                new OAuthLoginCommand(
+                        code,
+                        req.deviceId(),
+                        req.deviceType(),
+                        OauthType.APL
+                ));
+
+        response.addHeader("Authorization", "Bearer " + oAuthLoginCommandResult.jwt());
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new Res(
+                        true,
+                        oAuthLoginCommandResult.isTheFirstLogIn(),
+                        oAuthLoginCommandResult.userEmail()));
+    }
+
+    @PutMapping(value = "/api/apple/refresh")
+    public ResponseEntity<Boolean> appleLoginRefreshAccessTokenWhenExpired(
+            @RequestParam(value = "expiredToken") final String expiredToken,
+            HttpServletResponse response
+    ) throws Exception {
+
+        String jwt = refreshAccessTokenCommandHandler.handle(
+                new RefreshAccessTokenCommand(expiredToken, OauthType.APL));
 
         response.addHeader("Authorization", "Bearer " + jwt);
 

@@ -10,7 +10,7 @@ public record OAuthLoginResultDto(String name,
                                   String tel,
                                   UserRole role,
                                   OauthType oauthType,
-                                  String providerUserId,
+                                  String providerUserId, // 로그인 제공 업체에서 제공하는 유저 유니크 값
                                   LocalDateTime connectedAt,
                                   String accessToken,
                                   LocalDateTime accessTokenExpireIn,
