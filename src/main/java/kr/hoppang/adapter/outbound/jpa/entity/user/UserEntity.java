@@ -17,7 +17,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Email;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +47,6 @@ public class UserEntity extends BaseEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Email
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 

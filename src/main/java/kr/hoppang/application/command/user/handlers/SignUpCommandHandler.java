@@ -68,7 +68,9 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
                         TokenType.REFRESH,
                         event.refreshToken(),
                         event.connectedAt(),
-                        event.refreshTokenExpireIn());
+                        OauthType.APL.equals(event.oauthType()) ?
+                                LocalDateTime.now().plusYears(10L) // 애플은 리프레시토큰 유효기간이 없음
+                                : event.refreshTokenExpireIn());
 
                 List<UserToken> userTokenList = new ArrayList<>();
                 userTokenList.add(forAccessToken);

@@ -3,7 +3,6 @@ package kr.hoppang.application.command.user.oauth;
 import static kr.hoppang.adapter.common.exception.ErrorType.PLEASE_LOGIN_AGAIN;
 import static kr.hoppang.adapter.common.util.CheckUtil.expiredRefreshedTokenCheck;
 import static kr.hoppang.adapter.common.util.VersatileUtil.convertLocalDateTimeToDate;
-import static kr.hoppang.adapter.common.util.VersatileUtil.convertStringToLocalDateTime2;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,6 +14,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.security.PrivateKey;
 import java.security.SecureRandom;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Base64;
@@ -153,10 +153,15 @@ public class AppleOauthService implements OAuthService {
 
         String userName = "호빵유저" + generateRandomNumber(9);
 
-        LocalDateTime connectedAtLocalDateTime = convertStringToLocalDateTime2(
-                idTokenPayload.getAuth_time().toString());
-        LocalDateTime accessTokenExpireInLocalDateTime = connectedAtLocalDateTime.plusSeconds(
-                (long) Double.parseDouble(tokenResponse.expires_in().toString()));
+        long connectedAt = Long.parseLong(idTokenPayload.getAuth_time().toString());
+        LocalDateTime connectedAtLocalDateTime = LocalDateTime.ofInstant(
+                Instant.ofEpochSecond(connectedAt),
+                ZoneId.of("Asia/Seoul"));
+
+        long accessTokenExpireTime = Long.parseLong(idTokenPayload.getExp().toString());
+        LocalDateTime accessTokenExpireInLocalDateTime = LocalDateTime.ofInstant(
+                Instant.ofEpochSecond(accessTokenExpireTime),
+                ZoneId.of("Asia/Seoul"));
 
         // 애플 로그인은 일단 기본 정보들은 애플에서 안불러오고 토큰까지만 발급 하고 추후 유저에게 따로 받아서 업데이트 한다.
         return new OAuthLoginResultDto(
@@ -195,10 +200,10 @@ public class AppleOauthService implements OAuthService {
         String accessToken = appleRefreshToken.getAccess_token();
 
         // 애플은 리프레시 토큰에 유효시간이 없기 때문에 따로 시간 검증을 하지 않는다.
-        ZoneId seoulZoneId = ZoneId.of("Asia/Seoul");
-        LocalDateTime nowInSeoul = LocalDateTime.now(seoulZoneId);
-        LocalDateTime accessTokenExpireInLocalDateTime = nowInSeoul.plusSeconds(
-                (long) Double.parseDouble(appleRefreshToken.getExpire_in().toString()));
+        long expireInSeconds = Long.parseLong(appleRefreshToken.getExpire_in().toString());
+        LocalDateTime accessTokenExpireInLocalDateTime = LocalDateTime.ofInstant(
+                Instant.ofEpochSecond(expireInSeconds),
+                ZoneId.of("Asia/Seoul"));
 
         user.reviseTheLatestAccessToken(accessToken, accessTokenExpireInLocalDateTime);
 
