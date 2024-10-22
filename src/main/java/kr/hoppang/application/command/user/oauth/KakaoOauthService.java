@@ -135,7 +135,7 @@ public class KakaoOauthService implements OAuthService {
                 UserRole.ROLE_CUSTOMER,
                 OauthType.KKO,
                 providerUserId.toString(),
-                convertStringToLocalDateTime2(connectedAt),
+                connectedAtLocalDateTime,
                 accessToken,
                 accessTokenExpireInLocalDateTime,
                 refreshToken,
@@ -219,6 +219,18 @@ public class KakaoOauthService implements OAuthService {
                 convertLocalDateTimeToDate(accessTokenExpireInLocalDateTime));
     }
 
+    private void checkIfLoggedInUserWithExpiredRefreshToken(final User isUserExist) {
+        UserToken userToken = isUserExist.getTheLatestRefreshToken();
+
+        boolean isRefreshTokenExpired = userToken.getExpireIn().isBefore(LocalDateTime.now());
+
+        if (isRefreshTokenExpired) {
+            userRepository.updateRequiredReLogin(isUserExist.getEmail());
+        }
+
+        expiredRefreshedTokenCheck(isRefreshTokenExpired, PLEASE_LOGIN_AGAIN);
+    }
+
     // 리프레스 토큰으로 엑세스 토큰 갱신하기
     private Map<String, Object> getAccessTokenToRefresh(final String refreshToken) {
         Mono<String> response = webClient.post().uri("https://kauth.kakao.com/oauth/token")
@@ -235,18 +247,6 @@ public class KakaoOauthService implements OAuthService {
                 });
 
         return getDataFromResponseJson(response.block());
-    }
-
-    private void checkIfLoggedInUserWithExpiredRefreshToken(final User isUserExist) {
-        UserToken userToken = isUserExist.getTheLatestRefreshToken();
-
-        boolean isRefreshTokenExpired = userToken.getExpireIn().isBefore(LocalDateTime.now());
-
-        if (isRefreshTokenExpired) {
-            userRepository.updateRequiredReLogin(isUserExist.getEmail());
-        }
-
-        expiredRefreshedTokenCheck(isRefreshTokenExpired, PLEASE_LOGIN_AGAIN);
     }
 }
 

@@ -30,7 +30,7 @@ public class RefreshAccessTokenCommandHandler implements
 
     @Override
     @Transactional
-    public String handle(final RefreshAccessTokenCommand command) {
+    public String handle(final RefreshAccessTokenCommand command) throws Exception {
 
         log.info("[핸들러 - 소셜 ({}) 로그인 토큰 갱신] RefreshAccessTokenCommand = {}", command.oauthType().getType(),
                 command);

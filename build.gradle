@@ -92,6 +92,10 @@ dependencies {
 
 	// Log4JDBC
 	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+
+	// bouncycastle
+	implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
+	implementation 'org.bouncycastle:bcpkix-jdk15on:1.70'
 }
 
 tasks.named('test') {

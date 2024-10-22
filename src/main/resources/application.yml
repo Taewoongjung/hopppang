@@ -87,6 +87,8 @@ login:
   apple:
     client-id: store.hoppang.app
     redirect-uri: https://hoppang.store/apl/chassis/calculator
+    key-id: KZR92LU8DL
+    team-id: NUDBF8SVWU
 
 sms:
   aligo:
@@ -196,6 +198,8 @@ login:
   apple:
     client-id: store.hoppang.app
     redirect-uri: https://hoppang.store/apl/chassis/calculator
+    key-id: KZR92LU8DL
+    team-id: NUDBF8SVWU
 
 sms:
   aligo:

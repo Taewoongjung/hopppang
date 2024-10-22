@@ -10,7 +10,7 @@ public interface OAuthService {
 
     String getReqLoginUrl();
 
-    OAuthLoginResultDto logIn(final String code);
+    OAuthLoginResultDto logIn(final String code) throws Exception;
 
-    OAuthServiceLogInResultDto refreshAccessToken(final String userEmail);
+    OAuthServiceLogInResultDto refreshAccessToken(final String userEmail) throws Exception;
 }

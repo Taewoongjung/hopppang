@@ -82,6 +82,7 @@ public class SecurityConfig {
                                 , "/api/signup"
                                 , "/api/phones/validations"
                                 , "/api/kakao/signup/{code}"
+                                , "/api/apple/signup/{code}"
                                 , "/api/chassis/calculations/prices"
                         ).permitAll()
                         .requestMatchers(HttpMethod.PUT,

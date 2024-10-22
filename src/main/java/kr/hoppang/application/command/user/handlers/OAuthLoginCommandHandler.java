@@ -31,7 +31,7 @@ public class OAuthLoginCommandHandler implements ICommandHandler<OAuthLoginComma
 
     @Override
     @Transactional
-    public OAuthLoginCommandResult handle(final OAuthLoginCommand command) {
+    public OAuthLoginCommandResult handle(final OAuthLoginCommand command) throws Exception {
 
         log.info("[핸들러 - 소셜 ({}) 로그인] OAuthLoginCommand = {}", command.oauthType().getType(),
                 command);

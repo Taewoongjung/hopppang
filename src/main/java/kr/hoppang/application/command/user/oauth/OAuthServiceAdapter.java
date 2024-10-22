@@ -35,12 +35,13 @@ public class OAuthServiceAdapter {
         return oAuthServiceEnumMap.get(oauthType).getReqLoginUrl();
     }
 
-    public OAuthLoginResultDto logIn(final OauthType oauthType, final String code) {
+    public OAuthLoginResultDto logIn(final OauthType oauthType, final String code)
+            throws Exception {
         return oAuthServiceEnumMap.get(oauthType).logIn(code);
     }
 
     public OAuthServiceLogInResultDto refreshAccessToken(final OauthType oauthType,
-            final String userEmail) {
+            final String userEmail) throws Exception {
         return oAuthServiceEnumMap.get(oauthType).refreshAccessToken(userEmail);
     }
 }
