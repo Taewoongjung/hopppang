@@ -89,6 +89,7 @@ login:
     redirect-uri: https://hoppang.store/apl/chassis/calculator
     key-id: KZR92LU8DL
     team-id: NUDBF8SVWU
+    private-key-path: classpath:AppleAuthKey.p8
 
 sms:
   aligo:
@@ -200,6 +201,7 @@ login:
     redirect-uri: https://hoppang.store/apl/chassis/calculator
     key-id: KZR92LU8DL
     team-id: NUDBF8SVWU
+    private-key-path: /app/resources/AppleAuthKey.p8
 
 sms:
   aligo:

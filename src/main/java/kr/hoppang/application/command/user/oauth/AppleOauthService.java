@@ -64,6 +64,8 @@ public class AppleOauthService implements OAuthService {
     @Value(value = "${login.apple.team-id}")
     private String teamId;
 
+    @Value(value = "${login.apple.private-key-path}")
+    private String privateKeyPath;
 
     @Override
     public OauthType getOauthType() {
@@ -123,7 +125,7 @@ public class AppleOauthService implements OAuthService {
     }
 
     private PrivateKey generatePrivateKey() throws Exception {
-        File file = ResourceUtils.getFile("classpath:AppleAuthKey.p8");
+        File file = ResourceUtils.getFile(privateKeyPath);
         final PEMParser pemParser = new PEMParser(new FileReader(file));
         final JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
         final PrivateKeyInfo object = (PrivateKeyInfo) pemParser.readObject();
