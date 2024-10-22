@@ -17,6 +17,7 @@ import java.security.PrivateKey;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Base64;
 import java.util.Date;
 import kr.hoppang.application.command.user.oauth.dto.AppleIDTokenPayload;
 import kr.hoppang.application.command.user.oauth.dto.AppleRefreshToken;
@@ -148,6 +149,8 @@ public class AppleOauthService implements OAuthService {
         AppleIDTokenPayload idTokenPayload = new Gson().fromJson(decoded, AppleIDTokenPayload.class);
         System.out.println("idTokenPayload = " + idTokenPayload);
 
+        String userName = "호빵유저" + generateRandomNumber(9);
+
         LocalDateTime connectedAtLocalDateTime = convertStringToLocalDateTime2(
                 idTokenPayload.getAuth_time().toString());
         LocalDateTime accessTokenExpireInLocalDateTime = connectedAtLocalDateTime.plusSeconds(
@@ -155,7 +158,7 @@ public class AppleOauthService implements OAuthService {
 
         // 애플 로그인은 일단 기본 정보들은 애플에서 안불러오고 토큰까지만 발급 하고 추후 유저에게 따로 받아서 업데이트 한다.
         return new OAuthLoginResultDto(
-                "",
+                userName,
                 null,
                 idTokenPayload.getSub(),
                 "",
@@ -168,6 +171,12 @@ public class AppleOauthService implements OAuthService {
                 tokenResponse.refresh_token(),
                 LocalDateTime.now().plusYears(10L)
         );
+    }
+
+    private String generateRandomNumber(final int length) {
+        byte[] bytes = new byte[length];
+        random.nextBytes(bytes);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
 
     @Override
