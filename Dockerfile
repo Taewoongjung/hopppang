@@ -16,6 +16,9 @@ WORKDIR /app
 # 빌더 이미지에서 jar 파일만 복사
 COPY --from=builder /build/build/libs/*-SNAPSHOT.jar ./app.jar
 
+# AppleAuthKey.p8 파일을 컨테이너의 /app/resources로 복사
+COPY ./src/main/resources/AppleAuthKey.p8 /app/resources/AppleAuthKey.p8
+
 RUN mkdir -p /app/logs && chown -R root:root /app/logs
 
 # root 대신 nobody 권한으로 실행
