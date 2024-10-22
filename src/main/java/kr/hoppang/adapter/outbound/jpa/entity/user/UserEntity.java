@@ -166,6 +166,7 @@ public class UserEntity extends BaseEntity {
                 getUserDeviceEntityList().stream()
                         .map(UserDeviceEntity::toPojo)
                         .collect(Collectors.toList()),
+                getUserAddress().toPojo(),
                 getLastModified(),
                 getCreatedAt()
         );
@@ -188,6 +189,7 @@ public class UserEntity extends BaseEntity {
                 getUserDeviceEntityList().stream()
                         .map(UserDeviceEntity::toPojo)
                         .collect(Collectors.toList()),
+                getUserAddress().toPojo(),
                 getLastModified(),
                 getCreatedAt()
         );

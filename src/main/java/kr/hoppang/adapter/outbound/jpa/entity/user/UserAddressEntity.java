@@ -14,6 +14,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import kr.hoppang.adapter.outbound.jpa.entity.BaseEntity;
+import kr.hoppang.domain.user.UserAddress;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -68,5 +69,17 @@ public class UserAddressEntity extends BaseEntity {
             final String buildingNumber
     ) {
         return new UserAddressEntity(null, userId, address, subAddress, buildingNumber);
+    }
+
+    public UserAddress toPojo() {
+        return UserAddress.of(
+                getId(),
+                getUserId(),
+                getAddress(),
+                getSubAddress(),
+                getBuildingNumber(),
+                getCreatedAt(),
+                getLastModified()
+        );
     }
 }

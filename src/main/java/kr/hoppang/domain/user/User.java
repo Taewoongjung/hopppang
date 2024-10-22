@@ -108,12 +108,13 @@ public class User extends Throwable implements UserDetails {
             final BoolType requiredReLogin,
             final List<UserToken> userTokenList,
             final List<UserDevice> userDeviceList,
+            final UserAddress userAddress,
             final LocalDateTime lastModified,
             final LocalDateTime createdAt
     ) {
 
         return new User(id, name, email, password, tel, userRole, oauthType, requiredReLogin,
-                userTokenList, userDeviceList, null, lastModified, createdAt);
+                userTokenList, userDeviceList, userAddress, lastModified, createdAt);
     }
 
     @Override
