@@ -37,7 +37,7 @@ public class UserConfigInfoEntity extends BaseEntity {
     private Long userId;
 
     @Enumerated(value = EnumType.STRING)
-    @Column(name = "required_re_login", nullable = false, columnDefinition = "char(1)")
+    @Column(name = "is_push_on", nullable = false, columnDefinition = "char(1)")
     private BoolType isPushOn;
 
     @JsonBackReference
