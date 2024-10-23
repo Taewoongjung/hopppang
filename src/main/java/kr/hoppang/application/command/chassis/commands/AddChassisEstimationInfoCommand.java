@@ -8,6 +8,7 @@ import kr.hoppang.domain.chassis.CompanyType;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationAddress;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationInfo;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationSizeInfo;
+import kr.hoppang.domain.user.User;
 import kr.hoppang.util.common.BoolType;
 
 public record AddChassisEstimationInfoCommand(ChassisEstimationCommand chassisEstimationCommand) implements ICommand {
@@ -31,7 +32,8 @@ public record AddChassisEstimationInfoCommand(ChassisEstimationCommand chassisEs
                                            int customerLivingFloor,
                                            int wholeCalculatedFee,
                                            int floorCustomerLiving,
-                                           List<ChassisSize> chassisSizeList
+                                           List<ChassisSize> chassisSizeList,
+                                           User user
 
     ) {
 
@@ -46,7 +48,7 @@ public record AddChassisEstimationInfoCommand(ChassisEstimationCommand chassisEs
         ChassisEstimationCommand command = this.chassisEstimationCommand;
 
         return ChassisEstimationInfo.of(
-                null,
+                command.user.getId(),
                 ChassisEstimationAddress.of(
                         command.zipCode,
                         command.state,

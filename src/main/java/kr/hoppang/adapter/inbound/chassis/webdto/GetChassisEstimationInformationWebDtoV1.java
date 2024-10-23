@@ -3,12 +3,14 @@ package kr.hoppang.adapter.inbound.chassis.webdto;
 import java.time.LocalDateTime;
 import java.util.List;
 import kr.hoppang.domain.chassis.CompanyType;
-import kr.hoppang.domain.chassis.estimation.ChassisEstimationAddress;
 
 public class GetChassisEstimationInformationWebDtoV1 {
 
     public record Res(Long id,
                         Long userId,
+                        String userName,
+                        String userEmail,
+                        String userPhoneNumber,
                         CompanyType companyType,
                         EstimationAddress chassisEstimationAddress,
                         int totalPrice,

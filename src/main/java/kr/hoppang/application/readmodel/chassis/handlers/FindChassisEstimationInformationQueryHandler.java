@@ -56,6 +56,9 @@ public class FindChassisEstimationInformationQueryHandler
                         e.getHeight(),
                         e.getPrice(),
                         e.getUserId(),
+                        e.getUserName(),
+                        e.getUserEmail(),
+                        e.getUserPhoneNumber(),
                         ChassisEstimationAddress.of(
                                 e.getZipCode(),
                                 e.getState(),

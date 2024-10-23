@@ -5,11 +5,9 @@ import static kr.hoppang.util.converter.chassis.estimation.ChassisEstimationConv
 import static kr.hoppang.util.converter.chassis.estimation.ChassisEstimationConverter.chassisEstimationSizeInfoToEntity;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import kr.hoppang.adapter.outbound.jpa.entity.chassis.estimation.ChassisEstimationInfoEntity;
 import kr.hoppang.adapter.outbound.jpa.entity.chassis.estimation.ChassisEstimationSizeInfoEntity;
@@ -26,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 import static kr.hoppang.adapter.outbound.jpa.entity.chassis.estimation.QChassisEstimationInfoEntity.chassisEstimationInfoEntity;
 import static kr.hoppang.adapter.outbound.jpa.entity.chassis.estimation.QChassisEstimationAddressEntity.chassisEstimationAddressEntity;
 import static kr.hoppang.adapter.outbound.jpa.entity.chassis.estimation.QChassisEstimationSizeInfoEntity.chassisEstimationSizeInfoEntity;
+import static kr.hoppang.adapter.outbound.jpa.entity.user.QUserEntity.userEntity;
+
 
 @Repository
 @RequiredArgsConstructor
@@ -76,6 +76,9 @@ public class ChassisEstimationInfoRepositoryAdapter implements ChassisEstimation
                         chassisEstimationSizeInfoEntity.height,
                         chassisEstimationSizeInfoEntity.price,
                         chassisEstimationInfoEntity.userId,
+                        userEntity.name,
+                        userEntity.email,
+                        userEntity.tel,
                         chassisEstimationInfoEntity.companyType,
                         chassisEstimationInfoEntity.laborFee,
                         chassisEstimationInfoEntity.ladderCarFee,
@@ -97,6 +100,7 @@ public class ChassisEstimationInfoRepositoryAdapter implements ChassisEstimation
                 .from(chassisEstimationInfoEntity)
                 .join(chassisEstimationInfoEntity.chassisEstimationSizeInfoList, chassisEstimationSizeInfoEntity)
                 .join(chassisEstimationInfoEntity.chassisEstimationAddress, chassisEstimationAddressEntity)
+                .join(userEntity).on(chassisEstimationInfoEntity.userId.eq(userEntity.id))
                 .where(whereClause)
                 .limit(limit).offset(offset)
                 .fetch();

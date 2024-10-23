@@ -5,6 +5,7 @@ import java.util.List;
 import kr.hoppang.application.command.chassis.commands.CalculateChassisPriceCommand.CalculateChassisPrice;
 import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
+import kr.hoppang.domain.user.UserAddress;
 
 public record NewEstimation(String userName,
                             String userAddress,
@@ -13,7 +14,7 @@ public record NewEstimation(String userName,
 
     public static NewEstimation of(
             final String userName,
-            final String userAddress,
+            final UserAddress userAddress,
             final CompanyType company,
             final List<CalculateChassisPrice> calculateChassisList) {
 
@@ -25,7 +26,9 @@ public record NewEstimation(String userName,
                         e.width(), e.height()
                 )));
 
-        return new NewEstimation(userName, userAddress, company, estimationList);
+        String userAddressStr = userAddress.getAddress() + " " + userAddress.getSubAddress();
+
+        return new NewEstimation(userName, userAddressStr, company, estimationList);
     }
 
     public record Estimation(ChassisType chassisType,

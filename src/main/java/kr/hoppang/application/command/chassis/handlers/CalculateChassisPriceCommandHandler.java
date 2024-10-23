@@ -18,6 +18,7 @@ import kr.hoppang.application.command.chassis.commands.CalculateChassisPriceComm
 import kr.hoppang.application.command.chassis.commands.CalculateChassisPriceCommand.CalculateChassisPrice;
 import kr.hoppang.domain.chassis.price.ChassisPriceInfo;
 import kr.hoppang.domain.chassis.price.repository.ChassisPriceInfoRepository;
+import kr.hoppang.domain.user.User;
 import kr.hoppang.util.calculator.ApproximateCalculator;
 import kr.hoppang.util.calculator.ChassisPriceCalculator;
 import lombok.RequiredArgsConstructor;
@@ -133,7 +134,8 @@ public class CalculateChassisPriceCommandHandler implements
 
         // 슬랙 알림 발송
         eventPublisher.publishEvent(NewEstimation.of(
-                event.user().getName(), event.user().getUserAddress().getAddress(),
+                event.user().getName(),
+                event.user().getUserAddress(),
                 reqList.get(0).companyType(),
                 event.calculateChassisPriceList()
         ));
@@ -174,7 +176,8 @@ public class CalculateChassisPriceCommandHandler implements
                 freightTransportFee,
                 floor,
                 totalPrice,
-                event.floorCustomerLiving()
+                event.floorCustomerLiving(),
+                event.user()
         );
 
         log.info("[핸들러 - 샤시 내기] 성공");
@@ -213,7 +216,8 @@ public class CalculateChassisPriceCommandHandler implements
             final int freightTransportFee,
             final int floor,
             final int totalPrice,
-            final int floorCustomerLiving) {
+            final int floorCustomerLiving,
+            final User user) {
 
         List<ChassisSize> chassisSizeList = new ArrayList<>();
 
@@ -246,7 +250,8 @@ public class CalculateChassisPriceCommandHandler implements
                         floor,
                         totalPrice,
                         floorCustomerLiving,
-                        chassisSizeList
+                        chassisSizeList,
+                        user
                 )
         ));
     }

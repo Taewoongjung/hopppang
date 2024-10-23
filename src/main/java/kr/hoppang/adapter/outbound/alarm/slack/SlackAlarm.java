@@ -131,8 +131,12 @@ public class SlackAlarm implements AlarmService {
             if (newEstimationEvent.userName() != null) {
                 blocks.add(section(section -> section.text(markdownText(
                         "*:bust_in_silhouette: 고객명:* " + newEstimationEvent.userName()))));
-                blocks.add(section(section -> section.text(markdownText(
-                        "*:house_with_garden: 고객 주소:* " + newEstimationEvent.userAddress()))));
+
+                if (newEstimationEvent.userAddress() != null) {
+                    blocks.add(section(section -> section.text(markdownText(
+                            "*:house_with_garden: 고객 주소:* " + newEstimationEvent.userAddress()))));
+                }
+
                 blocks.add(divider()); // Add a divider after 유저 section
             } else {
                 blocks.add(section(section -> section.text(markdownText(

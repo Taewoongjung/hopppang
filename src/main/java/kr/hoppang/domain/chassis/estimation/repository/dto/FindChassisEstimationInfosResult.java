@@ -16,6 +16,9 @@ public class FindChassisEstimationInfosResult {
     private int height;
     private int price;
     private Long userId;
+    private String userName;
+    private String userEmail;
+    private String userPhoneNumber;
     private CompanyType companyType;
     private int laborFee;
     private int ladderCarFee;
@@ -36,16 +39,22 @@ public class FindChassisEstimationInfosResult {
 
     @QueryProjection
     public FindChassisEstimationInfosResult(Long id, ChassisType chassisType, int width, int height,
-            int price, Long userId, CompanyType companyType, int laborFee, int ladderCarFee,
+            int price, Long userId, String userName, String userEmail, String userPhoneNumber,
+            CompanyType companyType, int laborFee, int ladderCarFee,
             int demolitionFee, int maintenanceFee, int freightTransportFee, int deliveryFee,
-            int totalPrice, String zipCode, String state, String city, String town, String remainAddress,
-            BoolType isApartment, BoolType isExpanded, LocalDateTime createdAt, LocalDateTime lastModified) {
+            int totalPrice, String zipCode, String state, String city, String town,
+            String remainAddress, BoolType isApartment, BoolType isExpanded,
+            LocalDateTime createdAt, LocalDateTime lastModified) {
+
         this.id = id;
         this.chassisType = chassisType;
         this.width = width;
         this.height = height;
         this.price = price;
         this.userId = userId;
+        this.userName = userName;
+        this.userEmail = userEmail;
+        this.userPhoneNumber = userPhoneNumber;
         this.companyType = companyType;
         this.laborFee = laborFee;
         this.ladderCarFee = ladderCarFee;

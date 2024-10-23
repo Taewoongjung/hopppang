@@ -18,23 +18,26 @@ import kr.hoppang.domain.chassis.CompanyType;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationAddress;
 
 public record FindChassisEstimationInformationQueryHandlerResult(
-                Long id,
-                ChassisType chassisType,
-                int width,
-                int height,
-                int price,
-                Long userId,
-                ChassisEstimationAddress chassisEstimationAddress,
-                CompanyType companyType,
-                int laborFee,
-                int ladderCarFee,
-                int demolitionFee,
-                int maintenanceFee,
-                int freightTransportFee,
-                int deliveryFee,
-                int totalPrice,
-                LocalDateTime createdAt,
-                LocalDateTime lastModified) {
+        Long id,
+        ChassisType chassisType,
+        int width,
+        int height,
+        int price,
+        Long userId,
+        String userName,
+        String userEmail,
+        String userPhoneNumber,
+        ChassisEstimationAddress chassisEstimationAddress,
+        CompanyType companyType,
+        int laborFee,
+        int ladderCarFee,
+        int demolitionFee,
+        int maintenanceFee,
+        int freightTransportFee,
+        int deliveryFee,
+        int totalPrice,
+        LocalDateTime createdAt,
+        LocalDateTime lastModified) {
 
     public static List<GetChassisEstimationInformationWebDtoV1.Res> toWebResponseObject(
             final List<FindChassisEstimationInformationQueryHandlerResult> target) {
@@ -50,7 +53,8 @@ public record FindChassisEstimationInformationQueryHandlerResult(
                     .filter(f -> estimationId.equals(f.id))
                     .forEach(e -> {
                         chassisSizeListOfEstimation.add(
-                                new ChassisSize(e.chassisType.getChassisName(), e.width, e.height, e.price));
+                                new ChassisSize(e.chassisType.getChassisName(), e.width, e.height,
+                                        e.price));
                     });
 
             target.stream()
@@ -59,13 +63,18 @@ public record FindChassisEstimationInformationQueryHandlerResult(
                             new Res(
                                     estimationId,
                                     estimation.userId,
+                                    estimation.userName,
+                                    estimation.userEmail,
+                                    estimation.userPhoneNumber,
                                     estimation.companyType,
                                     new EstimationAddress(
                                             estimation.chassisEstimationAddress.getZipCode(),
                                             getAddressStr(estimation.chassisEstimationAddress),
                                             estimation.chassisEstimationAddress.getRemainAddress(),
-                                            convertToBoolean(estimation.chassisEstimationAddress.getIsApartment()),
-                                            convertToBoolean(estimation.chassisEstimationAddress.getIsExpanded())
+                                            convertToBoolean(
+                                                    estimation.chassisEstimationAddress.getIsApartment()),
+                                            convertToBoolean(
+                                                    estimation.chassisEstimationAddress.getIsExpanded())
                                     ),
                                     estimation.totalPrice,
                                     estimation.createdAt,
