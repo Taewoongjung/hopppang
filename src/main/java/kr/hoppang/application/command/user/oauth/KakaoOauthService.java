@@ -248,5 +248,11 @@ public class KakaoOauthService implements OAuthService {
 
         return getDataFromResponseJson(response.block());
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean withdrawUser(final String userEmail) {
+        return false;
+    }
 }
 

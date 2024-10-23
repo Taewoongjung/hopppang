@@ -248,4 +248,10 @@ public class AppleOauthService implements OAuthService {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(refreshedInfo, AppleRefreshToken.class);
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean withdrawUser(final String userEmail) {
+        return false;
+    }
 }

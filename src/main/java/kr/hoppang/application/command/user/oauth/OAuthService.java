@@ -13,4 +13,6 @@ public interface OAuthService {
     OAuthLoginResultDto logIn(final String code) throws Exception;
 
     OAuthServiceLogInResultDto refreshAccessToken(final String userEmail) throws Exception;
+
+    boolean withdrawUser(final String userEmail);
 }
