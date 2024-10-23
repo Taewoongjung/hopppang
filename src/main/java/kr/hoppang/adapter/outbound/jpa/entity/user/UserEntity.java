@@ -25,6 +25,7 @@ import kr.hoppang.adapter.outbound.jpa.entity.BaseEntity;
 import kr.hoppang.domain.user.OauthType;
 import kr.hoppang.domain.user.User;
 import kr.hoppang.domain.user.UserAddress;
+import kr.hoppang.domain.user.UserConfigInfo;
 import kr.hoppang.domain.user.UserDevice;
 import kr.hoppang.domain.user.UserRole;
 import kr.hoppang.util.common.BoolType;
@@ -76,6 +77,9 @@ public class UserEntity extends BaseEntity {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserDeviceEntity> userDeviceEntityList = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private UserConfigInfoEntity userConfigInfo;
 
     private UserEntity(
             final Long id,
@@ -167,6 +171,7 @@ public class UserEntity extends BaseEntity {
                         .map(UserDeviceEntity::toPojo)
                         .collect(Collectors.toList()),
                 getUserAddress() != null ? getUserAddress().toPojo() : null,
+                getUserConfigInfo().toPojo(),
                 getLastModified(),
                 getCreatedAt()
         );
@@ -190,6 +195,7 @@ public class UserEntity extends BaseEntity {
                         .map(UserDeviceEntity::toPojo)
                         .collect(Collectors.toList()),
                 getUserAddress() != null ? getUserAddress().toPojo() : null,
+                getUserConfigInfo().toPojo(),
                 getLastModified(),
                 getCreatedAt()
         );
@@ -203,15 +209,21 @@ public class UserEntity extends BaseEntity {
         this.userAddress = userAddressToEntity(id, userAddress);
     }
 
-    public void updatePhoneNumberAndAddress(final String phoneNumber,
-            final UserAddress userAddress) {
+    public void updatePhoneNumberAndAddressAndConfig(final String phoneNumber,
+            final UserAddress userAddress, final boolean isPushOn) {
 
         this.tel = phoneNumber;
+
         this.userAddress = UserAddressEntity.of(
                 this.id,
                 userAddress.getAddress(),
                 userAddress.getSubAddress(),
                 userAddress.getBuildingNumber()
+        );
+
+        this.userConfigInfo = UserConfigInfoEntity.of(
+                this.id,
+                isPushOn ? BoolType.T : BoolType.F
         );
     }
 
@@ -236,6 +248,13 @@ public class UserEntity extends BaseEntity {
 
             this.userDeviceEntityList.add(userDeviceToEntity(this.id, userDevice));
         }
+    }
+
+    public void setUserConfigInfo(final UserConfigInfo userConfigInfo) {
+        this.userConfigInfo = UserConfigInfoEntity.of(
+                userConfigInfo.getUserId(),
+                userConfigInfo.getIsPushOn()
+        );
     }
 
     public void updateToBeRequiredReLogin() {

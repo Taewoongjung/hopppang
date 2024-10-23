@@ -133,7 +133,7 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
                 BoolType.F,
                 userTokenList,
                 userDeviceList,
-                null,
+                null, null,
                 LocalDateTime.now(), LocalDateTime.now());
 
         User registeredUser = userRepository.save(user);

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,7 +15,8 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import kr.hoppang.adapter.outbound.jpa.entity.BaseEntity;
-import kr.hoppang.domain.user.UserAddress;
+import kr.hoppang.domain.user.UserConfigInfo;
+import kr.hoppang.util.common.BoolType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,9 +25,9 @@ import lombok.ToString;
 @Entity
 @Getter
 @ToString
-@Table(name = "user_address")
+@Table(name = "user_config_info")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserAddressEntity extends BaseEntity {
+public class UserConfigInfoEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,52 +36,41 @@ public class UserAddressEntity extends BaseEntity {
     @Column(name = "user_id", nullable = false, columnDefinition = "bigint")
     private Long userId;
 
-    private String address;
-
-    private String subAddress;
-
-    private String buildingNumber;
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "required_re_login", nullable = false, columnDefinition = "char(1)")
+    private BoolType isPushOn;
 
     @JsonBackReference
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
     private UserEntity user;
 
-    private UserAddressEntity(
+
+    private UserConfigInfoEntity(
             final Long id,
             final Long userId,
-            final String address,
-            final String subAddress,
-            final String buildingNumber
+            final BoolType isPushOn
     ) {
-
         super(LocalDateTime.now(), LocalDateTime.now());
 
         this.id = id;
         this.userId = userId;
-        this.address = address;
-        this.subAddress = subAddress;
-        this.buildingNumber = buildingNumber;
+        this.isPushOn = isPushOn;
     }
 
-    public static UserAddressEntity of(
+    public static UserConfigInfoEntity of(
             final Long userId,
-            final String address,
-            final String subAddress,
-            final String buildingNumber
+            final BoolType isPushOn
     ) {
-        return new UserAddressEntity(null, userId, address, subAddress, buildingNumber);
+        return new UserConfigInfoEntity(null, userId, isPushOn);
     }
 
-    public UserAddress toPojo() {
-        return UserAddress.of(
-                getId(),
-                getUserId(),
-                getAddress(),
-                getSubAddress(),
-                getBuildingNumber(),
+    public UserConfigInfo toPojo() {
+        return UserConfigInfo.of(
+                id,
+                userId,
+                isPushOn,
                 getCreatedAt(),
-                getLastModified()
-        );
+                getLastModified());
     }
 }

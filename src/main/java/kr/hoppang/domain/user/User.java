@@ -38,6 +38,7 @@ public class User extends Throwable implements UserDetails {
     private UserAddress userAddress;
     private List<UserToken> userTokenList = new ArrayList<>();
     private List<UserDevice> userDeviceList = new ArrayList<>();
+    private UserConfigInfo userConfigInfo;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime lastModified;
@@ -60,6 +61,7 @@ public class User extends Throwable implements UserDetails {
             final List<UserToken> userTokenList,
             final List<UserDevice> userDeviceList,
             final UserAddress userAddress,
+            final UserConfigInfo userConfigInfo,
             final LocalDateTime lastModified,
             final LocalDateTime createdAt
     ) {
@@ -74,6 +76,7 @@ public class User extends Throwable implements UserDetails {
         this.userTokenList = userTokenList;
         this.userDeviceList = userDeviceList;
         this.userAddress = userAddress;
+        this.userConfigInfo = userConfigInfo;
         this.lastModified = lastModified;
         this.createdAt = createdAt;
     }
@@ -89,12 +92,14 @@ public class User extends Throwable implements UserDetails {
             final List<UserToken> userTokenList,
             final List<UserDevice> userDeviceList,
             final UserAddress userAddress,
+            final UserConfigInfo userConfigInfo,
             final LocalDateTime lastModified,
             final LocalDateTime createdAt
     ) {
 
         return new User(null, name, email, password, tel, userRole, oauthType, requiredReLogin,
-                userTokenList, userDeviceList, userAddress, lastModified, createdAt);
+                userTokenList, userDeviceList, userAddress, userConfigInfo, lastModified,
+                createdAt);
     }
 
     public static User of(
@@ -109,12 +114,14 @@ public class User extends Throwable implements UserDetails {
             final List<UserToken> userTokenList,
             final List<UserDevice> userDeviceList,
             final UserAddress userAddress,
+            final UserConfigInfo userConfigInfo,
             final LocalDateTime lastModified,
             final LocalDateTime createdAt
     ) {
 
         return new User(id, name, email, password, tel, userRole, oauthType, requiredReLogin,
-                userTokenList, userDeviceList, userAddress, lastModified, createdAt);
+                userTokenList, userDeviceList, userAddress, userConfigInfo, lastModified,
+                createdAt);
     }
 
     @Override

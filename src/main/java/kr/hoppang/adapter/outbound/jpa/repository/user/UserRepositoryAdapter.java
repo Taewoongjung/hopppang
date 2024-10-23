@@ -65,6 +65,10 @@ public class UserRepositoryAdapter implements UserRepository {
             entity.setUserDeviceInfo(user.getUserDeviceList());
         }
 
+        if (user.getUserConfigInfo() != null) {
+            entity.setUserConfigInfo(user.getUserConfigInfo());
+        }
+
         return entity.toPojoWithRelations();
     }
 
@@ -105,7 +109,7 @@ public class UserRepositoryAdapter implements UserRepository {
 
         check(entity == null, NOT_EXIST_USER);
 
-        entity.updatePhoneNumberAndAddress(phoneNumber, userAddress);
+        entity.updatePhoneNumberAndAddressAndConfig(phoneNumber, userAddress, isPushOn);
 
         return entity.toPojo();
     }
