@@ -189,7 +189,7 @@ public class UserEntity extends BaseEntity {
                 getUserDeviceEntityList().stream()
                         .map(UserDeviceEntity::toPojo)
                         .collect(Collectors.toList()),
-                getUserAddress().toPojo(),
+                getUserAddress() != null ? getUserAddress().toPojo() : null,
                 getLastModified(),
                 getCreatedAt()
         );
