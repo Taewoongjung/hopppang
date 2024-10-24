@@ -171,7 +171,7 @@ public class UserEntity extends BaseEntity {
                         .map(UserDeviceEntity::toPojo)
                         .collect(Collectors.toList()),
                 getUserAddress() != null ? getUserAddress().toPojo() : null,
-                getUserConfigInfo().toPojo(),
+                getUserConfigInfo() != null ? getUserConfigInfo().toPojo() : null,
                 getLastModified(),
                 getCreatedAt()
         );
@@ -195,7 +195,7 @@ public class UserEntity extends BaseEntity {
                         .map(UserDeviceEntity::toPojo)
                         .collect(Collectors.toList()),
                 getUserAddress() != null ? getUserAddress().toPojo() : null,
-                getUserConfigInfo().toPojo(),
+                getUserConfigInfo() != null ? getUserConfigInfo().toPojo() : null,
                 getLastModified(),
                 getCreatedAt()
         );
