@@ -105,7 +105,8 @@ public class UserCommandController {
                 .body(new Res(
                         true,
                         oAuthLoginCommandResult.isTheFirstLogIn(),
-                        oAuthLoginCommandResult.userEmail()));
+                        oAuthLoginCommandResult.userEmail(),
+                        OauthType.KKO));
     }
 
     @PutMapping(value = "/api/kakao/refresh")
@@ -144,7 +145,8 @@ public class UserCommandController {
                 .body(new Res(
                         true,
                         oAuthLoginCommandResult.isTheFirstLogIn(),
-                        oAuthLoginCommandResult.userEmail()));
+                        oAuthLoginCommandResult.userEmail(),
+                        OauthType.APL));
     }
 
     @PutMapping(value = "/api/apple/refresh")
