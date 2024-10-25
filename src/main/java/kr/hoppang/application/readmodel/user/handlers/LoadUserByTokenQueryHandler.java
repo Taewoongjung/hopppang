@@ -37,6 +37,7 @@ public class LoadUserByTokenQueryHandler implements IQueryHandler<LoadUserByToke
         String token = jwtUtil.getTokenWithoutBearer(event.authToken());
 
         // 토큰에 해당하는 유저를 찾는다
+        log.info("email = {}", jwtUtil.getEmail(token));
         User foundUser = userRepository.findByEmail(jwtUtil.getEmail(token));
         log.info("foundUser = {}", foundUser);
 
