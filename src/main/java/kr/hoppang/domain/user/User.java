@@ -213,6 +213,8 @@ public class User extends Throwable implements UserDetails {
     }
 
     public void setNotTheFirstLogin() {
-        this.isFirstLogin = false;
+        if (this.isFirstLogin) {
+            this.isFirstLogin = false;
+        }
     }
 }
