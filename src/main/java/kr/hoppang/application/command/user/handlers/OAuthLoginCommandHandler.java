@@ -67,7 +67,7 @@ public class OAuthLoginCommandHandler implements ICommandHandler<OAuthLoginComma
                         registeredUser.getEmail(),
                         registeredUser.getUserRole().name(),
                         registeredUser.getOauthType().name(),
-                        new Date()),
+                        convertLocalDateTimeToDate(oAuthLoginResult.accessTokenExpireIn())),
                 registeredUser.getEmail());
     }
 }
