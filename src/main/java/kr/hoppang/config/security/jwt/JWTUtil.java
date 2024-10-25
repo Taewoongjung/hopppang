@@ -45,6 +45,7 @@ public class JWTUtil {
         try {
             // 여기서 토큰이 만료되었는지 검증
             Date expiration = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration();
+            log.info("expiration comparison date = {}", expiration);
             return expiration.before(new Date());
         } catch (ExpiredJwtException e) {
             return true;
