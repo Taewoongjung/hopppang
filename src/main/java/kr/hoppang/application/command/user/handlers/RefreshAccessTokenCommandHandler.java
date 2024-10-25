@@ -38,6 +38,8 @@ public class RefreshAccessTokenCommandHandler implements
         Map<String, String> expiredInfo = jwtUtil.isExpiredReturnWithExpiredUserInfo(
                 jwtUtil.getTokenWithoutBearer(command.expiredToken()));
 
+        log.info("expiredInfo = {}", expiredInfo);
+
         loginCheck(expiredInfo == null, YET_EXPIRED_TOKEN);
 
         String userEmail = expiredInfo.get("username");
