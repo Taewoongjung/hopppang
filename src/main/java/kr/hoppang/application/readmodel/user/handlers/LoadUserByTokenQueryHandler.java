@@ -38,6 +38,7 @@ public class LoadUserByTokenQueryHandler implements IQueryHandler<LoadUserByToke
 
         // 토큰에 해당하는 유저를 찾는다
         User foundUser = userRepository.findByEmail(jwtUtil.getEmail(token));
+        log.info("foundUser = {}", foundUser);
 
         // 토큰 만료 검사
         check(jwtUtil.isExpired(token), EXPIRED_ACCESS_TOKEN);
