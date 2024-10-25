@@ -97,6 +97,7 @@ public class JWTUtil {
             final String oauthType,
             final Date expireMs
     ) {
+        log.info("jwt expire time = {}", expireMs);
 
         String response = Jwts.builder()
                 .claim("username", userName)
