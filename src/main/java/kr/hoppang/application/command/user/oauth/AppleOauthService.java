@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
+import jakarta.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileReader;
 import java.security.PrivateKey;
@@ -37,11 +38,13 @@ import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
@@ -67,6 +70,39 @@ public class AppleOauthService implements OAuthService {
     @Value(value = "${login.apple.private-key-path}")
     private String privateKeyPath;
 
+    private String secretKey;
+
+    @PostConstruct
+    @Scheduled(cron = "0 0 1 */3 *", zone = "Asia/Seoul") // 3개월에 한 번씩 secretKey 갱신
+    void createSecretKey() throws Exception {
+        secretKey = generateJWT();
+    }
+
+    private String generateJWT() throws Exception {
+        PrivateKey pKey = generatePrivateKey();
+        String token = Jwts.builder()
+                .setHeaderParam("kid", keyId)
+                .setHeaderParam("alg", "ES256")
+                .setIssuer(teamId)
+                .setAudience("https://appleid.apple.com")
+                .setSubject(appleClientId)
+                .setExpiration(new Date(System.currentTimeMillis() + (1000L * 60 * 60 * 24 * 100)))
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .signWith(SignatureAlgorithm.ES256, pKey)
+                .compact();
+        return token;
+    }
+
+    private PrivateKey generatePrivateKey() throws Exception {
+        File file = ResourceUtils.getFile(privateKeyPath);
+        final PEMParser pemParser = new PEMParser(new FileReader(file));
+        final JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
+        final PrivateKeyInfo object = (PrivateKeyInfo) pemParser.readObject();
+        final PrivateKey pKey = converter.getPrivateKey(object);
+        pemParser.close();
+        return pKey;
+    }
+
     @Override
     public OauthType getOauthType() {
         return OauthType.APL;
@@ -91,54 +127,29 @@ public class AppleOauthService implements OAuthService {
         return getUserInfoFromAppleAndMakeUserObject(tokenInfoFromApple);
     }
 
-    private String getTokenInfoFromApple(final String code) throws Exception {
+    private String getTokenInfoFromApple(final String code) {
         System.out.println("code = " + code);
-        String clientSecret = generateJWT();
-        System.out.println("clientSecret = " + clientSecret);
+        System.out.println("secretKey = " + secretKey);
 
         return webClient.post()
-                .uri("https://appleid.apple.com/auth/token")
+                .uri("https://appleid.apple.com/auth/oauth2/v2/token")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .body(BodyInserters.fromFormData(
-                        "grant_type", "authorization_code")
+                                "grant_type", "authorization_code")
                         .with("client_id", appleClientId)
-                        .with("client_secret", clientSecret)
+                        .with("client_secret", secretKey)
                         .with("redirect_uri", appleRedirectUri)
                         .with("code", code))
                 .retrieve()
                 .bodyToMono(String.class).block();
     }
 
-    private String generateJWT() throws Exception {
-        PrivateKey pKey = generatePrivateKey();
-        String token = Jwts.builder()
-                .setHeaderParam("kid", keyId)
-                .setHeaderParam("alg", "ES256")
-                .setIssuer(teamId)
-                .setAudience("https://appleid.apple.com")
-                .setSubject(appleClientId)
-                .setExpiration(new Date(System.currentTimeMillis() + (1000 * 60 * 5)))
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .signWith(SignatureAlgorithm.ES256, pKey)
-                .compact();
-        return token;
-    }
-
-    private PrivateKey generatePrivateKey() throws Exception {
-        File file = ResourceUtils.getFile(privateKeyPath);
-        final PEMParser pemParser = new PEMParser(new FileReader(file));
-        final JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
-        final PrivateKeyInfo object = (PrivateKeyInfo) pemParser.readObject();
-        final PrivateKey pKey = converter.getPrivateKey(object);
-        pemParser.close();
-        return pKey;
-    }
-
     private OAuthLoginResultDto getUserInfoFromAppleAndMakeUserObject(
             final String tokenInfoFromApple) throws JsonProcessingException {
 
         ObjectMapper objectMapper = new ObjectMapper();
-        TokenResponse tokenResponse = objectMapper.readValue(tokenInfoFromApple, TokenResponse.class);
+        TokenResponse tokenResponse = objectMapper.readValue(tokenInfoFromApple,
+                TokenResponse.class);
         System.out.println("tokenResponse = " + tokenResponse);
 
         String idToken = tokenResponse.id_token();
@@ -148,7 +159,8 @@ public class AppleOauthService implements OAuthService {
         String decoded = new String(Decoders.BASE64.decode(payload));
         System.out.println("decoded = " + decoded);
 
-        AppleIDTokenPayload idTokenPayload = new Gson().fromJson(decoded, AppleIDTokenPayload.class);
+        AppleIDTokenPayload idTokenPayload = new Gson().fromJson(decoded,
+                AppleIDTokenPayload.class);
         System.out.println("idTokenPayload = " + idTokenPayload);
 
         String userName = "호빵유저" + generateRandomNumber(9);
@@ -234,21 +246,19 @@ public class AppleOauthService implements OAuthService {
     // 리프레스 토큰으로 엑세스 토큰 갱신하기
     private AppleRefreshToken getAccessTokenToRefresh(final String refreshToken) throws Exception {
 
-        String clientSecret = generateJWT();
-
-        String refreshedInfo = webClient.post()
-                .uri("https://appleid.apple.com/auth/token")
+        Mono<String> refreshedInfo = webClient.post()
+                .uri("https://appleid.apple.com/auth/oauth2/v2/token")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .body(BodyInserters.fromFormData(
-                                "grant_type", "refresh_token")
-                        .with("client_id", appleClientId)
-                        .with("client_secret", clientSecret)
+                                "client_id", appleClientId)
+                        .with("client_secret", secretKey)
+                        .with("grant_type", "refresh_token")
                         .with("refresh_token", refreshToken))
                 .retrieve()
-                .bodyToMono(String.class).block();
+                .bodyToMono(String.class);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(refreshedInfo, AppleRefreshToken.class);
+        return objectMapper.readValue(refreshedInfo.block(), AppleRefreshToken.class);
     }
 
     @Override

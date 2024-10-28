@@ -2,7 +2,6 @@ package kr.hoppang.application.command.user.handlers;
 
 import static kr.hoppang.adapter.common.util.VersatileUtil.convertLocalDateTimeToDate;
 
-import java.util.Date;
 import kr.hoppang.abstraction.domain.ICommandHandler;
 import kr.hoppang.application.command.user.commandresults.OAuthLoginCommandResult;
 import kr.hoppang.application.command.user.commands.OAuthLoginCommand;
