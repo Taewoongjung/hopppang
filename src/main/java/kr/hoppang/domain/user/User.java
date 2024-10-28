@@ -217,4 +217,17 @@ public class User extends Throwable implements UserDetails {
             this.isFirstLogin = false;
         }
     }
+
+    public LocalDateTime getExpireInOfAccessToken() {
+        UserToken userToken = this.userTokenList.stream()
+                .filter(f -> TokenType.ACCESS.equals(f.getTokenType()))
+                .findFirst()
+                .orElseThrow(() -> new HoppangLoginException(NOT_EXIST_ACCESS_TOKEN));
+
+        if (userToken != null) {
+            return userToken.getExpireIn();
+        }
+
+        return null;
+    }
 }

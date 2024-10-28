@@ -86,7 +86,8 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
             }
             // 모든 토큰이 만료 되어서 다시 로그인이 필요한 유저 end
 
-            // 여기에서 이미 회원이 있고 리프레시 토큰이 만료 되었으면 에러 던짐. (에러에 /api/{kakao || apple}/auth 응답값을. 그래서 유저가 해당 uri를 타고 가서 로그인할 수 있게 유도 함.)
+            // 여기에서 이미 회원이 있을 때 리프레시 토큰이 유효한지 검증.
+            // 아니면 에러 던짐. (에러에 /api/{kakao || apple}/auth 응답값을. 그래서 유저가 해당 uri를 타고 가서 로그인할 수 있게 유도 함.)
             checkIfLoggedInUserWithExpiredRefreshToken(isUserExist);
 
             User updatedUser = userRepository.updateDeviceInfo(event.email(),

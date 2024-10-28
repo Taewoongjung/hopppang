@@ -11,7 +11,7 @@ public enum ErrorType {
     YET_EXPIRED_TOKEN(3, "아직 유효한 토큰입니다."),
     NOT_EXIST_TOKEN(4, "존재하지 않는 토큰 입니다."),
     NOT_EXIST_OAUTH_TYPE(5, "소셜 로그인 타입이 없습니다."),
-    NOT_EXIST_ACCESS_TOKEN(6, "존재하지 않는 액세스 토큰 입니다."),
+    NOT_EXIST_ACCESS_TOKEN(6, "존재하지 않는 액세스 토큰 입니다./토큰이 존재하지 않습니다."),
     NOT_EXIST_REFRESH_TOKEN(6, "존재하지 않는 리프래시 토큰 입니다."),
     PLEASE_LOGIN_AGAIN(7, "다시 로그인을 해주세요."),
     NO_HISTORY_PUBLISHED_REFRESH_TOKEN(8, "리프래쉬 토큰이 발급된 이력이 없습니다."),
