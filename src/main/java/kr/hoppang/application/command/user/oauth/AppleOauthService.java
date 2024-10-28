@@ -21,7 +21,6 @@ import java.time.ZoneId;
 import java.util.Base64;
 import java.util.Date;
 import kr.hoppang.application.command.user.oauth.dto.AppleIDTokenPayload;
-import kr.hoppang.application.command.user.oauth.dto.AppleRefreshToken;
 import kr.hoppang.application.command.user.oauth.dto.OAuthLoginResultDto;
 import kr.hoppang.application.command.user.oauth.dto.OAuthServiceLogInResultDto;
 import kr.hoppang.application.command.user.oauth.dto.TokenResponse;
