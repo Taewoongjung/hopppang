@@ -94,6 +94,11 @@ public class UserRepositoryAdapter implements UserRepository {
                 .findFirst()
                 .orElseThrow(() -> new HoppangLoginException(NOT_EXIST_TOKEN));
 
+        if (token == null) {
+            userToken.reviseToken(expireTime);
+            return;
+        }
+
         userToken.reviseToken(token, expireTime);
     }
 

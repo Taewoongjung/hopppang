@@ -198,6 +198,11 @@ public class AppleOauthService implements OAuthService {
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
 
+    /**
+    * @NOTE
+       애플은 리프레시 토큰의 유효기간이 없으므로 호빵 서비스 자체 내에서 검증한다.
+       만약 유저가 회원탈퇴 버튼을 누르면 해당 토큰들을 삭제하는 방식으로 한다.
+    * */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public OAuthServiceLogInResultDto refreshAccessToken(final String userEmail) throws Exception {
@@ -208,27 +213,16 @@ public class AppleOauthService implements OAuthService {
 
         checkIfLoggedInUserWithExpiredRefreshToken(user);
 
-        AppleRefreshToken appleRefreshToken = getAccessTokenToRefresh(
-                user.getTheLatestRefreshToken().getToken());
+        LocalDateTime refreshedAccessTokenExpireIn = getAccessTokenToRefresh(user);
 
-        String accessToken = appleRefreshToken.getAccess_token();
-
-        // 애플은 리프레시 토큰에 유효시간이 없기 때문에 따로 시간 검증을 하지 않는다.
-        long expireInSeconds = Long.parseLong(appleRefreshToken.getExpire_in().toString());
-        LocalDateTime accessTokenExpireInLocalDateTime = LocalDateTime.ofInstant(
-                Instant.ofEpochSecond(expireInSeconds),
-                ZoneId.of("Asia/Seoul"));
-
-        user.reviseTheLatestAccessToken(accessToken, accessTokenExpireInLocalDateTime);
-
-        userRepository.updateToken(user.getEmail(), TokenType.ACCESS, accessToken,
-                accessTokenExpireInLocalDateTime);
+        userRepository.updateToken(user.getEmail(), TokenType.ACCESS, null,
+                refreshedAccessTokenExpireIn);
 
         return new OAuthServiceLogInResultDto(
                 user.getEmail(),
                 user.getUserRole(),
                 user.getOauthType(),
-                convertLocalDateTimeToDate(accessTokenExpireInLocalDateTime));
+                convertLocalDateTimeToDate(refreshedAccessTokenExpireIn));
     }
 
     private void checkIfLoggedInUserWithExpiredRefreshToken(final User isUserExist) {
@@ -244,21 +238,9 @@ public class AppleOauthService implements OAuthService {
     }
 
     // 리프레스 토큰으로 엑세스 토큰 갱신하기
-    private AppleRefreshToken getAccessTokenToRefresh(final String refreshToken) throws Exception {
+    private LocalDateTime getAccessTokenToRefresh(final User user) {
 
-        Mono<String> refreshedInfo = webClient.post()
-                .uri("https://appleid.apple.com/auth/oauth2/v2/token")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .body(BodyInserters.fromFormData(
-                                "client_id", appleClientId)
-                        .with("client_secret", secretKey)
-                        .with("grant_type", "refresh_token")
-                        .with("refresh_token", refreshToken))
-                .retrieve()
-                .bodyToMono(String.class);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(refreshedInfo.block(), AppleRefreshToken.class);
+        return user.getExpireInOfAccessToken().plusHours(3);
     }
 
     @Override
