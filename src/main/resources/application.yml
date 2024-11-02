@@ -85,7 +85,7 @@ login:
     rest-api-key: da09bfccea21381b988c8ede053a85c5
     redirect-uri: http://localhost:3000/kko/chassis/calculator
   apple:
-    client-id: hoppang
+    client-id: store.hoppang.app
     redirect-uri: https://hoppang.store/apl/chassis/calculator
     key-id: KZR92LU8DL
     team-id: NUDBF8SVWU
@@ -197,7 +197,7 @@ login:
     rest-api-key: 08b5d4bb7ce13fc1251ff099bb5f2fee
     redirect-uri: https://hoppang.store/kko/chassis/calculator
   apple:
-    client-id: hoppang
+    client-id: store.hoppang.app
     redirect-uri: https://hoppang.store/apl/chassis/calculator
     key-id: KZR92LU8DL
     team-id: NUDBF8SVWU
