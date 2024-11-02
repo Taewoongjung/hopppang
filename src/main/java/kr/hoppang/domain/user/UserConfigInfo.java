@@ -45,4 +45,12 @@ public class UserConfigInfo {
     ) {
         return new UserConfigInfo(id, userId, isPushOn, createdAt, lastModified);
     }
+
+    public boolean getIsPushOnAsBoolean() {
+        if (BoolType.T.equals(this.isPushOn)) {
+            return true;
+        }
+
+        return false;
+    }
 }

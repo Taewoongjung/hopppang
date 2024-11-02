@@ -20,6 +20,7 @@ public enum ErrorType {
     NOT_EXIST_USER(11, "유저가 존재하지 않습니다."),
     NOT_AUTHORIZED_USER(12, "접근 권한이 없습니다."),
     NOT_EXIST_DATA_IN_CACHE(13, "해당하는 캐시 데이터가 존재하지 않습니다."),
+    NOT_EXIST_USER_CONFIGURATION(14, "해당 유저의 설정 정보가 존재하지 않습니다."),
 
     LOGIN_FAIL(100, "로그인 실패, 아이디 또는 비밀번호를 확인해주세요."),
     EXPIRED_ACCESS_TOKEN(101, "만료 된 토큰입니다."),
