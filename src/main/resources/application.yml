@@ -87,7 +87,7 @@ login:
   apple:
     client-id: store.hoppang.app
     redirect-uri: https://hoppang.store/apl/chassis/calculator
-    key-id: KZR92LU8DL
+    key-id: U5RT82R5MC
     team-id: NUDBF8SVWU
     private-key-path: classpath:AppleAuthKey.p8
 
@@ -199,7 +199,7 @@ login:
   apple:
     client-id: store.hoppang.app
     redirect-uri: https://hoppang.store/apl/chassis/calculator
-    key-id: KZR92LU8DL
+    key-id: U5RT82R5MC
     team-id: NUDBF8SVWU
     private-key-path: /app/resources/AppleAuthKey.p8
 
