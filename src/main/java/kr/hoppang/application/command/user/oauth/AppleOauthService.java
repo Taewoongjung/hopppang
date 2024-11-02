@@ -131,7 +131,7 @@ public class AppleOauthService implements OAuthService {
         System.out.println("secretKey = " + secretKey);
 
         return webClient.post()
-                .uri("https://appleid.apple.com/auth/oauth2/v2/token")
+                .uri("https://appleid.apple.com/auth/token")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .body(BodyInserters.fromFormData(
                                 "grant_type", "authorization_code")
