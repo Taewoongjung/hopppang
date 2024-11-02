@@ -76,5 +76,6 @@ public class UserConfigInfoEntity extends BaseEntity {
 
     public void setIsPushOn(final BoolType isPushOn) {
         this.isPushOn = isPushOn;
+        updateLastModifiedAsNow();
     }
 }

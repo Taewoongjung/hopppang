@@ -274,6 +274,5 @@ public class UserEntity extends BaseEntity {
         }
 
         this.userConfigInfo.setIsPushOn(isPushOnTarget ? BoolType.T : BoolType.F);
-        updateLastModifiedAsNow();
     }
 }
