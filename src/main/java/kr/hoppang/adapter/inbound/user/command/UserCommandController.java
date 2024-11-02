@@ -169,7 +169,8 @@ public class UserCommandController {
     ) throws Exception {
 
         sendPhoneValidationSmsCommandHandler.handle(
-                new SendPhoneValidationSmsCommand(req.targetPhoneNumber(), req.validationType()));
+                new SendPhoneValidationSmsCommand(req.email(), req.targetPhoneNumber(),
+                        req.validationType()));
 
         return ResponseEntity.status(HttpStatus.OK).body(true);
     }

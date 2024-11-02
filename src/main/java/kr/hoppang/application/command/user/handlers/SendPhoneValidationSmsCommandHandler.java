@@ -44,6 +44,11 @@ public class SendPhoneValidationSmsCommandHandler implements
             // 존재하는 휴대폰 번호 인지 검증
             User user = userRepository.findIfExistUserByPhoneNumber(event.targetPhoneNumber());
             if (user != null) {
+                // 이미 회원이 존재하면 갓 만들어진 회원 제거
+                userRepository.deleteUser(event.email());
+                log.info("중복으로 인한 유저 제거 완료 = {}", event.email());
+
+                // 이미 회원이 존재하면 에러를 던진다.
                 duplicatedSsoLoginCheck(!OauthType.NON.equals(user.getOauthType()), user.getEmail(),
                         user.getOauthType());
             }

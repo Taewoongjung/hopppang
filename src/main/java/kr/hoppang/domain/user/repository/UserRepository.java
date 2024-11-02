@@ -30,4 +30,6 @@ public interface UserRepository {
     void updateRequiredReLogin(final String userEmail);
 
     User updateUserTokenInfo(final String userEmail, final List<UserToken> userTokens);
+
+    void deleteUser(final String email);
 }

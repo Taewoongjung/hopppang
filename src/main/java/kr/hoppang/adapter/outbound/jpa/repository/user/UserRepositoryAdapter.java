@@ -163,4 +163,10 @@ public class UserRepositoryAdapter implements UserRepository {
 
         return entity.toPojo();
     }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void deleteUser(final String email) {
+        userJpaRepository.deleteByEmail(email);
+    }
 }

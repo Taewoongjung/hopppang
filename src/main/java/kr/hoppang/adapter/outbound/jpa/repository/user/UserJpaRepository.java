@@ -20,4 +20,6 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
     UserEntity findByDeviceId(@Param("deviceId") final String deviceId);
 
     UserEntity findByTel(final String phoneNumber);
+
+    void deleteByEmail(final String email);
 }
