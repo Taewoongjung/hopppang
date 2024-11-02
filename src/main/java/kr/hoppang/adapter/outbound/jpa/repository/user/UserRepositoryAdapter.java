@@ -2,19 +2,24 @@ package kr.hoppang.adapter.outbound.jpa.repository.user;
 
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_TOKEN;
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_USER;
+import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_USER_CONFIGURATION;
 import static kr.hoppang.adapter.common.util.CheckUtil.check;
 import static kr.hoppang.util.converter.user.UserEntityConverter.userToEntity;
 import static kr.hoppang.util.converter.user.UserEntityConverter.userTokenToEntity;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import kr.hoppang.adapter.common.exception.custom.HoppangLoginException;
+import kr.hoppang.adapter.outbound.jpa.entity.user.UserConfigInfoEntity;
 import kr.hoppang.adapter.outbound.jpa.entity.user.UserEntity;
 import kr.hoppang.adapter.outbound.jpa.entity.user.UserTokenEntity;
+import kr.hoppang.adapter.outbound.jpa.repository.user.userconfiginfo.UserConfigInfoJpaRepository;
 import kr.hoppang.domain.user.OauthType;
 import kr.hoppang.domain.user.TokenType;
 import kr.hoppang.domain.user.User;
 import kr.hoppang.domain.user.UserAddress;
+import kr.hoppang.domain.user.UserConfigInfo;
 import kr.hoppang.domain.user.UserDevice;
 import kr.hoppang.domain.user.UserToken;
 import kr.hoppang.domain.user.repository.UserRepository;
@@ -30,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserRepositoryAdapter implements UserRepository {
 
     private final UserJpaRepository userJpaRepository;
+    private final UserConfigInfoJpaRepository userConfigInfoJpaRepository;
 
     @Override
     public User findByEmail(final String email) {
@@ -168,5 +174,26 @@ public class UserRepositoryAdapter implements UserRepository {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void deleteUser(final String email) {
         userJpaRepository.deleteByEmail(email);
+    }
+
+    @Override
+    @Transactional
+    public void updateUserConfiguration(final long id, final boolean isPushOn) {
+        Optional<UserEntity> entity = userJpaRepository.findById(id);
+
+        check(entity.isEmpty(), NOT_EXIST_USER);
+
+        entity.get().updateIsPushOn(isPushOn);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserConfigInfo findUserConfigByUserId(final long userId) {
+
+        UserConfigInfoEntity userConfigInfo = userConfigInfoJpaRepository.findByUserId(userId);
+
+        check(userConfigInfo == null, NOT_EXIST_USER_CONFIGURATION);
+
+        return userConfigInfo.toPojo();
     }
 }

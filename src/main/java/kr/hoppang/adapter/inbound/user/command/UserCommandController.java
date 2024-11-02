@@ -7,14 +7,17 @@ import kr.hoppang.adapter.inbound.user.webdto.SignUpDtoWebDtoV1;
 import kr.hoppang.adapter.inbound.user.webdto.SocialSignUpFinalWebDtoV1;
 import kr.hoppang.adapter.inbound.user.webdto.SsoSignUpWebDtoV1;
 import kr.hoppang.adapter.inbound.user.webdto.SsoSignUpWebDtoV1.Res;
+import kr.hoppang.adapter.inbound.user.webdto.UpdateUserConfigWebDtoV1;
 import kr.hoppang.application.command.user.commandresults.OAuthLoginCommandResult;
 import kr.hoppang.application.command.user.commands.OAuthLoginCommand;
 import kr.hoppang.application.command.user.commands.RefreshAccessTokenCommand;
+import kr.hoppang.application.command.user.commands.ReviseUserConfigurationCommand;
 import kr.hoppang.application.command.user.commands.SendPhoneValidationSmsCommand;
 import kr.hoppang.application.command.user.commands.SignUpCommand;
 import kr.hoppang.application.command.user.commands.SocialSignUpFinalCommand;
 import kr.hoppang.application.command.user.handlers.OAuthLoginCommandHandler;
 import kr.hoppang.application.command.user.handlers.RefreshAccessTokenCommandHandler;
+import kr.hoppang.application.command.user.handlers.ReviseUserConfigurationCommandHandler;
 import kr.hoppang.application.command.user.handlers.SendPhoneValidationSmsCommandHandler;
 import kr.hoppang.application.command.user.handlers.SignUpCommandHandler;
 import kr.hoppang.application.command.user.handlers.SocialSignUpFinalCommandHandler;
@@ -41,6 +44,7 @@ public class UserCommandController {
     private final SocialSignUpFinalCommandHandler socialSignUpFinalCommandHandler;
     private final RefreshAccessTokenCommandHandler refreshAccessTokenCommandHandler;
     private final SendPhoneValidationSmsCommandHandler sendPhoneValidationSmsCommandHandler;
+    private final ReviseUserConfigurationCommandHandler reviseUserConfigurationCommandHandler;
 
     @PostMapping(value = "/api/signup")
     public ResponseEntity<SignUpDtoWebDtoV1.Res> signup(
@@ -173,5 +177,16 @@ public class UserCommandController {
                         req.validationType()));
 
         return ResponseEntity.status(HttpStatus.OK).body(true);
+    }
+
+    @PutMapping(value = "/api/users/{userId}/configs")
+    public ResponseEntity<Boolean> updateUserConfig(
+            @PathVariable(value = "userId") final Long userId,
+            @RequestBody final UpdateUserConfigWebDtoV1.Req req
+    ) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(reviseUserConfigurationCommandHandler.handle(
+                        new ReviseUserConfigurationCommand(userId, req.isPushOn())));
     }
 }

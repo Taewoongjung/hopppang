@@ -6,6 +6,7 @@ import kr.hoppang.domain.user.OauthType;
 import kr.hoppang.domain.user.TokenType;
 import kr.hoppang.domain.user.User;
 import kr.hoppang.domain.user.UserAddress;
+import kr.hoppang.domain.user.UserConfigInfo;
 import kr.hoppang.domain.user.UserDevice;
 import kr.hoppang.domain.user.UserToken;
 
@@ -32,4 +33,8 @@ public interface UserRepository {
     User updateUserTokenInfo(final String userEmail, final List<UserToken> userTokens);
 
     void deleteUser(final String email);
+
+    void updateUserConfiguration(final long id, final boolean isPushOn);
+
+    UserConfigInfo findUserConfigByUserId(final long userId);
 }

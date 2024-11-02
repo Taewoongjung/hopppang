@@ -5,19 +5,24 @@ import static kr.hoppang.domain.user.OauthType.KKO;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.stream.Collectors;
+import kr.hoppang.adapter.inbound.user.webdto.GetUserConfigurationInfoWebDtoV1;
 import kr.hoppang.adapter.inbound.user.webdto.LoadUserWebDtoV1;
 import kr.hoppang.application.command.user.oauth.OAuthServiceAdapter;
+import kr.hoppang.application.readmodel.user.handlers.GetUserConfigurationInfoQueryHandler;
 import kr.hoppang.application.readmodel.user.handlers.LoadUserByTokenQueryHandler;
 import kr.hoppang.application.readmodel.user.handlers.ValidationCheckOfPhoneNumberQueryHandler;
+import kr.hoppang.application.readmodel.user.queries.GetUserConfigurationInfoQuery;
 import kr.hoppang.application.readmodel.user.queries.LoadUserByTokenQuery;
 import kr.hoppang.application.readmodel.user.queries.ValidationCheckOfPhoneNumberQuery;
 import kr.hoppang.domain.user.User;
+import kr.hoppang.domain.user.UserConfigInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,8 +33,8 @@ public class UserQueryController {
 
     private final OAuthServiceAdapter oAuthServiceAdapter;
     private final LoadUserByTokenQueryHandler loadUserByTokenCommandHandler;
+    private final GetUserConfigurationInfoQueryHandler getUserConfigurationInfoQueryHandler;
     private final ValidationCheckOfPhoneNumberQueryHandler validationCheckOfPhoneNumberQueryHandler;
-
 
     @GetMapping(value = "/api/me")
     public ResponseEntity<LoadUserWebDtoV1.Res> validateUser(
@@ -46,6 +51,7 @@ public class UserQueryController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new LoadUserWebDtoV1.Res(
+                        foundUser.getId(),
                         foundUser.getUsername(),
                         foundUser.getTel(),
                         foundUser.getName(),
@@ -74,5 +80,17 @@ public class UserQueryController {
     public ResponseEntity<String> requestAppleAuthBeforeSignUp() {
 
         return ResponseEntity.status(HttpStatus.OK).body(oAuthServiceAdapter.getReqLoginUrl(APL));
+    }
+
+    @GetMapping(value = "/api/users/{userId}/configs")
+    public ResponseEntity<GetUserConfigurationInfoWebDtoV1.Res> getUserConfigurationInfo(
+        @PathVariable(value = "userId") final long userId
+    ) {
+
+        UserConfigInfo userConfigInfo = getUserConfigurationInfoQueryHandler.handle(
+                new GetUserConfigurationInfoQuery(userId));
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new GetUserConfigurationInfoWebDtoV1.Res(userConfigInfo.getIsPushOnAsBoolean()));
     }
 }

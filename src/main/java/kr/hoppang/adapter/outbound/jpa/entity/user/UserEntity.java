@@ -264,4 +264,15 @@ public class UserEntity extends BaseEntity {
     public void updateNotToBeRequiredReLogin() {
         this.requiredReLogin = BoolType.F;
     }
+
+    public void updateIsPushOn(final boolean isPushOnTarget) {
+
+        boolean originIsPushOn = this.userConfigInfo.getIsPushOn().equals(BoolType.T);
+
+        if (originIsPushOn == isPushOnTarget) {
+            return;
+        }
+
+        this.userConfigInfo.setIsPushOn(isPushOnTarget ? BoolType.T : BoolType.F);
+    }
 }

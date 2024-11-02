@@ -99,6 +99,7 @@ public class SecurityConfig {
                                 , "/api/chassis/prices/additions/criteria"
                                 , "/api/chassis/estimations"
                                 , "/api/chassis/estimations/count"
+                                , "/api/users/{userId}/configs"
                         ).authenticated()
 
                         .requestMatchers(HttpMethod.POST
@@ -108,6 +109,7 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.PUT
                                 , "/api/chassis/prices/additions/criteria"
+                                , "/api/users/{userId}/configs"
                                 , "/api/social/users"
                         ).authenticated()
 
