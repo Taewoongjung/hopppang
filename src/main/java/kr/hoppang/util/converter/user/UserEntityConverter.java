@@ -1,6 +1,5 @@
 package kr.hoppang.util.converter.user;
 
-import java.util.stream.Collectors;
 import kr.hoppang.adapter.outbound.jpa.entity.user.UserAddressEntity;
 import kr.hoppang.adapter.outbound.jpa.entity.user.UserDeviceEntity;
 import kr.hoppang.adapter.outbound.jpa.entity.user.UserEntity;
@@ -21,33 +20,9 @@ public class UserEntityConverter {
                 user.getTel(),
                 user.getUserRole(),
                 user.getOauthType(),
-                user.getRequiredReLogin()
-        );
-    }
-
-    public static UserEntity userToEntityWithRelations(final User user) {
-
-        return UserEntity.of(
-                user.getName(),
-                user.getEmail(),
-                user.getPassword(),
-                user.getTel(),
-                user.getUserRole(),
-                user.getOauthType(),
                 user.getRequiredReLogin(),
-                user.getUserTokenList().stream()
-                        .map(UserEntityConverter::userTokenToEntity)
-                        .collect(Collectors.toList())
+                user.getDeletedAt()
         );
-    }
-
-    private static UserTokenEntity userTokenToEntity(final UserToken userToken) {
-        return UserTokenEntity.of(
-                userToken.getProviderUserId(),
-                userToken.getTokenType(),
-                userToken.getToken(),
-                userToken.getConnectedAt(),
-                userToken.getExpireIn());
     }
 
     public static UserTokenEntity userTokenToEntity(final Long userId, final UserToken userToken) {

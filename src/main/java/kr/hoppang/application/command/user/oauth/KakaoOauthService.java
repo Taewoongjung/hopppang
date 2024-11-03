@@ -26,7 +26,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONStringer;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -251,8 +253,22 @@ public class KakaoOauthService implements OAuthService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean withdrawUser(final String userEmail) {
-        return false;
+    public boolean withdrawUser(final long userId) {
+
+        User user = userRepository.findById(userId);
+        UserToken userAccessToken = user.getTheLatestAccessToken();
+
+        ResponseEntity<String> response = webClient.post().uri("https://kapi.kakao.com/v1/user/unlink")
+                .headers(headers -> {
+                    headers.add("Authorization", "Bearer " + userAccessToken.getToken());
+                    headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+                })
+                .retrieve()
+                .toEntity(String.class).block();
+
+        System.out.println("response = " + response);
+
+        return response != null && response.getStatusCode().value() == 200;
     }
 }
 

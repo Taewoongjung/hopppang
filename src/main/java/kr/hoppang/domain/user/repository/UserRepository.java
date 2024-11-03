@@ -12,6 +12,8 @@ import kr.hoppang.domain.user.UserToken;
 
 public interface UserRepository {
 
+    User findById(final long userId);
+
     User findByEmail(final String email);
 
     User findIfExistUserByEmail(final String email, final OauthType oauthType);
@@ -33,6 +35,8 @@ public interface UserRepository {
     User updateUserTokenInfo(final String userEmail, final List<UserToken> userTokens);
 
     void deleteUser(final String email);
+
+    void softDeleteUser(final long id);
 
     void updateUserConfiguration(final long id, final boolean isPushOn);
 

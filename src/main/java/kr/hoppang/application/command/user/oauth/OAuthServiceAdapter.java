@@ -44,4 +44,8 @@ public class OAuthServiceAdapter {
             final String userEmail) throws Exception {
         return oAuthServiceEnumMap.get(oauthType).refreshAccessToken(userEmail);
     }
+
+    public boolean withdrawUser(final OauthType oauthType, final long userId) {
+        return oAuthServiceEnumMap.get(oauthType).withdrawUser(userId);
+    }
 }

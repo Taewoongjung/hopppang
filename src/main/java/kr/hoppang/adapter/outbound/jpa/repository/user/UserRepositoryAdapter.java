@@ -38,6 +38,16 @@ public class UserRepositoryAdapter implements UserRepository {
     private final UserConfigInfoJpaRepository userConfigInfoJpaRepository;
 
     @Override
+    @Transactional(readOnly = true)
+    public User findById(final long userId) {
+        Optional<UserEntity> entity = userJpaRepository.findById(userId);
+
+        check(entity.isEmpty(), NOT_EXIST_USER);
+
+        return entity.get().toPojo();
+    }
+
+    @Override
     public User findByEmail(final String email) {
         UserEntity entity = userJpaRepository.findByEmail(email);
 
@@ -177,13 +187,28 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void softDeleteUser(final long id) {
+        Optional<UserEntity> entity = userJpaRepository.findById(id);
+
+        UserEntity user = entity.orElse(null);
+
+        check(user == null, NOT_EXIST_USER);
+
+        userJpaRepository.deleteAllTokensOfTheUser(id); // 모든 토큰 정보 삭제
+        userJpaRepository.deleteUserSoftly(id, LocalDateTime.now()); // 유저 삭제 로직 수행
+    }
+
+    @Override
     @Transactional
     public void updateUserConfiguration(final long id, final boolean isPushOn) {
         Optional<UserEntity> entity = userJpaRepository.findById(id);
 
-        check(entity.isEmpty(), NOT_EXIST_USER);
+        UserEntity user = entity.orElse(null);
 
-        entity.get().updateIsPushOn(isPushOn);
+        check(user == null, NOT_EXIST_USER);
+
+        user.updateIsPushOn(isPushOn);
     }
 
     @Override

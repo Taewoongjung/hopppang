@@ -132,6 +132,7 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
                 event.role(),
                 event.oauthType(),
                 BoolType.F,
+                null,
                 userTokenList,
                 userDeviceList,
                 null, null,

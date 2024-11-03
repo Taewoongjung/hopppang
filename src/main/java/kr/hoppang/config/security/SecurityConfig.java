@@ -113,6 +113,10 @@ public class SecurityConfig {
                                 , "/api/social/users"
                         ).authenticated()
 
+                        .requestMatchers(HttpMethod.DELETE
+                                , "/api/users/{userId}"
+                        ).authenticated()
+
                         .requestMatchers("/admin").hasRole("CUSTOMER")
                         .requestMatchers("/login").permitAll()
                         .anyRequest().authenticated())

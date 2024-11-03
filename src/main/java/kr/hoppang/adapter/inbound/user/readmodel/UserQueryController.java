@@ -1,4 +1,4 @@
-package kr.hoppang.adapter.inbound.user.query;
+package kr.hoppang.adapter.inbound.user.readmodel;
 
 import static kr.hoppang.domain.user.OauthType.APL;
 import static kr.hoppang.domain.user.OauthType.KKO;

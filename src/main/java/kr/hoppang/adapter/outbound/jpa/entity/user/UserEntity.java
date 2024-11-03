@@ -33,12 +33,14 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
 @ToString
 @Table(name = "user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLRestriction("deleted_at IS NULL")
 public class UserEntity extends BaseEntity {
 
     @Id
@@ -69,6 +71,9 @@ public class UserEntity extends BaseEntity {
     @Column(name = "required_re_login", nullable = false, columnDefinition = "char(1)")
     private BoolType requiredReLogin;
 
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private UserAddressEntity userAddress;
 
@@ -90,6 +95,7 @@ public class UserEntity extends BaseEntity {
             final UserRole role,
             final OauthType oauthType,
             final BoolType requiredReLogin,
+            final LocalDateTime deletedAt,
             final List<UserTokenEntity> userTokenEntityList
     ) {
         super(LocalDateTime.now(), LocalDateTime.now());
@@ -101,6 +107,7 @@ public class UserEntity extends BaseEntity {
         this.tel = tel;
         this.role = role;
         this.oauthType = oauthType;
+        this.deletedAt = deletedAt;
         this.requiredReLogin = requiredReLogin;
         this.userTokenEntityList = userTokenEntityList;
     }
@@ -113,27 +120,12 @@ public class UserEntity extends BaseEntity {
             final String tel,
             final UserRole userRole,
             final OauthType oauthType,
-            final BoolType requiredReLogin
+            final BoolType requiredReLogin,
+            final LocalDateTime deletedAt
     ) {
 
         return new UserEntity(id, name, email, password, tel, userRole, oauthType, requiredReLogin,
-                new ArrayList<>());
-    }
-
-    public static UserEntity of(
-            final String name,
-            final String email,
-            final String password,
-            final String tel,
-            final UserRole userRole,
-            final OauthType oauthType,
-            final BoolType requiredReLogin
-    ) {
-
-        require(o -> name == null, name, INVALID_USER_INFO);
-
-        return new UserEntity(null, name, email, password, tel, userRole, oauthType,
-                requiredReLogin, new ArrayList<>());
+                deletedAt, new ArrayList<>());
     }
 
     public static UserEntity of(
@@ -144,13 +136,31 @@ public class UserEntity extends BaseEntity {
             final UserRole userRole,
             final OauthType oauthType,
             final BoolType requiredReLogin,
+            final LocalDateTime deletedAt
+    ) {
+
+        require(o -> name == null, name, INVALID_USER_INFO);
+
+        return new UserEntity(null, name, email, password, tel, userRole, oauthType,
+                requiredReLogin, deletedAt, new ArrayList<>());
+    }
+
+    public static UserEntity of(
+            final String name,
+            final String email,
+            final String password,
+            final String tel,
+            final UserRole userRole,
+            final OauthType oauthType,
+            final BoolType requiredReLogin,
+            final LocalDateTime deletedAt,
             final List<UserTokenEntity> userTokenEntityList
     ) {
 
         require(o -> name == null, name, INVALID_USER_INFO);
 
         return new UserEntity(null, name, email, password, tel, userRole, oauthType,
-                requiredReLogin, userTokenEntityList);
+                requiredReLogin, deletedAt, userTokenEntityList);
     }
 
     // 모든 연관 관계 제외 한 POJO 객체 리턴
@@ -164,6 +174,7 @@ public class UserEntity extends BaseEntity {
                 getRole(),
                 getOauthType(),
                 getRequiredReLogin(),
+                getDeletedAt(),
                 getUserTokenEntityList().stream()
                         .map(UserTokenEntity::toPojo)
                         .collect(Collectors.toList()),
@@ -188,6 +199,7 @@ public class UserEntity extends BaseEntity {
                 getRole(),
                 getOauthType(),
                 getRequiredReLogin(),
+                getDeletedAt(),
                 getUserTokenEntityList().stream()
                         .map(UserTokenEntity::toPojo)
                         .collect(Collectors.toList()),
@@ -199,10 +211,6 @@ public class UserEntity extends BaseEntity {
                 getLastModified(),
                 getCreatedAt()
         );
-    }
-
-    public void resetPassword(final String targetPwd) {
-        this.password = targetPwd;
     }
 
     public void setUserAddress(final UserAddress userAddress) {

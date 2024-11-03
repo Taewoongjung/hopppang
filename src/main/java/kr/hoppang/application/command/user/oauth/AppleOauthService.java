@@ -37,13 +37,14 @@ import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
@@ -72,7 +73,8 @@ public class AppleOauthService implements OAuthService {
     private String secretKey;
 
     @PostConstruct
-    @Scheduled(cron = "0 0 1 */3 *", zone = "Asia/Seoul") // 3개월에 한 번씩 secretKey 갱신
+    @Scheduled(cron = "0 0 1 */3 *", zone = "Asia/Seoul")
+        // 3개월에 한 번씩 secretKey 갱신
     void createSecretKey() throws Exception {
         secretKey = generateJWT();
     }
@@ -87,7 +89,7 @@ public class AppleOauthService implements OAuthService {
                 .setSubject(appleClientId)
                 .setExpiration(new Date(System.currentTimeMillis() + (1000L * 60 * 60 * 24 * 100)))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .signWith(SignatureAlgorithm.ES256, pKey)
+                .signWith(pKey, SignatureAlgorithm.ES256)
                 .compact();
         return token;
     }
@@ -198,10 +200,8 @@ public class AppleOauthService implements OAuthService {
     }
 
     /**
-    * @NOTE
-       애플은 리프레시 토큰의 유효기간이 없으므로 호빵 서비스 자체 내에서 검증한다.
-       만약 유저가 회원탈퇴 버튼을 누르면 해당 토큰들을 삭제하는 방식으로 한다.
-    * */
+     * @NOTE 애플은 리프레시 토큰의 유효기간이 없으므로 호빵 서비스 자체 내에서 검증한다. 만약 유저가 회원탈퇴 버튼을 누르면 해당 토큰들을 삭제하는 방식으로 한다.
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public OAuthServiceLogInResultDto refreshAccessToken(final String userEmail) throws Exception {
@@ -243,8 +243,23 @@ public class AppleOauthService implements OAuthService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public boolean withdrawUser(final String userEmail) {
-        return false;
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public boolean withdrawUser(final long userId) {
+
+        User user = userRepository.findById(userId);
+        UserToken userRefreshToken = user.getTheLatestRefreshToken();
+
+        ResponseEntity<String> response = webClient.post()
+                .uri("https://appleid.apple.com/auth/revoke")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .body(
+                        BodyInserters.fromFormData("client_id", appleClientId)
+                                .with("client_secret", secretKey)
+                                .with("token_type_hint", "refresh_token")
+                                .with("token", userRefreshToken.getToken()))
+                .retrieve()
+                .toEntity(String.class).block();
+
+        return response != null && response.getStatusCode().value() == 200;
     }
 }

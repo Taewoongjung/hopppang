@@ -1,5 +1,8 @@
 package kr.hoppang.adapter.inbound.user.command;
 
+import static kr.hoppang.adapter.common.exception.ErrorType.NOT_AUTHORIZED_USER;
+import static kr.hoppang.adapter.common.util.CheckUtil.check;
+
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import kr.hoppang.adapter.inbound.user.webdto.RequestValidationWebDtoV1;
@@ -8,6 +11,7 @@ import kr.hoppang.adapter.inbound.user.webdto.SocialSignUpFinalWebDtoV1;
 import kr.hoppang.adapter.inbound.user.webdto.SsoSignUpWebDtoV1;
 import kr.hoppang.adapter.inbound.user.webdto.SsoSignUpWebDtoV1.Res;
 import kr.hoppang.adapter.inbound.user.webdto.UpdateUserConfigWebDtoV1;
+import kr.hoppang.adapter.inbound.user.webdto.WithdrawUserWebDtoV1;
 import kr.hoppang.application.command.user.commandresults.OAuthLoginCommandResult;
 import kr.hoppang.application.command.user.commands.OAuthLoginCommand;
 import kr.hoppang.application.command.user.commands.RefreshAccessTokenCommand;
@@ -15,18 +19,22 @@ import kr.hoppang.application.command.user.commands.ReviseUserConfigurationComma
 import kr.hoppang.application.command.user.commands.SendPhoneValidationSmsCommand;
 import kr.hoppang.application.command.user.commands.SignUpCommand;
 import kr.hoppang.application.command.user.commands.SocialSignUpFinalCommand;
+import kr.hoppang.application.command.user.commands.WithdrawUserCommand;
 import kr.hoppang.application.command.user.handlers.OAuthLoginCommandHandler;
 import kr.hoppang.application.command.user.handlers.RefreshAccessTokenCommandHandler;
 import kr.hoppang.application.command.user.handlers.ReviseUserConfigurationCommandHandler;
 import kr.hoppang.application.command.user.handlers.SendPhoneValidationSmsCommandHandler;
 import kr.hoppang.application.command.user.handlers.SignUpCommandHandler;
 import kr.hoppang.application.command.user.handlers.SocialSignUpFinalCommandHandler;
+import kr.hoppang.application.command.user.handlers.WithdrawUserCommandHandler;
 import kr.hoppang.domain.user.OauthType;
 import kr.hoppang.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -41,6 +49,7 @@ public class UserCommandController {
 
     private final SignUpCommandHandler signUpCommandHandler;
     private final OAuthLoginCommandHandler oAuthLoginCommandHandler;
+    private final WithdrawUserCommandHandler withdrawUserCommandHandler;
     private final SocialSignUpFinalCommandHandler socialSignUpFinalCommandHandler;
     private final RefreshAccessTokenCommandHandler refreshAccessTokenCommandHandler;
     private final SendPhoneValidationSmsCommandHandler sendPhoneValidationSmsCommandHandler;
@@ -188,5 +197,19 @@ public class UserCommandController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(reviseUserConfigurationCommandHandler.handle(
                         new ReviseUserConfigurationCommand(userId, req.isPushOn())));
+    }
+
+    @DeleteMapping(value = "/api/users/{userId}")
+    public ResponseEntity<Boolean> withdrawUser(
+            @PathVariable(value = "userId") final Long userId,
+            @RequestBody final WithdrawUserWebDtoV1.Req req,
+            @AuthenticationPrincipal final User user
+    ) {
+
+        check(!userId.equals(user.getId()), NOT_AUTHORIZED_USER);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(withdrawUserCommandHandler.handle(
+                        new WithdrawUserCommand(userId, req.oauthType())));
     }
 }

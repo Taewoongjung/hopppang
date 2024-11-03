@@ -34,6 +34,7 @@ public class User extends Throwable implements UserDetails {
     private UserRole userRole;
     private OauthType oauthType;
     private BoolType requiredReLogin;
+    private LocalDateTime deletedAt;
 
     private UserAddress userAddress;
     private List<UserToken> userTokenList = new ArrayList<>();
@@ -58,6 +59,7 @@ public class User extends Throwable implements UserDetails {
             final UserRole userRole,
             final OauthType oauthType,
             final BoolType requiredReLogin,
+            final LocalDateTime deletedAt,
             final List<UserToken> userTokenList,
             final List<UserDevice> userDeviceList,
             final UserAddress userAddress,
@@ -73,6 +75,7 @@ public class User extends Throwable implements UserDetails {
         this.userRole = userRole;
         this.oauthType = oauthType;
         this.requiredReLogin = requiredReLogin;
+        this.deletedAt = deletedAt;
         this.userTokenList = userTokenList;
         this.userDeviceList = userDeviceList;
         this.userAddress = userAddress;
@@ -89,6 +92,7 @@ public class User extends Throwable implements UserDetails {
             final UserRole userRole,
             final OauthType oauthType,
             final BoolType requiredReLogin,
+            final LocalDateTime deletedAt,
             final List<UserToken> userTokenList,
             final List<UserDevice> userDeviceList,
             final UserAddress userAddress,
@@ -98,8 +102,8 @@ public class User extends Throwable implements UserDetails {
     ) {
 
         return new User(null, name, email, password, tel, userRole, oauthType, requiredReLogin,
-                userTokenList, userDeviceList, userAddress, userConfigInfo, lastModified,
-                createdAt);
+                deletedAt, userTokenList, userDeviceList, userAddress, userConfigInfo,
+                lastModified, createdAt);
     }
 
     public static User of(
@@ -111,6 +115,7 @@ public class User extends Throwable implements UserDetails {
             final UserRole userRole,
             final OauthType oauthType,
             final BoolType requiredReLogin,
+            final LocalDateTime deletedAt,
             final List<UserToken> userTokenList,
             final List<UserDevice> userDeviceList,
             final UserAddress userAddress,
@@ -120,8 +125,8 @@ public class User extends Throwable implements UserDetails {
     ) {
 
         return new User(id, name, email, password, tel, userRole, oauthType, requiredReLogin,
-                userTokenList, userDeviceList, userAddress, userConfigInfo, lastModified,
-                createdAt);
+                deletedAt, userTokenList, userDeviceList, userAddress, userConfigInfo,
+                lastModified, createdAt);
     }
 
     @Override
@@ -198,6 +203,16 @@ public class User extends Throwable implements UserDetails {
 
         return orderReversedUserTokenList.stream()
                 .filter(f -> TokenType.REFRESH.equals(f.getTokenType()))
+                .findFirst().orElseThrow(() -> new HoppangLoginException(NOT_EXIST_REFRESH_TOKEN));
+    }
+
+    public UserToken getTheLatestAccessToken() {
+        List<UserToken> orderReversedUserTokenList = this.getUserTokenList().stream()
+                .sorted(Comparator.comparing(UserToken::getCreatedAt).reversed())
+                .toList();
+
+        return orderReversedUserTokenList.stream()
+                .filter(f -> TokenType.ACCESS.equals(f.getTokenType()))
                 .findFirst().orElseThrow(() -> new HoppangLoginException(NOT_EXIST_REFRESH_TOKEN));
     }
 
