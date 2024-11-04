@@ -48,6 +48,7 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public User findByEmail(final String email) {
         UserEntity entity = userJpaRepository.findByEmail(email);
 
@@ -56,6 +57,8 @@ public class UserRepositoryAdapter implements UserRepository {
         return entity.toPojoWithRelations();
     }
 
+    @Override
+    @Transactional(readOnly = true)
     public User findByEmailWithoutRelations(final String email) {
         UserEntity entity = userJpaRepository.findByEmail(email);
 
@@ -65,6 +68,7 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public User findIfExistUserByEmail(final String email, final OauthType oauthType) {
 
         UserEntity user = userJpaRepository.findByEmailAndOauthType(email, oauthType);
@@ -97,6 +101,7 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public User findIfExistUserByPhoneNumber(final String tel) {
 
         UserEntity entity = userJpaRepository.findByTel(tel);
