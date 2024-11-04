@@ -1,4 +1,4 @@
-package kr.hoppang.adapter.outbound.cache.common;
+package kr.hoppang.adapter.outbound.cache.dto;
 
 public record TearDownBucketByKey(String key) {
 

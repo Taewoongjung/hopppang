@@ -188,7 +188,7 @@ public class UserRepositoryAdapter implements UserRepository {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void softDeleteUser(final long id) {
+    public String softDeleteUser(final long id) {
         Optional<UserEntity> entity = userJpaRepository.findById(id);
 
         UserEntity user = entity.orElse(null);
@@ -197,6 +197,8 @@ public class UserRepositoryAdapter implements UserRepository {
 
         userJpaRepository.deleteAllTokensOfTheUser(id); // 모든 토큰 정보 삭제
         userJpaRepository.deleteUserSoftly(id, LocalDateTime.now()); // 유저 삭제 로직 수행
+
+        return user.getEmail();
     }
 
     @Override

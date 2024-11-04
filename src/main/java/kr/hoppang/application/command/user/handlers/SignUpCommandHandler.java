@@ -10,8 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import kr.hoppang.abstraction.domain.ICommandHandler;
 import kr.hoppang.adapter.outbound.alarm.dto.NewUser;
-import kr.hoppang.adapter.outbound.cache.common.TearDownBucketByKey;
+import kr.hoppang.adapter.outbound.cache.dto.TearDownBucketByKey;
 import kr.hoppang.adapter.outbound.cache.sms.CacheSmsValidationRedisRepository;
+import kr.hoppang.adapter.outbound.cache.user.CacheUserRedisRepository;
 import kr.hoppang.application.command.user.commands.SignUpCommand;
 import kr.hoppang.domain.user.OauthType;
 import kr.hoppang.domain.user.TokenType;
@@ -35,6 +36,7 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
     private final UserRepository userRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final CacheUserRedisRepository cacheUserRedisRepository;
     private final CacheSmsValidationRedisRepository cacheSmsValidationRedisRepository;
 
     @Override
@@ -158,6 +160,9 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
             eventPublisher.publishEvent(
                     new NewUser(event.name(), event.email(), event.tel(), event.oauthType(),
                             registeredUser.getCreatedAt()));
+
+            // 새로운 유저 캐시 데이터에 추가
+            cacheUserRedisRepository.addUserInfoInCache(registeredUser.getEmail(), registeredUser);
 
             log.info("[핸들러 - 회원 생성] 성공");
 

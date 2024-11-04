@@ -4,6 +4,7 @@ import static kr.hoppang.adapter.common.exception.ErrorType.EXPIRED_ACCESS_TOKEN
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_AUTHORIZED_USER;
 import static kr.hoppang.adapter.common.util.CheckUtil.check;
 
+import kr.hoppang.adapter.outbound.cache.user.CacheUserRedisRepository;
 import kr.hoppang.application.readmodel.user.queries.LoadUserByTokenQuery;
 import kr.hoppang.config.security.jwt.JWTUtil;
 import kr.hoppang.abstraction.domain.IQueryHandler;
@@ -22,6 +23,7 @@ public class LoadUserByTokenQueryHandler implements IQueryHandler<LoadUserByToke
 
     private final JWTUtil jwtUtil;
     private final UserRepository userRepository;
+    private final CacheUserRedisRepository cacheUserRedisRepository;
 
     @Override
     public boolean isQueryHandler() {
@@ -37,8 +39,21 @@ public class LoadUserByTokenQueryHandler implements IQueryHandler<LoadUserByToke
         String token = jwtUtil.getTokenWithoutBearer(event.authToken());
 
         // 토큰에 해당하는 유저를 찾는다
-        log.info("email = {}", jwtUtil.getEmail(token));
-        User foundUser = userRepository.findByEmail(jwtUtil.getEmail(token));
+        String userEmail = jwtUtil.getEmail(token);
+
+        log.info("email = {}", userEmail);
+
+        User foundUser = null;
+
+        // 캐시에서 먼저 찾는다.
+        foundUser = cacheUserRedisRepository.getBucketByKey(userEmail);
+
+        // 캐시에 유저 정보가 없으면 RDB 에서 찾는다.
+        if (foundUser == null) {
+            foundUser = userRepository.findByEmail(userEmail);
+            cacheUserRedisRepository.addUserInfoInCache(userEmail, foundUser);
+        }
+
         log.info("foundUser = {}", foundUser.getUserTokenList());
 
         // 토큰 만료 검사

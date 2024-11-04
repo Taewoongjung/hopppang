@@ -1,11 +1,13 @@
 package kr.hoppang.application.command.user.handlers;
 
 import kr.hoppang.abstraction.domain.ICommandHandler;
+import kr.hoppang.adapter.outbound.cache.dto.TearDownBucketByKey;
 import kr.hoppang.application.command.user.commands.WithdrawUserCommand;
 import kr.hoppang.application.command.user.oauth.OAuthServiceAdapter;
 import kr.hoppang.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +18,7 @@ public class WithdrawUserCommandHandler implements ICommandHandler<WithdrawUserC
 
     private final UserRepository userRepository;
     private final OAuthServiceAdapter oAuthServiceAdapter;
+    private final ApplicationEventPublisher eventPublisher;
 
 
     @Override
@@ -35,7 +38,10 @@ public class WithdrawUserCommandHandler implements ICommandHandler<WithdrawUserC
             return false;
         }
 
-        userRepository.softDeleteUser(command.userId());
+        String deletedUserEmail = userRepository.softDeleteUser(command.userId());
+
+        // 탈퇴 한 회원은 유저 캐시에서 삭제
+        eventPublisher.publishEvent(new TearDownBucketByKey(deletedUserEmail));
 
         return true;
     }

@@ -36,7 +36,7 @@ public interface UserRepository {
 
     void deleteUser(final String email);
 
-    void softDeleteUser(final long id);
+    String softDeleteUser(final long id);
 
     void updateUserConfiguration(final long id, final boolean isPushOn);
 

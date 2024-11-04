@@ -3,7 +3,7 @@ package kr.hoppang.adapter.outbound.cache.sms;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import kr.hoppang.adapter.outbound.cache.common.TearDownBucketByKey;
+import kr.hoppang.adapter.outbound.cache.dto.TearDownBucketByKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;

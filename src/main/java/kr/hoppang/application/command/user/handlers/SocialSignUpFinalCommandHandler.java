@@ -7,7 +7,7 @@ import static kr.hoppang.adapter.common.util.CheckUtil.check;
 import kr.hoppang.abstraction.domain.ICommandHandler;
 import kr.hoppang.adapter.common.exception.custom.HoppangLoginException;
 import kr.hoppang.adapter.outbound.alarm.dto.NewUser;
-import kr.hoppang.adapter.outbound.cache.common.TearDownBucketByKey;
+import kr.hoppang.adapter.outbound.cache.dto.TearDownBucketByKey;
 import kr.hoppang.adapter.outbound.cache.sms.CacheSmsValidationRedisRepository;
 import kr.hoppang.application.command.user.commands.SocialSignUpFinalCommand;
 import kr.hoppang.domain.user.User;
