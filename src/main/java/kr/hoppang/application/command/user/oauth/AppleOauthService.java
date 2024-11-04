@@ -151,18 +151,14 @@ public class AppleOauthService implements OAuthService {
         ObjectMapper objectMapper = new ObjectMapper();
         TokenResponse tokenResponse = objectMapper.readValue(tokenInfoFromApple,
                 TokenResponse.class);
-        System.out.println("tokenResponse = " + tokenResponse);
 
         String idToken = tokenResponse.id_token();
         String payload = idToken.split("\\.")[1];
-        System.out.println("payload = " + payload);
 
         String decoded = new String(Decoders.BASE64.decode(payload));
-        System.out.println("decoded = " + decoded);
 
         AppleIDTokenPayload idTokenPayload = new Gson().fromJson(decoded,
                 AppleIDTokenPayload.class);
-        System.out.println("idTokenPayload = " + idTokenPayload);
 
         String userName = "호빵유저" + generateRandomNumber(9);
 

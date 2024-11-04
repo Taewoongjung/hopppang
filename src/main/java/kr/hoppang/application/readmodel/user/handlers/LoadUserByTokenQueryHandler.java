@@ -51,7 +51,7 @@ public class LoadUserByTokenQueryHandler implements IQueryHandler<LoadUserByToke
         // 캐시에 유저 정보가 없으면 RDB 에서 찾는다.
         if (foundUser == null) {
             foundUser = userRepository.findByEmail(userEmail);
-            cacheUserRedisRepository.addUserInfoInCache(userEmail, foundUser);
+            cacheUserRedisRepository.addUserInfoInCache(foundUser);
         }
 
         log.info("foundUser = {}", foundUser.getUserTokenList());

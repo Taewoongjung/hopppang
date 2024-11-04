@@ -162,7 +162,7 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
                             registeredUser.getCreatedAt()));
 
             // 새로운 유저 캐시 데이터에 추가
-            cacheUserRedisRepository.addUserInfoInCache(registeredUser.getEmail(), registeredUser);
+            cacheUserRedisRepository.addUserInfoInCache(registeredUser);
 
             log.info("[핸들러 - 회원 생성] 성공");
 

@@ -5,7 +5,10 @@ import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_REFRESH_TO
 import static kr.hoppang.adapter.common.exception.ErrorType.NO_HISTORY_PUBLISHED_REFRESH_TOKEN;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,6 +18,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import kr.hoppang.adapter.common.exception.custom.HoppangLoginException;
 import kr.hoppang.util.common.BoolType;
+import kr.hoppang.util.deserializer.UserDeserializerForUserCache;
+import kr.hoppang.util.serializer.UserSerializerForUserCache;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,6 +29,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Getter
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonSerialize(using = UserSerializerForUserCache.class)
+@JsonDeserialize(using = UserDeserializerForUserCache.class)
+@JsonIgnoreProperties({"stackTrace", "cause", "suppressed", "localizedMessage"})
 public class User extends Throwable implements UserDetails {
 
     private Long id;
@@ -160,7 +168,10 @@ public class User extends Throwable implements UserDetails {
     }
 
     public String getMaskedEmail() {
-        if (this.email == null || !this.email.contains("@")) {
+        if (OauthType.APL.equals(this.oauthType) ||
+                this.email == null ||
+                !this.email.contains("@")
+        ) {
             return this.email; // 유효한 이메일이 아니면 그대로 반환
         }
 

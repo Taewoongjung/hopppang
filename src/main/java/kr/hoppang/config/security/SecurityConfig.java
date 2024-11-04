@@ -30,9 +30,9 @@ import org.springframework.web.cors.CorsConfigurationSource;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final LoadUserByUsernameQueryHandler loadUserByUsernameQueryHandler;
-    private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
+    private final AuthenticationConfiguration authenticationConfiguration;
+    private final LoadUserByUsernameQueryHandler loadUserByUsernameQueryHandler;
 
     @Value("${server.front.admin-page-origin-url}")
     private String adminPageOriginUrl;
