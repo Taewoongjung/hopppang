@@ -172,7 +172,7 @@ logging:
     level: DEBUG
   logback:
     rollingpolicy:
-      file-name-pattern: "/app/logs/server.%d{yyyy-MM-dd}.%i.log" # 로그 파일형식
+      file-name-pattern: "/app/logs/server.%d{yyyy-MM-dd}.%i.log.gz" # 로그 파일을 gzip으로 압축
       max-history: 30  # 30일 동안 로그 보관
 
 management:
