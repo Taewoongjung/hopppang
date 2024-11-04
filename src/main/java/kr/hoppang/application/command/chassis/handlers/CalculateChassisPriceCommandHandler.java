@@ -19,6 +19,7 @@ import kr.hoppang.application.command.chassis.commands.CalculateChassisPriceComm
 import kr.hoppang.domain.chassis.price.ChassisPriceInfo;
 import kr.hoppang.domain.chassis.price.repository.ChassisPriceInfoRepository;
 import kr.hoppang.domain.user.User;
+import kr.hoppang.domain.user.repository.UserRepository;
 import kr.hoppang.util.calculator.ApproximateCalculator;
 import kr.hoppang.util.calculator.ChassisPriceCalculator;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CalculateChassisPriceCommandHandler implements
         ICommandHandler<CalculateChassisPriceCommand, CalculateChassisPriceCommandHandlerCommandResult> {
 
+    private final UserRepository userRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final ChassisPriceCalculator chassisPriceCalculator;
     private final ChassisPriceInfoRepository chassisPriceInfoRepository;
@@ -132,10 +134,12 @@ public class CalculateChassisPriceCommandHandler implements
         int deliveryFee = chassisPriceCalculator.calculateDeliveryFee();
         calculatedResultList.add(deliveryFee);
 
+        User user = userRepository.findById(event.userId());
+
         // 슬랙 알림 발송
         eventPublisher.publishEvent(NewEstimation.of(
-                event.user().getName(),
-                event.user().getUserAddress(),
+                user.getName(),
+                user.getUserAddress(),
                 reqList.get(0).companyType(),
                 event.calculateChassisPriceList()
         ));
@@ -177,7 +181,7 @@ public class CalculateChassisPriceCommandHandler implements
                 floor,
                 totalPrice,
                 event.floorCustomerLiving(),
-                event.user()
+                user
         );
 
         log.info("[핸들러 - 샤시 내기] 성공");

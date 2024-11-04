@@ -175,14 +175,10 @@ public class UserEntity extends BaseEntity {
                 getOauthType(),
                 getRequiredReLogin(),
                 getDeletedAt(),
-                getUserTokenEntityList().stream()
-                        .map(UserTokenEntity::toPojo)
-                        .collect(Collectors.toList()),
-                getUserDeviceEntityList().stream()
-                        .map(UserDeviceEntity::toPojo)
-                        .collect(Collectors.toList()),
-                getUserAddress() != null ? getUserAddress().toPojo() : null,
-                getUserConfigInfo() != null ? getUserConfigInfo().toPojo() : null,
+                null,
+                null,
+                null,
+                null,
                 getLastModified(),
                 getCreatedAt()
         );

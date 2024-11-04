@@ -16,6 +16,8 @@ public interface UserRepository {
 
     User findByEmail(final String email);
 
+    User findByEmailWithoutRelations(final String email);
+
     User findIfExistUserByEmail(final String email, final OauthType oauthType);
 
     User save(final User user);

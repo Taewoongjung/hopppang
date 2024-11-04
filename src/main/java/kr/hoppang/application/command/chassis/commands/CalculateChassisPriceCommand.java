@@ -20,7 +20,7 @@ public record CalculateChassisPriceCommand(
         int floorCustomerLiving,
         boolean isScheduledForDemolition,
         boolean isResident,
-        User user
+        long userId
 
 ) implements ICommand {
 

@@ -60,7 +60,7 @@ public class GetCalculatedChassisPriceWebDtoV1 {
                     reqCalculateChassisPriceList.get(0).floorCustomerLiving,
                     reqCalculateChassisPriceList.get(0).isScheduledForDemolition,
                     reqCalculateChassisPriceList.get(0).isResident,
-                    user
+                    user.getId()
             );
         }
     }

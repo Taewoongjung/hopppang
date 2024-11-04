@@ -44,11 +44,19 @@ public class UserRepositoryAdapter implements UserRepository {
 
         check(entity.isEmpty(), NOT_EXIST_USER);
 
-        return entity.get().toPojo();
+        return entity.get().toPojoWithRelations();
     }
 
     @Override
     public User findByEmail(final String email) {
+        UserEntity entity = userJpaRepository.findByEmail(email);
+
+        check(entity == null, NOT_EXIST_USER);
+
+        return entity.toPojoWithRelations();
+    }
+
+    public User findByEmailWithoutRelations(final String email) {
         UserEntity entity = userJpaRepository.findByEmail(email);
 
         check(entity == null, NOT_EXIST_USER);
@@ -93,7 +101,7 @@ public class UserRepositoryAdapter implements UserRepository {
 
         UserEntity entity = userJpaRepository.findByTel(tel);
 
-        return entity != null ? entity.toPojo() : null;
+        return entity != null ? entity.toPojoWithRelations() : null;
     }
 
     @Override
@@ -132,7 +140,7 @@ public class UserRepositoryAdapter implements UserRepository {
 
         entity.updatePhoneNumberAndAddressAndConfig(phoneNumber, userAddress, isPushOn);
 
-        return entity.toPojo();
+        return entity.toPojoWithRelations();
     }
 
     @Override
@@ -145,7 +153,7 @@ public class UserRepositoryAdapter implements UserRepository {
 
         entity.setUserDeviceInfo(userDevice);
 
-        return entity.toPojo();
+        return entity.toPojoWithRelations();
     }
 
     @Override
@@ -177,7 +185,7 @@ public class UserRepositoryAdapter implements UserRepository {
 
         entity.updateNotToBeRequiredReLogin();
 
-        return entity.toPojo();
+        return entity.toPojoWithRelations();
     }
 
     @Override
