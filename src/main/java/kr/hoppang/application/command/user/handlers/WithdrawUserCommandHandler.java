@@ -41,7 +41,7 @@ public class WithdrawUserCommandHandler implements ICommandHandler<WithdrawUserC
         String deletedUserEmail = userRepository.softDeleteUser(command.userId());
 
         // 탈퇴 한 회원은 유저 캐시에서 삭제
-        eventPublisher.publishEvent(new TearDownBucketByKey(deletedUserEmail));
+        eventPublisher.publishEvent(new TearDownBucketByKey("users::" + deletedUserEmail));
 
         return true;
     }

@@ -1,6 +1,7 @@
 package kr.hoppang.adapter.inbound.user.readmodel;
 
 import static kr.hoppang.domain.user.OauthType.APL;
+import static kr.hoppang.domain.user.OauthType.GLE;
 import static kr.hoppang.domain.user.OauthType.KKO;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -80,6 +81,12 @@ public class UserQueryController {
     public ResponseEntity<String> requestAppleAuthBeforeSignUp() {
 
         return ResponseEntity.status(HttpStatus.OK).body(oAuthServiceAdapter.getReqLoginUrl(APL));
+    }
+
+    @GetMapping(value = "/api/google/auth")
+    public ResponseEntity<String> requestGoogleAuthBeforeSignUp() {
+
+        return ResponseEntity.status(HttpStatus.OK).body(oAuthServiceAdapter.getReqLoginUrl(GLE));
     }
 
     @GetMapping(value = "/api/users/{userId}/configs")

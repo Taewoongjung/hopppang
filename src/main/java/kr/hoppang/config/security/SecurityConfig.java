@@ -76,6 +76,7 @@ public class SecurityConfig {
                                 , "/api/users/emails"
                                 , "/api/kakao/auth"
                                 , "/api/apple/auth"
+                                , "/api/google/auth"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST,
                                 "/api/login"
@@ -83,6 +84,7 @@ public class SecurityConfig {
                                 , "/api/phones/validations"
                                 , "/api/kakao/signup/{code}"
                                 , "/api/apple/signup/{code}"
+                                , "/api/google/signup"
                         ).permitAll()
                         .requestMatchers(HttpMethod.PUT,
                                 "/api/kakao/refresh"

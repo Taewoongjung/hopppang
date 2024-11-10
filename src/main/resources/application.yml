@@ -90,6 +90,10 @@ login:
     key-id: U5RT82R5MC
     team-id: NUDBF8SVWU
     private-key-path: classpath:AppleAuthKey.p8
+  google:
+    client-id: ${HOPPANG_GOOGLE_CLIENT_ID}
+    client-secret: ${HOPPANG_GOOGLE_CLIENT_SECRET}
+    redirect-uri: http://localhost:3000/gle/chassis/calculator
 
 sms:
   aligo:
@@ -202,6 +206,10 @@ login:
     key-id: U5RT82R5MC
     team-id: NUDBF8SVWU
     private-key-path: /app/resources/AppleAuthKey.p8
+  google:
+    client-id: ${HOPPANG_GOOGLE_CLIENT_ID}
+    client-secret: ${HOPPANG_GOOGLE_CLIENT_SECRET}
+    redirect-uri: https://hoppang.store/gle/chassis/calculator
 
 sms:
   aligo:

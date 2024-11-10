@@ -176,6 +176,32 @@ public class UserCommandController {
         return ResponseEntity.status(HttpStatus.OK).body(true);
     }
 
+    @PostMapping(value = "/api/google/signup")
+    public ResponseEntity<SsoSignUpWebDtoV1.Res> googleSignUp(
+            @RequestParam(value = "code") final String code,
+            @RequestBody final SsoSignUpWebDtoV1.Req req,
+            HttpServletResponse response) throws Exception {
+
+        log.info("구글 로그인 = {}", code);
+
+        OAuthLoginCommandResult oAuthLoginCommandResult = oAuthLoginCommandHandler.handle(
+                new OAuthLoginCommand(
+                        code,
+                        req.deviceId(),
+                        req.deviceType(),
+                        OauthType.GLE
+                ));
+
+        response.addHeader("Authorization", "Bearer " + oAuthLoginCommandResult.jwt());
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new Res(
+                        true,
+                        oAuthLoginCommandResult.isTheFirstLogIn(),
+                        oAuthLoginCommandResult.userEmail(),
+                        OauthType.GLE));
+    }
+
     @PostMapping(value = "/api/phones/validations")
     public ResponseEntity<Boolean> requestValidationPhone(
             @RequestBody final RequestValidationWebDtoV1.PhoneValidationReq req

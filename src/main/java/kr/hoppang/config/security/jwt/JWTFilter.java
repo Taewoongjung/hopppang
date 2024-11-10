@@ -31,6 +31,7 @@ public class JWTFilter extends OncePerRequestFilter {
     private static final String[] EXCLUDED_PATH = {
             "/api/kakao/signup/{code}"
             , "/api/apple/signup/{code}"
+            , "/api/google/signup"
             , "/api/kakao/auth"
             , "/api/kakao/refresh"
             , "/api/apple/auth"

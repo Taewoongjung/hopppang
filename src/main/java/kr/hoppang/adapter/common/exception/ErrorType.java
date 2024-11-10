@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 public enum ErrorType {
 
     // 도메인 depth 순서로 작성
+    PLEASE_TRY_LATER(2, "시간을 두고 다시 시도 해주세요."),
     YET_EXPIRED_TOKEN(3, "아직 유효한 토큰입니다."),
     NOT_EXIST_TOKEN(4, "존재하지 않는 토큰 입니다."),
     NOT_EXIST_OAUTH_TYPE(5, "소셜 로그인 타입이 없습니다."),
