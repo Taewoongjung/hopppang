@@ -94,6 +94,7 @@ public class SecurityConfig {
                         // authorized
                         .requestMatchers(HttpMethod.GET,
                                 "/api/me"
+                                , "/estimations/{estimationId}/inquiries"
                         ).authenticated()
 
                         .requestMatchers(HttpMethod.GET,

@@ -79,6 +79,7 @@ slack:
       error: '#에러-dev'
       new-estimation: '#샤시견적-dev'
       new-user: '#유저-인입-dev'
+      chassis-estimation-inquiry: '#샤시견적-문의-dev'
 
 login:
   kakao:
@@ -195,6 +196,7 @@ slack:
       error: '#에러'
       new-estimation: '#샤시견적'
       new-user: '#유저-인입'
+      chassis-estimation-inquiry: '#샤시견적-문의'
 
 login:
   kakao:

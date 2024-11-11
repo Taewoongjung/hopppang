@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import kr.hoppang.domain.chassis.estimation.ChassisEstimationAddress;
 import kr.hoppang.util.common.BoolType;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -102,5 +103,21 @@ public class ChassisEstimationAddressEntity {
                 chassisEstimationInfoId,
                 zipCode, state, city, town, bCode, remainAddress, buildingNumber,
                 isApartment, isExpanded);
+    }
+
+    public ChassisEstimationAddress toPojo() {
+        return ChassisEstimationAddress.of(
+                getId(),
+                getChassisEstimationInfoId(),
+                getZipCode(),
+                getState(),
+                getCity(),
+                getTown(),
+                getBCode(),
+                getRemainAddress(),
+                getBuildingNumber(),
+                getIsApartment(),
+                getIsExpanded()
+        );
     }
 }

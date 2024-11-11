@@ -22,6 +22,7 @@ import kr.hoppang.adapter.outbound.alarm.AlarmService;
 import kr.hoppang.adapter.outbound.alarm.dto.ErrorAlarm;
 import kr.hoppang.adapter.outbound.alarm.dto.NewEstimation;
 import kr.hoppang.adapter.outbound.alarm.dto.NewUser;
+import kr.hoppang.adapter.outbound.alarm.dto.RequestEstimationInquiry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
@@ -47,6 +48,9 @@ public class SlackAlarm implements AlarmService {
 
     @Value(value = "${slack.channel.monitor.new-user}")
     private String newUserChannel;
+
+    @Value(value = "${slack.channel.monitor.chassis-estimation-inquiry}")
+    private String estimationInquiry;
 
     @Async
     @Override
@@ -209,6 +213,48 @@ public class SlackAlarm implements AlarmService {
 
         } catch (SlackApiException | IOException e) {
             log.info("{} 채널에 슬랙 메시지 전송 실패", newUserChannel);
+        }
+    }
+
+    @Async
+    @Override
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void sendEstimationInquiryAlarm(
+            final RequestEstimationInquiry requestEstimationInquiry) {
+
+        try {
+            List<LayoutBlock> blocks = new ArrayList<>();
+
+            // Header block for title
+            blocks.add(header(header -> header.text(plainText("📋 견적 문의"))));
+            blocks.add(divider());
+
+            // User details
+            blocks.add(section(section -> section.text(markdownText(
+                    "*견적 번호:* " + requestEstimationInquiry.chassisEstimationInfo().getId()))));
+            blocks.add(section(section -> section.text(markdownText("*견적 상세:* " +
+                    "https://hoppang.store/admin/essentials/estimates/info" + "?estimationIdList="
+                    + requestEstimationInquiry.chassisEstimationInfo().getId()))));
+
+            blocks.add(divider());
+
+            // Footer
+            blocks.add(context(context -> context.elements(List.of(
+                    markdownText("문의 시간: " +
+                            requestEstimationInquiry.chassisEstimationInfo().getCreatedAt()
+                                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+            ))));
+
+            MethodsClient methods = Slack.getInstance().methods(token);
+            ChatPostMessageRequest request = ChatPostMessageRequest.builder()
+                    .channel(estimationInquiry)
+                    .blocks(blocks)
+                    .build();
+
+            methods.chatPostMessage(request);
+
+        } catch (SlackApiException | IOException e) {
+            log.info("{} 채널에 슬랙 메시지 전송 실패", estimationInquiry);
         }
     }
 }

@@ -37,13 +37,14 @@ public enum ErrorType {
     NOT_6DIGIT_VERIFY_NUMBER(205, "6자리 인증숫자가 아닙니다."),
     EMPTY_VERIFY_NUMBER(206, "인증숫자가 빈값입니다."),
 
-
     UNABLE_TO_SEND_SMS(300, "SMS 보내기에 실패했습니다."),
     INVALID_PHONE_CHECK_NUMBER(301, "sms 인증에 실패하였습니다."),
     EXPIRED_PHONE_CHECK_REQUEST(302, "휴대폰 검증 확인 시간이 지났습니다."),
     EMPTY_VALIDATION_NUMBER(303, "템플릿에 인증번호는 필수입니다."),
 
     NOT_VERIFIED_PHONE(400, "휴대폰 검증이 선행 되어야 합니다."),
+
+    NOT_EXIST_ESTIMATION(500, "해당 견적을 찾을 수 없습니다.")
     ;
 
     private final int code;

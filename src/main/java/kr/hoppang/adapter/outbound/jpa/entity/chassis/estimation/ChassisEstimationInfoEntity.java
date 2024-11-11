@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import kr.hoppang.adapter.outbound.jpa.entity.BaseEntity;
 import kr.hoppang.domain.chassis.CompanyType;
+import kr.hoppang.domain.chassis.estimation.ChassisEstimationInfo;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -159,5 +160,25 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
     public void setChassisEstimationAddress(
             final ChassisEstimationAddressEntity chassisEstimationAddress) {
         this.chassisEstimationAddress = chassisEstimationAddress;
+    }
+
+    public ChassisEstimationInfo toPojo() {
+        return ChassisEstimationInfo.of(
+                getId(),
+                getUserId(),
+                getChassisEstimationAddress() != null ?
+                        getChassisEstimationAddress().toPojo() : null,
+                getCompanyType(),
+                getLaborFee(),
+                getLadderCarFee(),
+                getDemolitionFee(),
+                getMaintenanceFee(),
+                getFreightTransportFee(),
+                getDeliveryFee(),
+                getTotalPrice(),
+                getCustomerLivingFloor(),
+                getCreatedAt(),
+                getLastModified()
+        );
     }
 }

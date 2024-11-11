@@ -10,7 +10,7 @@ import kr.hoppang.domain.chassis.estimation.repository.dto.FindChassisEstimation
 
 public interface ChassisEstimationRepository {
 
-    public List<FindChassisEstimationInfosResult> findChassisEstimationInfosBy(
+    List<FindChassisEstimationInfosResult> findChassisEstimationInfosBy(
             final List<Long> estimationId,
             final CompanyType companyType,
             final ChassisType chassisType,
@@ -19,6 +19,8 @@ public interface ChassisEstimationRepository {
             final int limit, final int offset
     );
 
-    public long registerChassisEstimation(final ChassisEstimationInfo ChassisEstimationInfo,
+    long registerChassisEstimation(final ChassisEstimationInfo ChassisEstimationInfo,
             final List<ChassisEstimationSizeInfo> chassisEstimationSizeInfoList);
+
+    ChassisEstimationInfo findChassisEstimationInfoById(final long estimationId);
 }

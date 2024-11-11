@@ -1,5 +1,7 @@
 package kr.hoppang.adapter.outbound.jpa.repository.chassis.estimation;
 
+import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_ESTIMATION;
+import static kr.hoppang.adapter.common.util.CheckUtil.check;
 import static kr.hoppang.util.converter.chassis.estimation.ChassisEstimationConverter.chassisEstimationAddressToEntity;
 import static kr.hoppang.util.converter.chassis.estimation.ChassisEstimationConverter.chassisEstimationInfoToEntity;
 import static kr.hoppang.util.converter.chassis.estimation.ChassisEstimationConverter.chassisEstimationSizeInfoToEntity;
@@ -142,5 +144,17 @@ public class ChassisEstimationInfoRepositoryAdapter implements ChassisEstimation
         // ChassisEstimationSizeInfo 디비 저장 end
 
         return chassisEstimationInfoEntity.getId();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ChassisEstimationInfo findChassisEstimationInfoById(final long estimationId) {
+
+        ChassisEstimationInfoEntity entity = chassisEstimationJpaRepository.findById(estimationId)
+                .orElse(null);
+
+        check(entity == null, NOT_EXIST_ESTIMATION);
+
+        return entity.toPojo();
     }
 }

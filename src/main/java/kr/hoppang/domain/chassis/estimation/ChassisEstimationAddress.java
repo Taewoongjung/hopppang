@@ -65,6 +65,7 @@ public class ChassisEstimationAddress {
                 buildingNumber, isApartment, isExpanded);
     }
 
+    // 조회
     public static ChassisEstimationAddress of(
             final Long id,
             final Long chassisEstimationInfoId,
