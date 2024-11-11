@@ -1,7 +1,9 @@
 package kr.hoppang.application.readmodel.user.handlers;
 
+import io.jsonwebtoken.lang.Assert;
 import kr.hoppang.adapter.outbound.cache.user.CacheUserRedisRepository;
 import kr.hoppang.domain.user.User;
+import kr.hoppang.domain.user.UserRole;
 import kr.hoppang.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +28,7 @@ public class LoadUserByUsernameQueryHandler implements UserDetailsService {
 
         User user = cacheUserRedisRepository.getBucketByKey(email);
 
-        if (user == null) {
+        if (user == null && UserRole.ROLE_CUSTOMER.equals(user.getUserRole())) {
             return userRepository.findByEmailWithoutRelations(email);
         }
 
