@@ -28,7 +28,7 @@ public class LoadUserByUsernameQueryHandler implements UserDetailsService {
 
         User user = cacheUserRedisRepository.getBucketByKey(email);
 
-        if (user == null && UserRole.ROLE_CUSTOMER.equals(user.getUserRole())) {
+        if (user == null) {
             return userRepository.findByEmailWithoutRelations(email);
         }
 
