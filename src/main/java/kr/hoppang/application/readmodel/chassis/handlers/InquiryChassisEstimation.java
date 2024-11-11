@@ -25,8 +25,9 @@ public class InquiryChassisEstimation implements IQueryHandler<InquiryChassisEst
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(rollbackFor = Exception.class, readOnly = true)
     public Boolean handle(final InquiryChassisEstimationCommand query) {
+        log.info("executed InquiryChassisEstimationCommand = {}", query);
 
         ChassisEstimationInfo chassisEstimationInfo = chassisEstimationRepository.findChassisEstimationInfoById(
                 query.estimationId());
