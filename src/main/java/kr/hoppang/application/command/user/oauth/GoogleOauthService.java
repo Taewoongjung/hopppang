@@ -81,8 +81,6 @@ public class GoogleOauthService implements OAuthService {
     }
 
     private String getTokenInfoFromApple(final String code) {
-        System.out.println("code = " + code);
-
         return webClient.post()
                 .uri("https://oauth2.googleapis.com/token")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -99,18 +97,19 @@ public class GoogleOauthService implements OAuthService {
     private OAuthLoginResultDto getUserInfoFromGoogleAndMakeUserObject(
             final String tokenInfoFromApple) throws JsonProcessingException {
 
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        TokenResponse tokenResponse = objectMapper.readValue(tokenInfoFromApple,
-//                TokenResponse.class);
-
         Map<String, Object> tokenResponse = getDataFromResponseJson(tokenInfoFromApple);
 
         GoogleUserResource userResource = getUserResource(tokenResponse.get("access_token").toString());
         String userName = "호빵유저" + generateRandomNumber(9);
 
-        long accessTokenExpireTime = ((Double) tokenResponse.get("expires_in")).longValue();
-        LocalDateTime accessTokenExpireInLocalDateTime = LocalDateTime.now()
-                .plusSeconds(accessTokenExpireTime);
+        log.info("tokenResponse = {}", tokenResponse);
+
+        LocalDateTime accessTokenExpireInLocalDateTime = null;
+        if (tokenResponse.get("expires_in") != null) {
+            long accessTokenExpireTime = ((Double) tokenResponse.get("expires_in")).longValue();
+            accessTokenExpireInLocalDateTime = LocalDateTime.now()
+                    .plusSeconds(accessTokenExpireTime);
+        }
 
         return new OAuthLoginResultDto(
                 userName,
@@ -121,9 +120,13 @@ public class GoogleOauthService implements OAuthService {
                 OauthType.GLE,
                 userResource.id(),
                 LocalDateTime.now(),
-                tokenResponse.get("access_token").toString(),
+                tokenResponse.get("access_token") != null ?
+                        tokenResponse.get("access_token").toString()
+                        : null,
                 accessTokenExpireInLocalDateTime,
-                tokenResponse.get("refresh_token").toString(),
+                tokenResponse.get("refresh_token") != null ?
+                        tokenResponse.get("refresh_token").toString()
+                        : null,
                 LocalDateTime.now().plusMonths(6L)
         );
     }
@@ -155,6 +158,8 @@ public class GoogleOauthService implements OAuthService {
                     log.error("Error occurred while processing Kakao response: ", e);
                     return Mono.empty();
                 }).block();
+
+        log.info("userInfoFromGoogle = {}", userInfoFromGoogle);
 
         return objectMapper.readValue(userInfoFromGoogle, GoogleUserResource.class);
     }
