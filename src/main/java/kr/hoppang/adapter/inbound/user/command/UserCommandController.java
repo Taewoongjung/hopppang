@@ -202,6 +202,20 @@ public class UserCommandController {
                         OauthType.GLE));
     }
 
+    @PutMapping(value = "/api/google/refresh")
+    public ResponseEntity<Boolean> googleLoginRefreshAccessTokenWhenExpired(
+            @RequestParam(value = "expiredToken") final String expiredToken,
+            HttpServletResponse response
+    ) throws Exception {
+
+        String jwt = refreshAccessTokenCommandHandler.handle(
+                new RefreshAccessTokenCommand(expiredToken, OauthType.GLE));
+
+        response.addHeader("Authorization", "Bearer " + jwt);
+
+        return ResponseEntity.status(HttpStatus.OK).body(true);
+    }
+
     @PostMapping(value = "/api/phones/validations")
     public ResponseEntity<Boolean> requestValidationPhone(
             @RequestBody final RequestValidationWebDtoV1.PhoneValidationReq req

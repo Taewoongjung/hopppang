@@ -36,6 +36,8 @@ public class JWTFilter extends OncePerRequestFilter {
             , "/api/kakao/refresh"
             , "/api/apple/auth"
             , "/api/apple/refresh"
+            , "/api/google/auth"
+            , "/api/google/refresh"
             , "/actuator/prometheus"
             , "/api/phones/validations"
 //      예시)

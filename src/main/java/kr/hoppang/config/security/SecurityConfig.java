@@ -89,6 +89,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT,
                                 "/api/kakao/refresh"
                                 , "/api/apple/refresh"
+                                , "/api/google/refresh"
                         ).permitAll()
 
                         // authorized
