@@ -279,4 +279,8 @@ public class UserEntity extends BaseEntity {
 
         this.userConfigInfo.setIsPushOn(isPushOnTarget ? BoolType.T : BoolType.F);
     }
+
+    public void setUserConfigInfo(final UserConfigInfoEntity userConfigInfo) {
+        this.userConfigInfo = userConfigInfo;
+    }
 }

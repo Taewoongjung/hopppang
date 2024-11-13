@@ -4,6 +4,7 @@ import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_TOKEN;
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_USER;
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_USER_CONFIGURATION;
 import static kr.hoppang.adapter.common.util.CheckUtil.check;
+import static kr.hoppang.util.common.BoolType.convertBooleanToType;
 import static kr.hoppang.util.converter.user.UserEntityConverter.userToEntity;
 import static kr.hoppang.util.converter.user.UserEntityConverter.userTokenToEntity;
 
@@ -222,6 +223,11 @@ public class UserRepositoryAdapter implements UserRepository {
         UserEntity user = entity.orElse(null);
 
         check(user == null, NOT_EXIST_USER);
+
+        if (user.getUserConfigInfo() == null) {
+            user.setUserConfigInfo(
+                    UserConfigInfoEntity.of(user.getId(), convertBooleanToType(isPushOn)));
+        }
 
         user.updateIsPushOn(isPushOn);
     }
