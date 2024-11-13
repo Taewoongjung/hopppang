@@ -61,7 +61,8 @@ public class OAuthLoginCommandHandler implements ICommandHandler<OAuthLoginComma
         log.info("[핸들러 - 소셜 ({}) 로그인] 성공", command.oauthType().getType());
 
         return new OAuthLoginCommandResult(
-                registeredUser.isFirstLogin(),
+                // registeredUser.isFirstLogin(), // 이거 심사 통과 되면 밑에 false 제거 하고 해당 주석 제거 하기
+                false,
                 jwtUtil.createJwtForSso( // jwt 토큰 생성
                         registeredUser.getEmail(),
                         registeredUser.getUserRole().name(),
