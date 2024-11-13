@@ -147,6 +147,7 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
             return registeredUser;
         }
 
+        // 이메일 로그인 전용
         if (registeredUser != null) {
 
             // 휴대폰 검증이 되었는지 확인
