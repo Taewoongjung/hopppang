@@ -26,7 +26,10 @@ public record NewEstimation(String userName,
                         e.width(), e.height()
                 )));
 
-        String userAddressStr = userAddress.getAddress() + " " + userAddress.getSubAddress();
+        String userAddressStr = "미기입";
+        if (userAddress != null) {
+            userAddressStr = userAddress.getAddress() + " " + userAddress.getSubAddress();
+        }
 
         return new NewEstimation(userName, userAddressStr, company, estimationList);
     }
