@@ -64,7 +64,7 @@ public class KakaoOauthService implements OAuthService {
         String redirection = "&redirect_uri=" + redirectUri;
         String extra = "&response_type=code";
 
-        return baseUrl + clientId + redirection + extra + "&prompt=none";
+        return baseUrl + clientId + redirection + extra + "&prompt=select_account";
     }
 
 
