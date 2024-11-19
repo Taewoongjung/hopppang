@@ -78,10 +78,10 @@ public class KakaoOauthService implements OAuthService {
 
         Map<String, Object> resultMap = getDataFromResponseJson(tokenInfoFromKakao);
 
-        String accessToken = resultMap.get("access_token").toString();
-        String accessTokenExpireIn = resultMap.get("expires_in").toString();
-        String refreshToken = resultMap.get("refresh_token").toString();
-        String refreshTokenExpireIn = resultMap.get("refresh_token_expires_in")
+        String accessToken = resultMap.get("accessToken").toString();
+        String accessTokenExpireIn = resultMap.get("accessTokenExpiresAt").toString();
+        String refreshToken = resultMap.get("refreshToken").toString();
+        String refreshTokenExpireIn = resultMap.get("refreshTokenExpiresAt")
                 .toString();
 
         String responseOfUserInfoFromKakao = getUserInfoFromKakao(accessToken);
