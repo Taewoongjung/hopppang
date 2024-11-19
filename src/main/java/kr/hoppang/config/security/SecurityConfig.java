@@ -82,7 +82,7 @@ public class SecurityConfig {
                                 "/api/login"
                                 , "/api/signup"
                                 , "/api/phones/validations"
-                                , "/api/kakao/signup/{code}"
+                                , "/api/kakao/signup"
                                 , "/api/apple/signup/{code}"
                                 , "/api/google/signup"
                         ).permitAll()
