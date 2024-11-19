@@ -7,17 +7,22 @@ import static kr.hoppang.adapter.common.util.VersatileUtil.convertStringToLocalD
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import kr.hoppang.application.command.user.oauth.dto.OAuthLoginResultDto;
 import kr.hoppang.application.command.user.oauth.dto.OAuthServiceLogInResultDto;
+import kr.hoppang.application.command.user.oauth.dto.TokenResponse;
 import kr.hoppang.domain.user.OauthType;
 import kr.hoppang.domain.user.TokenType;
 import kr.hoppang.domain.user.User;
@@ -29,7 +34,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONStringer;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -79,12 +83,12 @@ public class KakaoOauthService implements OAuthService {
 
     private OAuthLoginResultDto getUserInfoFromKakaoAndMakeUserObject(final String tokenInfoFromKakao) {
 
-        Map<String, Object> resultMap = getDataFromResponseJson(tokenInfoFromKakao);
+        Map<String, Object> tokenResponse = getTokenResponse(tokenInfoFromKakao);
 
-        String accessToken = resultMap.get("accessToken").toString();
-        String accessTokenExpireIn = resultMap.get("accessTokenExpiresAt").toString();
-        String refreshToken = resultMap.get("refreshToken").toString();
-        String refreshTokenExpireIn = resultMap.get("refreshTokenExpiresAt")
+        String accessToken = tokenResponse.get("accessToken").toString();
+        String accessTokenExpireIn = tokenResponse.get("accessTokenExpiresAt").toString();
+        String refreshToken = tokenResponse.get("refreshToken").toString();
+        String refreshTokenExpireIn = tokenResponse.get("refreshTokenExpiresAt")
                 .toString();
 
         String responseOfUserInfoFromKakao = getUserInfoFromKakao(accessToken);
@@ -150,6 +154,33 @@ public class KakaoOauthService implements OAuthService {
                     log.error("Error occurred while processing Kakao response: ", e);
                     return Mono.empty();
                 }).block();
+    }
+
+    public Map<String, Object> getTokenResponse(final String targetJson) {
+
+        Map<String, Object> resultMap = new HashMap<>();
+
+        String unescapedJson = targetJson.replace("\\\"", "\"");
+
+        JsonObject jsonObject = JsonParser.parseString(unescapedJson).getAsJsonObject();
+
+        // 데이터 추출
+        String accessToken = jsonObject.get("accessToken").getAsString();
+        String idToken = jsonObject.get("idToken").getAsString();
+        String refreshToken = jsonObject.get("refreshToken").getAsString();
+
+        // LocalDateTime으로 변환
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime accessTokenExpiry = LocalDateTime.parse(jsonObject.get("accessTokenExpiresAt").getAsString(), formatter);
+        LocalDateTime refreshTokenExpiry = LocalDateTime.parse(jsonObject.get("refreshTokenExpiresAt").getAsString(), formatter);
+
+        resultMap.put("accessToken", accessToken);
+        resultMap.put("idToken", idToken);
+        resultMap.put("refreshToken", refreshToken);
+        resultMap.put("accessTokenExpiry", accessTokenExpiry);
+        resultMap.put("refreshTokenExpiry", refreshTokenExpiry);
+
+        return resultMap;
     }
 
     public Map<String, Object> getDataFromResponseJson(final String response) {
