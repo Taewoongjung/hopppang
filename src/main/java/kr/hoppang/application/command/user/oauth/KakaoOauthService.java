@@ -86,10 +86,9 @@ public class KakaoOauthService implements OAuthService {
         Map<String, Object> tokenResponse = getTokenResponse(tokenInfoFromKakao);
 
         String accessToken = tokenResponse.get("accessToken").toString();
-        String accessTokenExpireIn = tokenResponse.get("accessTokenExpiresAt").toString();
+        LocalDateTime accessTokenExpireIn = (LocalDateTime) tokenResponse.get("accessTokenExpiresAt");
         String refreshToken = tokenResponse.get("refreshToken").toString();
-        String refreshTokenExpireIn = tokenResponse.get("refreshTokenExpiresAt")
-                .toString();
+        LocalDateTime refreshTokenExpireIn = (LocalDateTime) tokenResponse.get("refreshTokenExpiresAt");
 
         String responseOfUserInfoFromKakao = getUserInfoFromKakao(accessToken);
 
@@ -117,10 +116,6 @@ public class KakaoOauthService implements OAuthService {
         }
 
         LocalDateTime connectedAtLocalDateTime = convertStringToLocalDateTime2(connectedAt);
-        LocalDateTime accessTokenExpireInLocalDateTime = connectedAtLocalDateTime.plusSeconds(
-                (long) Double.parseDouble(accessTokenExpireIn));
-        LocalDateTime refreshTokenExpireInLocalDateTime = connectedAtLocalDateTime.plusSeconds(
-                (long) Double.parseDouble(refreshTokenExpireIn));
 
         return new OAuthLoginResultDto(
                 userName,
@@ -132,9 +127,9 @@ public class KakaoOauthService implements OAuthService {
                 providerUserId.toString(),
                 connectedAtLocalDateTime,
                 accessToken,
-                accessTokenExpireInLocalDateTime,
+                accessTokenExpireIn,
                 refreshToken,
-                refreshTokenExpireInLocalDateTime);
+                refreshTokenExpireIn);
     }
 
     private String generateRandomNumber(final int length) {
