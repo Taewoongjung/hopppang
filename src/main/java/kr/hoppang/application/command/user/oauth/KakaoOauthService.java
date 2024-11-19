@@ -6,6 +6,7 @@ import static kr.hoppang.adapter.common.util.VersatileUtil.convertLocalDateTimeT
 import static kr.hoppang.adapter.common.util.VersatileUtil.convertStringToLocalDateTime2;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -13,6 +14,7 @@ import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Base64;
+import java.util.Date;
 import java.util.Map;
 import kr.hoppang.application.command.user.oauth.dto.OAuthLoginResultDto;
 import kr.hoppang.application.command.user.oauth.dto.OAuthServiceLogInResultDto;
@@ -22,6 +24,7 @@ import kr.hoppang.domain.user.User;
 import kr.hoppang.domain.user.UserRole;
 import kr.hoppang.domain.user.UserToken;
 import kr.hoppang.domain.user.repository.UserRepository;
+import kr.hoppang.util.deserializer.DateDeserializer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONStringer;
@@ -150,7 +153,10 @@ public class KakaoOauthService implements OAuthService {
     }
 
     public Map<String, Object> getDataFromResponseJson(final String response) {
-        Gson gson = new Gson();
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(Date.class, new DateDeserializer());
+        Gson gson = gsonBuilder.create();
+
         Type mapType = new TypeToken<Map<String, Object>>() {}.getType();
 
         return gson.fromJson(response, mapType);
