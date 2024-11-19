@@ -4,7 +4,10 @@ import kr.hoppang.domain.user.OauthType;
 
 public class SsoSignUpWebDtoV1 {
 
-    public record Req(String deviceId, String deviceType) {
+    public record Req(String deviceId,
+                      String deviceType,
+                      String tokenInfo
+    ) {
 
     }
 

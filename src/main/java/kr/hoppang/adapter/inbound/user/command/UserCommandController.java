@@ -96,17 +96,16 @@ public class UserCommandController {
         return ResponseEntity.status(HttpStatus.OK).body(new SocialSignUpFinalWebDtoV1.Res(email));
     }
 
-    @PostMapping(value = "/api/kakao/signup/{code}")
+    @PostMapping(value = "/api/kakao/signup")
     public ResponseEntity<SsoSignUpWebDtoV1.Res> kakaoSignUp(
-            @PathVariable(value = "code") final String code,
             @RequestBody final SsoSignUpWebDtoV1.Req req,
             HttpServletResponse response) throws Exception {
 
-        log.info("카카오 로그인 = {}", code);
+        log.info("카카오 로그인 = {}", req);
 
         OAuthLoginCommandResult oAuthLoginCommandResult = oAuthLoginCommandHandler.handle(
                 new OAuthLoginCommand(
-                        code,
+                        req.tokenInfo(),
                         req.deviceId(),
                         req.deviceType(),
                         OauthType.KKO

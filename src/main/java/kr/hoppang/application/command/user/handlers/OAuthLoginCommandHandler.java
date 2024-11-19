@@ -38,7 +38,7 @@ public class OAuthLoginCommandHandler implements ICommandHandler<OAuthLoginComma
 
         // 클라이언트로 부터 받은 code 값으로 유저 정보 파싱
         OAuthLoginResultDto oAuthLoginResult = oAuthServiceAdapter.logIn(command.oauthType(),
-                command.code());
+                command.tokenInfo());
 
         User registeredUser = signUpCommandHandler.handle(
                 new SignUpCommand(

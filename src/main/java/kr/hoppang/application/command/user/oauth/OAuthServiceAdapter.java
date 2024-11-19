@@ -35,9 +35,9 @@ public class OAuthServiceAdapter {
         return oAuthServiceEnumMap.get(oauthType).getReqLoginUrl();
     }
 
-    public OAuthLoginResultDto logIn(final OauthType oauthType, final String code)
+    public OAuthLoginResultDto logIn(final OauthType oauthType, final String infoFromThirdPartyAuth)
             throws Exception {
-        return oAuthServiceEnumMap.get(oauthType).logIn(code);
+        return oAuthServiceEnumMap.get(oauthType).logIn(infoFromThirdPartyAuth);
     }
 
     public OAuthServiceLogInResultDto refreshAccessToken(final OauthType oauthType,

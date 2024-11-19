@@ -69,23 +69,9 @@ public class KakaoOauthService implements OAuthService {
 
 
     @Override
-    public OAuthLoginResultDto logIn(final String code) {
+    public OAuthLoginResultDto logIn(final String infoFromThirdPartyAuth) {
 
-        String tokenInfoFromKakao = getTokenInfoFromKakao(code);
-
-        return getUserInfoFromKakaoAndMakeUserObject(tokenInfoFromKakao);
-    }
-
-    public String getTokenInfoFromKakao(final String code) {
-        return webClient.post()
-                .uri("https://kauth.kakao.com/oauth/token")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .body(BodyInserters.fromFormData("grant_type", "authorization_code")
-                        .with("client_id", restApiKey)
-                        .with("redirect_uri", redirectUri)
-                        .with("code", code))
-                .retrieve()
-                .bodyToMono(String.class).block();
+        return getUserInfoFromKakaoAndMakeUserObject(infoFromThirdPartyAuth);
     }
 
     private OAuthLoginResultDto getUserInfoFromKakaoAndMakeUserObject(final String tokenInfoFromKakao) {
