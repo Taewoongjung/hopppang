@@ -40,6 +40,8 @@ public class OAuthLoginCommandHandler implements ICommandHandler<OAuthLoginComma
         OAuthLoginResultDto oAuthLoginResult = oAuthServiceAdapter.logIn(command.oauthType(),
                 command.tokenInfo());
 
+        log.info("카카오로 부터 온 데이터 = {}", oAuthLoginResult);
+
         User registeredUser = signUpCommandHandler.handle(
                 new SignUpCommand(
                         oAuthLoginResult.name(),
