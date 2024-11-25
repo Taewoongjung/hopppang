@@ -91,6 +91,10 @@ public class KakaoOauthService implements OAuthService {
         LocalDateTime accessTokenExpireIn = (LocalDateTime) tokenResponse.get("accessTokenExpiresAt");
         String refreshToken = tokenResponse.get("refreshToken").toString();
         LocalDateTime refreshTokenExpireIn = (LocalDateTime) tokenResponse.get("refreshTokenExpiresAt");
+        log.info("accessToken = {}", accessToken);
+        log.info("accessTokenExpireIn = {}", accessTokenExpireIn);
+        log.info("refreshToken = {}", refreshToken);
+        log.info("refreshTokenExpireIn = {}", refreshTokenExpireIn);
 
         String responseOfUserInfoFromKakao = getUserInfoFromKakao(accessToken);
 
