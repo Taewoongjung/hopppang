@@ -219,6 +219,8 @@ public class KakaoOauthService implements OAuthService {
         Map<String, Object> refreshedInfo = getAccessTokenToRefresh(
                 user.getTheLatestRefreshToken().getToken());
 
+        log.info("refreshedInfo = {}", refreshedInfo);
+
         String accessToken = refreshedInfo.get("access_token").toString();
         String accessTokenExpireIn = refreshedInfo.get("expires_in").toString();
 
