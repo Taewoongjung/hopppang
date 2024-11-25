@@ -85,16 +85,10 @@ public class KakaoOauthService implements OAuthService {
 
         Map<String, Object> tokenResponse = getTokenResponse(tokenInfoFromKakao);
 
-        log.info("tokenResponse = {}", tokenResponse);
-
         String accessToken = tokenResponse.get("accessToken").toString();
         LocalDateTime accessTokenExpireIn = (LocalDateTime) tokenResponse.get("accessTokenExpiresAt");
         String refreshToken = tokenResponse.get("refreshToken").toString();
         LocalDateTime refreshTokenExpireIn = (LocalDateTime) tokenResponse.get("refreshTokenExpiresAt");
-        log.info("accessToken = {}", accessToken);
-        log.info("accessTokenExpireIn = {}", accessTokenExpireIn);
-        log.info("refreshToken = {}", refreshToken);
-        log.info("refreshTokenExpireIn = {}", refreshTokenExpireIn);
 
         String responseOfUserInfoFromKakao = getUserInfoFromKakao(accessToken);
 
@@ -178,8 +172,8 @@ public class KakaoOauthService implements OAuthService {
         resultMap.put("accessToken", accessToken);
         resultMap.put("idToken", idToken);
         resultMap.put("refreshToken", refreshToken);
-        resultMap.put("accessTokenExpiry", accessTokenExpiry);
-        resultMap.put("refreshTokenExpiry", refreshTokenExpiry);
+        resultMap.put("accessTokenExpiresAt", accessTokenExpiry);
+        resultMap.put("refreshTokenExpiresAt", refreshTokenExpiry);
 
         return resultMap;
     }
