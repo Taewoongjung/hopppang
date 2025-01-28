@@ -73,7 +73,7 @@ public class AppleOauthService implements OAuthService {
     private String secretKey;
 
     @PostConstruct
-    @Scheduled(cron = "0 0 1 */3 *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 0 1 * 3 *", zone = "Asia/Seoul")
         // 3개월에 한 번씩 secretKey 갱신
     void createSecretKey() throws Exception {
         secretKey = generateJWT();
@@ -208,7 +208,7 @@ public class AppleOauthService implements OAuthService {
 
         checkIfLoggedInUserWithExpiredRefreshToken(user);
 
-        LocalDateTime refreshedAccessTokenExpireIn = getAccessTokenToRefresh(user);
+        LocalDateTime refreshedAccessTokenExpireIn = getAccessTokenToRefresh();
 
         userRepository.updateToken(user.getEmail(), TokenType.ACCESS, null,
                 refreshedAccessTokenExpireIn);
@@ -233,9 +233,9 @@ public class AppleOauthService implements OAuthService {
     }
 
     // 리프레스 토큰으로 엑세스 토큰 갱신하기
-    private LocalDateTime getAccessTokenToRefresh(final User user) {
+    private LocalDateTime getAccessTokenToRefresh() {
 
-        return user.getExpireInOfAccessToken().plusHours(3);
+        return LocalDateTime.now().plusHours(3);
     }
 
     @Override
