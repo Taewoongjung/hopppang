@@ -98,10 +98,9 @@ public class ChassisPriceCalculator {
     }
 
     // @TODO 철거비 계산
-    public int calculateDemolitionFee() {
+    public int calculateDemolitionFee(final AdditionalChassisPriceCriteriaType demolitionType) {
         AdditionalChassisPriceCriteria demolitionFee =
-                additionalChassisPriceCriteriaRepository.findByType(
-                        AdditionalChassisPriceCriteriaType.DemolitionFee);
+                additionalChassisPriceCriteriaRepository.findByType(demolitionType);
 
         return demolitionFee.getPrice();
     }

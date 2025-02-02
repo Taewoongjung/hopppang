@@ -2,7 +2,7 @@ package kr.hoppang.application.command.chassis.handlers;
 
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_AVAILABLE_MANUFACTURE;
 import static kr.hoppang.adapter.common.util.CheckUtil.check;
-import static kr.hoppang.adapter.outbound.jpa.entity.chassis.price.pricecriteria.AdditionalChassisPriceCriteriaType.IncrementRate;
+import static kr.hoppang.adapter.outbound.jpa.entity.chassis.price.pricecriteria.AdditionalChassisPriceCriteriaType.*;
 import static kr.hoppang.util.common.BoolType.convertBooleanToType;
 
 import java.math.BigDecimal;
@@ -58,9 +58,9 @@ public class CalculateChassisPriceCommandHandler implements
 
         log.info("[핸들러 - 샤시 내기] CalculateChassisPriceCommand = {}", event);
 
-        List<CalculateChassisPrice> reqList = event.calculateChassisPriceList();
+        List<CalculateChassisPrice> chassisReqList = event.calculateChassisPriceList();
 
-        if (reqList.isEmpty()) {
+        if (chassisReqList.isEmpty()) {
             return null;
         }
 
@@ -76,7 +76,7 @@ public class CalculateChassisPriceCommandHandler implements
         AtomicInteger heightForDoubleWindow = new AtomicInteger(0);
 
         // 자재비를 계산한다.
-        reqList.forEach(chassis -> {
+        chassisReqList.forEach(chassis -> {
             check(chassis.width() > 5000 || chassis.width() < 300, NOT_AVAILABLE_MANUFACTURE);
             check(chassis.height() > 2600 || chassis.height() < 300, NOT_AVAILABLE_MANUFACTURE);
 
@@ -126,7 +126,9 @@ public class CalculateChassisPriceCommandHandler implements
         // 철거시, 철거비를 계산한다.
         int demolitionFee = 0;
         if (event.isScheduledForDemolition()) {
-            demolitionFee = chassisPriceCalculator.calculateDemolitionFee();
+            demolitionFee = chassisPriceCalculator.calculateDemolitionFee(
+                    chassisReqList.size() >= 5 ? Demolition1To4Fee : DemolitionOver5Fee
+            );
             calculatedPriceResultList.add(demolitionFee);
         }
 
@@ -146,7 +148,7 @@ public class CalculateChassisPriceCommandHandler implements
         eventPublisher.publishEvent(NewEstimation.of(
                 user.getName(),
                 user.getUserAddress(),
-                reqList.get(0).companyType(),
+                chassisReqList.get(0).companyType(),
                 event.calculateChassisPriceList()
         ));
 
@@ -180,7 +182,7 @@ public class CalculateChassisPriceCommandHandler implements
                 event.buildingNumber(),
                 event.isApartment(),
                 event.isExpanded(),
-                reqList.get(0).companyType().name(),
+                chassisReqList.get(0).companyType().name(),
                 deliveryFee,
                 demolitionFee,
                 maintenanceFee,
@@ -198,7 +200,7 @@ public class CalculateChassisPriceCommandHandler implements
 
         return new CalculateChassisPriceCommandHandlerCommandResult(
                 registeredEstimationId,
-                reqList.get(0).companyType().name(),
+                chassisReqList.get(0).companyType().name(),
                 chassisPriceResultList,
                 deliveryFee,
                 demolitionFee,

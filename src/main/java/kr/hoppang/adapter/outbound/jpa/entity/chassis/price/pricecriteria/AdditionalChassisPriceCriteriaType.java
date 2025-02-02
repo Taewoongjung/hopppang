@@ -2,6 +2,8 @@ package kr.hoppang.adapter.outbound.jpa.entity.chassis.price.pricecriteria;
 
 public enum AdditionalChassisPriceCriteriaType {
     DemolitionFee, // 철거비
+    Demolition1To4Fee, // 1 ~ 4 틀 철거비
+    DemolitionOver5Fee, // 5개 이상 틀 철거비
     MinimumLaborFee, // 최소 인건비
     MaintenanceFee, // 보양비
     LadderCar2To6, // 사다리차 2 ~ 6 층
