@@ -30,6 +30,7 @@ public record AddChassisEstimationInfoCommand(ChassisEstimationCommand chassisEs
                                            int ladderFee,
                                            int freightTransportFee,
                                            int customerLivingFloor,
+                                           int appliedIncrementRate,
                                            int wholeCalculatedFee,
                                            int floorCustomerLiving,
                                            List<ChassisSize> chassisSizeList,
@@ -67,6 +68,7 @@ public record AddChassisEstimationInfoCommand(ChassisEstimationCommand chassisEs
                 command.maintenanceFee,
                 command.freightTransportFee,
                 command.deliveryFee,
+                command.appliedIncrementRate,
                 command.wholeCalculatedFee,
                 command.customerLivingFloor
         );

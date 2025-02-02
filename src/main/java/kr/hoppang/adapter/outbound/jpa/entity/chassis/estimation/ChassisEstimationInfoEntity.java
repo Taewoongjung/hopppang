@@ -21,6 +21,7 @@ import kr.hoppang.domain.chassis.estimation.ChassisEstimationInfo;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Entity
@@ -52,10 +53,13 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
 
     private int deliveryFee;
 
+    private int appliedIncrementRate;
+
     private int totalPrice;
 
     private int customerLivingFloor;
 
+    @Setter
     @OneToOne(mappedBy = "chassisEstimationInfo",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private ChassisEstimationAddressEntity chassisEstimationAddress;
 
@@ -73,6 +77,7 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
             final int maintenanceFee,
             final int freightTransportFee,
             final int deliveryFee,
+            final int appliedIncrementRate,
             final int totalPrice,
             final int customerLivingFloor,
             final ChassisEstimationAddressEntity chassisEstimationAddress,
@@ -90,6 +95,7 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
         this.maintenanceFee = maintenanceFee;
         this.freightTransportFee = freightTransportFee;
         this.deliveryFee = deliveryFee;
+        this.appliedIncrementRate = appliedIncrementRate;
         this.totalPrice = totalPrice;
         this.customerLivingFloor = customerLivingFloor;
         this.chassisEstimationAddress = chassisEstimationAddress;
@@ -106,6 +112,7 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
             final int maintenanceFee,
             final int freightTransportFee,
             final int deliveryFee,
+            final int appliedIncrementRate,
             final int price,
             final int customerLivingFloor,
             final ChassisEstimationAddressEntity chassisEstimationAddress,
@@ -122,6 +129,7 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
                 maintenanceFee,
                 freightTransportFee,
                 deliveryFee,
+                appliedIncrementRate,
                 price,
                 customerLivingFloor,
                 chassisEstimationAddress,
@@ -137,6 +145,7 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
             final int maintenanceFee,
             final int freightTransportFee,
             final int deliveryFee,
+            final int appliedIncrementRate,
             final int price,
             final int customerLivingFloor
     ) {
@@ -151,15 +160,11 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
                 maintenanceFee,
                 freightTransportFee,
                 deliveryFee,
+                appliedIncrementRate,
                 price,
                 customerLivingFloor,
                 null, null
         );
-    }
-
-    public void setChassisEstimationAddress(
-            final ChassisEstimationAddressEntity chassisEstimationAddress) {
-        this.chassisEstimationAddress = chassisEstimationAddress;
     }
 
     public ChassisEstimationInfo toPojo() {
@@ -175,6 +180,7 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
                 getMaintenanceFee(),
                 getFreightTransportFee(),
                 getDeliveryFee(),
+                getAppliedIncrementRate(),
                 getTotalPrice(),
                 getCustomerLivingFloor(),
                 getCreatedAt(),

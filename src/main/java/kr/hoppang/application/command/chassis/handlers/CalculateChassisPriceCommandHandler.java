@@ -2,8 +2,11 @@ package kr.hoppang.application.command.chassis.handlers;
 
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_AVAILABLE_MANUFACTURE;
 import static kr.hoppang.adapter.common.util.CheckUtil.check;
+import static kr.hoppang.adapter.outbound.jpa.entity.chassis.price.pricecriteria.AdditionalChassisPriceCriteriaType.IncrementRate;
 import static kr.hoppang.util.common.BoolType.convertBooleanToType;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -17,7 +20,9 @@ import kr.hoppang.application.command.chassis.commands.AddChassisEstimationInfoC
 import kr.hoppang.application.command.chassis.commands.CalculateChassisPriceCommand;
 import kr.hoppang.application.command.chassis.commands.CalculateChassisPriceCommand.CalculateChassisPrice;
 import kr.hoppang.domain.chassis.price.ChassisPriceInfo;
+import kr.hoppang.domain.chassis.price.pricecriteria.AdditionalChassisPriceCriteria;
 import kr.hoppang.domain.chassis.price.repository.ChassisPriceInfoRepository;
+import kr.hoppang.domain.chassis.price.repository.pricecriteria.AdditionalChassisPriceCriteriaRepository;
 import kr.hoppang.domain.user.User;
 import kr.hoppang.domain.user.repository.UserRepository;
 import kr.hoppang.util.calculator.ApproximateCalculator;
@@ -39,6 +44,7 @@ public class CalculateChassisPriceCommandHandler implements
     private final ChassisPriceCalculator chassisPriceCalculator;
     private final ChassisPriceInfoRepository chassisPriceInfoRepository;
     private final AddChassisEstimationInfoCommandHandler addChassisEstimationInfoCommandHandler;
+    private final AdditionalChassisPriceCriteriaRepository additionalChassisPriceCriteriaRepository;
 
     @Override
     public boolean isCommandHandler() {
@@ -54,11 +60,11 @@ public class CalculateChassisPriceCommandHandler implements
 
         List<CalculateChassisPrice> reqList = event.calculateChassisPriceList();
 
-        if (reqList.size() == 0) {
+        if (reqList.isEmpty()) {
             return null;
         }
 
-        List<Integer> calculatedResultList = new ArrayList<>();
+        List<Integer> calculatedPriceResultList = new ArrayList<>();
         List<ChassisPriceResult> chassisPriceResultList = new ArrayList<>();
 
         // 인건비를 위한 이중창 가로 세로 길이 저장 변수
@@ -98,7 +104,7 @@ public class CalculateChassisPriceCommandHandler implements
                     chassis.width(), chassis.height()
             );
 
-            calculatedResultList.add(chassisPrice);
+            calculatedPriceResultList.add(chassisPrice);
 
             chassisPriceResultList.add(new ChassisPriceResult(
                     chassis.chassisType().name(), chassis.width(), chassis.height(), chassisPrice)
@@ -107,7 +113,7 @@ public class CalculateChassisPriceCommandHandler implements
 
         // 층수에 따른 사다리차 비용을 계산한다
         int ladderCarFee = chassisPriceCalculator.calculateLadderFee(event.floorCustomerLiving());
-        calculatedResultList.add(ladderCarFee);
+        calculatedPriceResultList.add(ladderCarFee);
 
         // 인건비를 계산한다.
         int laborFee = chassisPriceCalculator.calculateLaborFee(
@@ -115,24 +121,24 @@ public class CalculateChassisPriceCommandHandler implements
                 heightForSingleWindow.get(),
                 widthForDoubleWindow.get(),
                 heightForDoubleWindow.get());
-        calculatedResultList.add(laborFee);
+        calculatedPriceResultList.add(laborFee);
 
         // 철거시, 철거비를 계산한다.
         int demolitionFee = 0;
         if (event.isScheduledForDemolition()) {
             demolitionFee = chassisPriceCalculator.calculateDemolitionFee();
-            calculatedResultList.add(demolitionFee);
+            calculatedPriceResultList.add(demolitionFee);
         }
 
         // 살고있을 시, 보양비를 계산한다.
         int maintenanceFee = 0;
         if (event.isResident()) {
             maintenanceFee = chassisPriceCalculator.calculateMaintenanceFee();
-            calculatedResultList.add(maintenanceFee);
+            calculatedPriceResultList.add(maintenanceFee);
         }
 
         int deliveryFee = chassisPriceCalculator.calculateDeliveryFee();
-        calculatedResultList.add(deliveryFee);
+        calculatedPriceResultList.add(deliveryFee);
 
         User user = userRepository.findById(event.userId());
 
@@ -158,7 +164,10 @@ public class CalculateChassisPriceCommandHandler implements
         int freightTransportFee = event.floorCustomerLiving() <= 1 ? ladderCarFee
                 : 0; // freightTransportFee : 1층 이하면 사다리차 비용이 도수 운반비로 치환 된다
         int floor = event.floorCustomerLiving();
-        int totalPrice = calculatedResultList.stream().mapToInt(Integer::intValue).sum();
+        AdditionalChassisPriceCriteria additionalChassisPriceCriteria = additionalChassisPriceCriteriaRepository.findByType(
+                IncrementRate);
+        int totalPrice = calculateFinalPrice(additionalChassisPriceCriteria.getPrice(),
+                calculatedPriceResultList);
 
         long registeredEstimationId = registerChassisEstimation(
                 chassisPriceResultList,
@@ -179,6 +188,7 @@ public class CalculateChassisPriceCommandHandler implements
                 ladderFee,
                 freightTransportFee,
                 floor,
+                additionalChassisPriceCriteria.getPrice(),
                 totalPrice,
                 event.floorCustomerLiving(),
                 user
@@ -219,6 +229,7 @@ public class CalculateChassisPriceCommandHandler implements
             final int ladderFee,
             final int freightTransportFee,
             final int floor,
+            final int appliedIncrementRate,
             final int totalPrice,
             final int floorCustomerLiving,
             final User user) {
@@ -252,11 +263,25 @@ public class CalculateChassisPriceCommandHandler implements
                         ladderFee,
                         freightTransportFee,
                         floor,
+                        appliedIncrementRate,
                         totalPrice,
                         floorCustomerLiving,
                         chassisSizeList,
                         user
                 )
         ));
+    }
+
+    private int calculateFinalPrice(final int incrementRateOfConvertingToCustomerPrice,
+            final List<Integer> calculatedPriceResultList) {
+
+        int totalPrice = calculatedPriceResultList.stream().mapToInt(Integer::intValue).sum();
+
+        BigDecimal rate = BigDecimal.valueOf(incrementRateOfConvertingToCustomerPrice)
+                .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+        BigDecimal updatedTotalPrice = BigDecimal.valueOf(totalPrice)
+                .multiply(rate.add(BigDecimal.ONE));
+
+        return updatedTotalPrice.intValue();
     }
 }

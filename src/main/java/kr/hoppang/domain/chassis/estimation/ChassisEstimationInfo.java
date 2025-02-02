@@ -20,6 +20,7 @@ public class ChassisEstimationInfo {
     private final int maintenanceFee;
     private final int freightTransportFee;
     private final int deliveryFee;
+    private final int appliedIncrementRate;
     private final int totalPrice;
     private final int customerLivingFloor;
     private final LocalDateTime createdAt;
@@ -39,6 +40,7 @@ public class ChassisEstimationInfo {
             final int maintenanceFee,
             final int freightTransportFee,
             final int deliveryFee,
+            final int appliedIncrementRate,
             final int totalPrice,
             final int customerLivingFloor,
             final List<ChassisEstimationSizeInfo> chassisEstimationSizeInfoList,
@@ -55,6 +57,7 @@ public class ChassisEstimationInfo {
         this.maintenanceFee = maintenanceFee;
         this.freightTransportFee = freightTransportFee;
         this.deliveryFee = deliveryFee;
+        this.appliedIncrementRate = appliedIncrementRate;
         this.totalPrice = totalPrice;
         this.customerLivingFloor = customerLivingFloor;
         this.chassisEstimationSizeInfoList = chassisEstimationSizeInfoList;
@@ -73,6 +76,7 @@ public class ChassisEstimationInfo {
             final int maintenanceFee,
             final int freightTransportFee,
             final int deliveryFee,
+            final int appliedIncrementRate,
             final int totalPrice,
             final int customerLivingFloor
     ) {
@@ -87,6 +91,7 @@ public class ChassisEstimationInfo {
                 maintenanceFee,
                 freightTransportFee,
                 deliveryFee,
+                appliedIncrementRate,
                 totalPrice,
                 customerLivingFloor,
                 null,
@@ -106,6 +111,7 @@ public class ChassisEstimationInfo {
             final int maintenanceFee,
             final int freightTransportFee,
             final int deliveryFee,
+            final int appliedIncrementRate,
             final int totalPrice,
             final int customerLivingFloor,
             final LocalDateTime createdAt,
@@ -122,6 +128,7 @@ public class ChassisEstimationInfo {
                 maintenanceFee,
                 freightTransportFee,
                 deliveryFee,
+                appliedIncrementRate,
                 totalPrice,
                 customerLivingFloor,
                 null,
@@ -139,6 +146,7 @@ public class ChassisEstimationInfo {
             final int maintenanceFee,
             final int freightTransportFee,
             final int deliveryFee,
+            final int appliedIncrementRate,
             final int totalPrice,
             final int customerLivingFloor,
             final List<ChassisEstimationSizeInfo> chassisEstimationSizeInfoList,
@@ -156,6 +164,7 @@ public class ChassisEstimationInfo {
                 maintenanceFee,
                 freightTransportFee,
                 deliveryFee,
+                appliedIncrementRate,
                 totalPrice,
                 customerLivingFloor,
                 chassisEstimationSizeInfoList,

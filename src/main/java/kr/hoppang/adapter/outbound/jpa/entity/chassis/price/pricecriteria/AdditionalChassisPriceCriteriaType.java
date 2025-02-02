@@ -10,5 +10,6 @@ public enum AdditionalChassisPriceCriteriaType {
     LadderCar11To22PerF, // 사다리차 11 ~ 22 층은 층 당 계산
     LadderCarOver23, // 사다리차 23 층 이상은 사다리차 불가능 할 수 있어서 22층 까지 계산 한 결과 리턴
     FreightTransportFee, // 도수 운반비
-    DeliveryFee // 배송비
+    DeliveryFee, // 배송비
+    IncrementRate // 원가 대비 소비자요금으로 변환 비율
 }

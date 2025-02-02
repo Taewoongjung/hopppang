@@ -23,6 +23,7 @@ public class ChassisEstimationConverter {
                 pojo.getMaintenanceFee(),
                 pojo.getFreightTransportFee(),
                 pojo.getDeliveryFee(),
+                pojo.getAppliedIncrementRate(),
                 pojo.getTotalPrice(),
                 pojo.getCustomerLivingFloor());
     }
