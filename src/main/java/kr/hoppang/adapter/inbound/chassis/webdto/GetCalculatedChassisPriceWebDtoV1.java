@@ -5,6 +5,8 @@ import static kr.hoppang.adapter.common.exception.ErrorType.CHASSIS_TYPE_IS_MAND
 import static kr.hoppang.adapter.common.util.CheckUtil.check;
 
 import jakarta.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import kr.hoppang.application.command.chassis.commandresults.CalculateChassisPriceCommandHandlerCommandResult;
@@ -107,7 +109,8 @@ public class GetCalculatedChassisPriceWebDtoV1 {
             int ladderFee,
             int freightTransportFee,
             int customerFloor,
-            int wholeCalculatedFee // 총 비용
+            int wholeCalculatedFee,
+            int surtax
     ) {
         private record ChassisPrice(String chassisType, int width, int height, int price) { }
 
@@ -135,8 +138,14 @@ public class GetCalculatedChassisPriceWebDtoV1 {
                     commandResult.ladderFee(),
                     commandResult.freightTransportFee(),
                     commandResult.customerFloor(),
-                    commandResult.wholeCalculatedFee()
+                    commandResult.wholeCalculatedFee(),
+                    calculateSurtax(commandResult.wholeCalculatedFee())
             );
         }
+    }
+
+    private static int calculateSurtax(final int wholePrice) {
+        return BigDecimal.valueOf(wholePrice).divide(new BigDecimal("10"), RoundingMode.UP)
+                .intValue();
     }
 }
