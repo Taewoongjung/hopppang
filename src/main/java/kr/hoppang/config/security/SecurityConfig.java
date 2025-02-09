@@ -79,20 +79,20 @@ public class SecurityConfig {
                                 , "/api/google/auth"
                                 , "/login"
                         ).permitAll()
-//                        .requestMatchers(HttpMethod.POST,
-//                                "/api/login"
-//                                , "/api/signup"
-//                                , "/api/phones/validations"
-//                                , "/api/kakao/signup"
-//                                , "/api/apple/signup/{code}"
-//                                , "/api/google/signup"
-//                        ).permitAll()
-//                        .requestMatchers(HttpMethod.PUT,
-//                                "/api/kakao/refresh"
-//                                , "/api/apple/refresh"
-//                                , "/api/google/refresh"
-//                        ).permitAll()
-//
+                        .requestMatchers(HttpMethod.POST,
+                                "/api/login"
+                                , "/api/signup"
+                                , "/api/phones/validations"
+                                , "/api/kakao/signup"
+                                , "/api/apple/signup/{code}"
+                                , "/api/google/signup"
+                        ).permitAll()
+                        .requestMatchers(HttpMethod.PUT,
+                                "/api/kakao/refresh"
+                                , "/api/apple/refresh"
+                                , "/api/google/refresh"
+                        ).permitAll()
+
 //                        // authorized
 //                        .requestMatchers(HttpMethod.GET,
 //                                "/api/me"
@@ -121,7 +121,9 @@ public class SecurityConfig {
 //                        .requestMatchers(HttpMethod.DELETE
 //                                , "/api/users/{userId}"
 //                        ).authenticated()
-                        .anyRequest().authenticated())
+                        .anyRequest()
+                        .authenticated()
+                )
                 .addFilterBefore(new JWTFilter(jwtUtil, loadUserByUsernameQueryHandler),
                         LoginFilter.class)
 
