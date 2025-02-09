@@ -12,11 +12,9 @@ import kr.hoppang.adapter.inbound.chassis.webdto.GetCountOfChassisEstimationInfo
 import kr.hoppang.application.readmodel.chassis.handlers.FindChassisEstimationInformationQueryHandler;
 import kr.hoppang.application.readmodel.chassis.handlers.FindChassisPriceAdditionalCriteriaQueryHandler;
 import kr.hoppang.application.readmodel.chassis.handlers.FindChassisPriceInfoByTypeAndCompanyTypeQueryHandler;
-import kr.hoppang.application.readmodel.chassis.handlers.InquiryChassisEstimation;
 import kr.hoppang.application.readmodel.chassis.queries.FindChassisEstimationInformationQuery;
 import kr.hoppang.application.readmodel.chassis.queries.FindChassisPriceAdditionalCriteriaQuery;
 import kr.hoppang.application.readmodel.chassis.queries.FindChassisPriceInfoByCompanyTypeQuery;
-import kr.hoppang.application.readmodel.chassis.queries.InquiryChassisEstimationCommand;
 import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
 import kr.hoppang.domain.chassis.price.pricecriteria.AdditionalChassisPriceCriteria;
@@ -25,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,13 +30,13 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/chassis")
-public class ChassisQueryController {
+@RequestMapping(value = "/api/admin/chassis")
+public class ChassisAdminQueryController {
 
-    private final InquiryChassisEstimation inquiryChassisEstimation;
     private final FindChassisEstimationInformationQueryHandler findChassisEstimationInformationQueryHandler;
     private final FindChassisPriceAdditionalCriteriaQueryHandler findChassisPriceAdditionalCriteriaQueryHandler;
     private final FindChassisPriceInfoByTypeAndCompanyTypeQueryHandler findChassisPriceInfoByCompanyTypeQueryHandler;
+
 
     @GetMapping(value = "/prices")
     public ResponseEntity<GetChassisPriceInformationWebDtoV1.Res> getChassisPriceInformation(
@@ -120,15 +117,5 @@ public class ChassisQueryController {
                                                                 .minusSeconds(1),
                                                         limit, offset)
                                         )).size()));
-    }
-
-    @GetMapping(value = "/estimations/{estimationId}/inquiries")
-    public ResponseEntity<Boolean> inquiryChassisEstimation(
-            @PathVariable(value = "estimationId") final long estimationId
-    ) {
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(inquiryChassisEstimation.handle(
-                        new InquiryChassisEstimationCommand(estimationId)));
     }
 }
