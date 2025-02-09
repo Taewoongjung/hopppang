@@ -77,52 +77,50 @@ public class SecurityConfig {
                                 , "/api/kakao/auth"
                                 , "/api/apple/auth"
                                 , "/api/google/auth"
+                                , "/login"
                         ).permitAll()
-                        .requestMatchers(HttpMethod.POST,
-                                "/api/login"
-                                , "/api/signup"
-                                , "/api/phones/validations"
-                                , "/api/kakao/signup"
-                                , "/api/apple/signup/{code}"
-                                , "/api/google/signup"
-                        ).permitAll()
-                        .requestMatchers(HttpMethod.PUT,
-                                "/api/kakao/refresh"
-                                , "/api/apple/refresh"
-                                , "/api/google/refresh"
-                        ).permitAll()
-
-                        // authorized
-                        .requestMatchers(HttpMethod.GET,
-                                "/api/me"
-                                , "/api/chassis/estimations/{estimationId}/inquiries"
-                        ).authenticated()
-
-                        .requestMatchers(HttpMethod.GET,
-                                "/api/chassis/prices"
-                                , "/api/chassis/prices/additions/criteria"
-                                , "/api/chassis/estimations"
-                                , "/api/chassis/estimations/count"
-                                , "/api/users/{userId}/configs"
-                        ).authenticated()
-
-                        .requestMatchers(HttpMethod.POST
-                                , "/api/chassis/prices"
-                                , "/api/chassis/calculations/prices"
-                        ).authenticated()
-
-                        .requestMatchers(HttpMethod.PUT
-                                , "/api/chassis/prices/additions/criteria"
-                                , "/api/users/{userId}/configs"
-                                , "/api/social/users"
-                        ).authenticated()
-
-                        .requestMatchers(HttpMethod.DELETE
-                                , "/api/users/{userId}"
-                        ).authenticated()
-
-                        .requestMatchers("/admin").hasRole("CUSTOMER")
-                        .requestMatchers("/login").permitAll()
+//                        .requestMatchers(HttpMethod.POST,
+//                                "/api/login"
+//                                , "/api/signup"
+//                                , "/api/phones/validations"
+//                                , "/api/kakao/signup"
+//                                , "/api/apple/signup/{code}"
+//                                , "/api/google/signup"
+//                        ).permitAll()
+//                        .requestMatchers(HttpMethod.PUT,
+//                                "/api/kakao/refresh"
+//                                , "/api/apple/refresh"
+//                                , "/api/google/refresh"
+//                        ).permitAll()
+//
+//                        // authorized
+//                        .requestMatchers(HttpMethod.GET,
+//                                "/api/me"
+//                                , "/api/chassis/estimations/{estimationId}/inquiries"
+//                        ).authenticated()
+//
+//                        .requestMatchers(HttpMethod.GET,
+//                                "/api/chassis/prices"
+//                                , "/api/chassis/prices/additions/criteria"
+//                                , "/api/chassis/estimations"
+//                                , "/api/chassis/estimations/count"
+//                                , "/api/users/{userId}/configs"
+//                        ).authenticated()
+//
+//                        .requestMatchers(HttpMethod.POST
+//                                , "/api/chassis/prices"
+//                                , "/api/customers/chassis/calculations/prices"
+//                        ).authenticated()
+//
+//                        .requestMatchers(HttpMethod.PUT
+//                                , "/api/chassis/prices/additions/criteria"
+//                                , "/api/users/{userId}/configs"
+//                                , "/api/social/users"
+//                        ).authenticated()
+//
+//                        .requestMatchers(HttpMethod.DELETE
+//                                , "/api/users/{userId}"
+//                        ).authenticated()
                         .anyRequest().authenticated())
                 .addFilterBefore(new JWTFilter(jwtUtil, loadUserByUsernameQueryHandler),
                         LoginFilter.class)
