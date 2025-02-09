@@ -1,4 +1,4 @@
-package kr.hoppang.adapter.inbound.chassis.readmodel;
+package kr.hoppang.adapter.inbound.chassis.customer.readmodel;
 
 import kr.hoppang.application.readmodel.chassis.handlers.InquiryChassisEstimation;
 import kr.hoppang.application.readmodel.chassis.queries.InquiryChassisEstimationCommand;

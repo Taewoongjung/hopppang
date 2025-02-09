@@ -1,4 +1,4 @@
-package kr.hoppang.adapter.inbound.chassis.readmodel;
+package kr.hoppang.adapter.inbound.chassis.admin.readmodel;
 
 import static kr.hoppang.adapter.common.util.VersatileUtil.convertStringToLocalDateTime;
 import static kr.hoppang.application.readmodel.chassis.queryresults.FindChassisEstimationInformationQueryHandlerResult.toWebResponseObject;

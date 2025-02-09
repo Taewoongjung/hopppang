@@ -1,4 +1,4 @@
-package kr.hoppang.adapter.inbound.chassis.command;
+package kr.hoppang.adapter.inbound.chassis.admin.command;
 
 import jakarta.validation.Valid;
 import kr.hoppang.adapter.inbound.chassis.webdto.AddAndReviseChassisPriceInformationWebDtoV1;

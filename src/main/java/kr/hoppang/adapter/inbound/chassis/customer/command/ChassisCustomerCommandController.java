@@ -1,4 +1,4 @@
-package kr.hoppang.adapter.inbound.chassis.command;
+package kr.hoppang.adapter.inbound.chassis.customer.command;
 
 import kr.hoppang.adapter.inbound.chassis.webdto.GetCalculatedChassisPriceWebDtoV1;
 import kr.hoppang.application.command.chassis.handlers.CalculateChassisPriceCommandHandler;
