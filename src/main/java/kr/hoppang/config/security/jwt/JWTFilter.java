@@ -40,13 +40,6 @@ public class JWTFilter extends OncePerRequestFilter {
             , "/api/google/refresh"
             , "/actuator/prometheus"
             , "/api/phones/validations"
-//      예시)
-//
-//            "/api/emails/validations"
-//            , "/api/phones/validations"
-//            , "/api/users/emails"
-//            , "/api/users/verify"
-//            , "/api/users/passwords"
     };
 
     private static final String[] API_ONLY_FOR_ADMIN = {
