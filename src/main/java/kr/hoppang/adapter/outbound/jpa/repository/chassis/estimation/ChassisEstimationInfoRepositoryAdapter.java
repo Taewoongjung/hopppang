@@ -1,5 +1,6 @@
 package kr.hoppang.adapter.outbound.jpa.repository.chassis.estimation;
 
+import static com.querydsl.core.types.Projections.constructor;
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_ESTIMATION;
 import static kr.hoppang.adapter.common.util.CheckUtil.check;
 import static kr.hoppang.util.converter.chassis.estimation.ChassisEstimationConverter.chassisEstimationAddressToEntity;
@@ -10,9 +11,12 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import kr.hoppang.adapter.outbound.jpa.entity.chassis.estimation.ChassisEstimationInfoEntity;
 import kr.hoppang.adapter.outbound.jpa.entity.chassis.estimation.ChassisEstimationSizeInfoEntity;
+import kr.hoppang.adapter.outbound.jpa.repository.chassis.estimation.dto.FindChassisEstimationInfoByUserIdRepositoryDto;
 import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationInfo;
@@ -20,6 +24,7 @@ import kr.hoppang.domain.chassis.estimation.ChassisEstimationSizeInfo;
 import kr.hoppang.domain.chassis.estimation.repository.ChassisEstimationRepository;
 import kr.hoppang.domain.chassis.estimation.repository.dto.FindChassisEstimationInfosResult;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,7 +75,7 @@ public class ChassisEstimationInfoRepositoryAdapter implements ChassisEstimation
 
         // 조회
         return queryFactory.select(
-                Projections.constructor(
+                constructor(
                         (FindChassisEstimationInfosResult.class),
                         chassisEstimationInfoEntity.id,
                         chassisEstimationSizeInfoEntity.chassisType,
@@ -156,5 +161,38 @@ public class ChassisEstimationInfoRepositoryAdapter implements ChassisEstimation
         check(entity == null, NOT_EXIST_ESTIMATION);
 
         return entity.toPojo();
+    }
+
+    @Override
+    public Slice<ChassisEstimationInfo> findChassisEstimationInfoByUserId(final long userId) {
+
+        queryFactory.select(
+                        constructor(
+                                ChassisEstimationInfo.class,
+                                chassisEstimationInfoEntity.id,
+                                chassisEstimationInfoEntity.userId,
+                                chassisEstimationInfoEntity.companyType,
+                                chassisEstimationInfoEntity.laborFee,
+                                chassisEstimationInfoEntity.demolitionFee,
+                                chassisEstimationInfoEntity.maintenanceFee,
+                                chassisEstimationInfoEntity.freightTransportFee,
+                                chassisEstimationInfoEntity.deliveryFee,
+                                chassisEstimationInfoEntity.appliedIncrementRate,
+                                chassisEstimationInfoEntity.totalPrice,
+                                chassisEstimationInfoEntity.customerLivingFloor,
+                                chassisEstimationInfoEntity.createdAt
+                        )
+                ).from(chassisEstimationInfoEntity)
+                .where(chassisEstimationInfoEntity.userId.eq(userId));
+
+        List<ChassisEstimationInfoEntity> chassisList = chassisEstimationJpaRepository.findAllByUserId(
+                userId);
+
+        return Optional.ofNullable(chassisList)
+                .map(cList ->
+                        cList.stream()
+                                .map(ChassisEstimationInfoEntity::toPojo)
+                                .toList()
+                ).orElse(Collections.emptyList());
     }
 }

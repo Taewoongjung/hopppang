@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import kr.hoppang.abstraction.domain.IQueryHandler;
 import kr.hoppang.application.readmodel.chassis.queries.FindChassisEstimationInformationQuery;
-import kr.hoppang.application.readmodel.chassis.queryresults.FindChassisEstimationInformationQueryHandlerResult;
+import kr.hoppang.application.readmodel.chassis.queryresults.FindChassisEstimationInformationQueryResult;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationAddress;
 import kr.hoppang.domain.chassis.estimation.repository.ChassisEstimationRepository;
 import kr.hoppang.domain.chassis.estimation.repository.dto.FindChassisEstimationInfosResult;
@@ -19,10 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class FindChassisEstimationInformationQueryHandler
         implements IQueryHandler<
             FindChassisEstimationInformationQuery,
-            List<FindChassisEstimationInformationQueryHandlerResult>
+            List<FindChassisEstimationInformationQueryResult>
         > {
 
     private final ChassisEstimationRepository chassisEstimationRepository;
+
 
     @Override
     public boolean isQueryHandler() {
@@ -31,7 +32,7 @@ public class FindChassisEstimationInformationQueryHandler
 
     @Override
     @Transactional(readOnly = true)
-    public List<FindChassisEstimationInformationQueryHandlerResult> handle(
+    public List<FindChassisEstimationInformationQueryResult> handle(
             final FindChassisEstimationInformationQuery query) {
         log.info("executed FindChassisEstimationInformationQuery = {}", query);
 
@@ -46,10 +47,10 @@ public class FindChassisEstimationInformationQueryHandler
                 );
 
         // 결과 객체 생성 후 리턴
-        List<FindChassisEstimationInformationQueryHandlerResult> resultList = new ArrayList<>();
+        List<FindChassisEstimationInformationQueryResult> resultList = new ArrayList<>();
 
         foundList.forEach(e ->
-                resultList.add(new FindChassisEstimationInformationQueryHandlerResult(
+                resultList.add(new FindChassisEstimationInformationQueryResult(
                         e.getId(),
                         e.getChassisType(),
                         e.getWidth(),

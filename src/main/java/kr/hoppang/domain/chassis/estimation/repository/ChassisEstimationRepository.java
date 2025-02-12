@@ -23,4 +23,6 @@ public interface ChassisEstimationRepository {
             final List<ChassisEstimationSizeInfo> chassisEstimationSizeInfoList);
 
     ChassisEstimationInfo findChassisEstimationInfoById(final long estimationId);
+
+    List<ChassisEstimationInfo> findChassisEstimationInfoByUserId(final long userId);
 }

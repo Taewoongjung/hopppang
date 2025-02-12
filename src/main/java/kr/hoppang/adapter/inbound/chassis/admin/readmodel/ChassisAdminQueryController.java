@@ -1,7 +1,7 @@
 package kr.hoppang.adapter.inbound.chassis.admin.readmodel;
 
 import static kr.hoppang.adapter.common.util.VersatileUtil.convertStringToLocalDateTime;
-import static kr.hoppang.application.readmodel.chassis.queryresults.FindChassisEstimationInformationQueryHandlerResult.toWebResponseObject;
+import static kr.hoppang.application.readmodel.chassis.queryresults.FindChassisEstimationInformationQueryResult.toWebResponseObject;
 
 import java.util.List;
 import java.util.stream.Collectors;

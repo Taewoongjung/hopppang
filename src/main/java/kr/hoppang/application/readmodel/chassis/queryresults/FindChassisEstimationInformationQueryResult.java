@@ -17,7 +17,7 @@ import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationAddress;
 
-public record FindChassisEstimationInformationQueryHandlerResult(
+public record FindChassisEstimationInformationQueryResult(
         Long id,
         ChassisType chassisType,
         int width,
@@ -40,7 +40,7 @@ public record FindChassisEstimationInformationQueryHandlerResult(
         LocalDateTime lastModified) {
 
     public static List<GetChassisEstimationInformationWebDtoV1.Res> toWebResponseObject(
-            final List<FindChassisEstimationInformationQueryHandlerResult> target) {
+            final List<FindChassisEstimationInformationQueryResult> target) {
 
         List<GetChassisEstimationInformationWebDtoV1.Res> resultList = new ArrayList<>();
 
