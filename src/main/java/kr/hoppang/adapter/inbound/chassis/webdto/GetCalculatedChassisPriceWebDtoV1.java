@@ -3,10 +3,9 @@ package kr.hoppang.adapter.inbound.chassis.webdto;
 import static kr.hoppang.adapter.common.exception.ErrorType.COMPANY_TYPE_IS_MANDATORY;
 import static kr.hoppang.adapter.common.exception.ErrorType.CHASSIS_TYPE_IS_MANDATORY;
 import static kr.hoppang.adapter.common.util.CheckUtil.check;
+import static kr.hoppang.util.calculator.ChassisPriceCalculator.calculateSurtax;
 
 import jakarta.validation.constraints.NotNull;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import kr.hoppang.application.command.chassis.commandresults.CalculateChassisPriceCommandHandlerCommandResult;
@@ -142,10 +141,5 @@ public class GetCalculatedChassisPriceWebDtoV1 {
                     calculateSurtax(commandResult.wholeCalculatedFee())
             );
         }
-    }
-
-    private static int calculateSurtax(final int wholePrice) {
-        return BigDecimal.valueOf(wholePrice).divide(new BigDecimal("10"), RoundingMode.UP)
-                .intValue();
     }
 }

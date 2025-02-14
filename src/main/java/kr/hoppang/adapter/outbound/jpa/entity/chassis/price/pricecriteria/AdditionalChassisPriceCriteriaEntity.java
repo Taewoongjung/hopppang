@@ -33,14 +33,6 @@ public class AdditionalChassisPriceCriteriaEntity extends BaseEntity {
     @Column(name = "price", nullable = false, columnDefinition = "INT UNSIGNED")
     private int price;
 
-    private AdditionalChassisPriceCriteriaEntity(
-            final AdditionalChassisPriceCriteriaType type,
-            final int price
-    ) {
-        this.type = type;
-        this.price = price;
-    }
-
     public AdditionalChassisPriceCriteria toPojo() {
         return AdditionalChassisPriceCriteria.of(
                 this.type, this.price, this.getLastModified(), this.getCreatedAt()

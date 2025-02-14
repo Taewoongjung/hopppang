@@ -31,7 +31,7 @@ public class FindAllChassisInformationOfSingleUserQueryHandler implements
             final FindAllChassisInformationOfSingleUserQuery query) {
 
         Slice<ChassisEstimationInfo> content = chassisEstimationRepository.findChassisEstimationInfoByUserId(
-                query.userSrl(),
+                query.userId(),
                 query.pageable(),
                 query.lastEstimationId());
 

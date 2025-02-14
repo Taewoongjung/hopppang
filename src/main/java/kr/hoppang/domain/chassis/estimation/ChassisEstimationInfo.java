@@ -25,7 +25,6 @@ public class ChassisEstimationInfo {
     private final int customerLivingFloor;
     private final LocalDateTime createdAt;
     private final LocalDateTime lastModified;
-
     private final ChassisEstimationAddress chassisEstimationAddress;
     private List<ChassisEstimationSizeInfo> chassisEstimationSizeInfoList = new ArrayList<>();
 

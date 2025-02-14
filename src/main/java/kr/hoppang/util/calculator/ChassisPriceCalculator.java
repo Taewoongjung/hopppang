@@ -2,6 +2,7 @@ package kr.hoppang.util.calculator;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import kr.hoppang.adapter.outbound.jpa.entity.chassis.price.pricecriteria.AdditionalChassisPriceCriteriaType;
 import kr.hoppang.domain.chassis.price.pricecriteria.AdditionalChassisPriceCriteria;
 import kr.hoppang.domain.chassis.price.repository.pricecriteria.AdditionalChassisPriceCriteriaRepository;
@@ -121,5 +122,10 @@ public class ChassisPriceCalculator {
                         AdditionalChassisPriceCriteriaType.DeliveryFee);
 
         return deliveryFee.getPrice();
+    }
+
+    public static int calculateSurtax(final int wholePrice) {
+        return BigDecimal.valueOf(wholePrice).divide(new BigDecimal("10"), RoundingMode.UP)
+                .intValue();
     }
 }
