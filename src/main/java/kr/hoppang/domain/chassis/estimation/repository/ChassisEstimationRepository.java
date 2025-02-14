@@ -7,6 +7,8 @@ import kr.hoppang.domain.chassis.CompanyType;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationInfo;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationSizeInfo;
 import kr.hoppang.domain.chassis.estimation.repository.dto.FindChassisEstimationInfosResult;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 public interface ChassisEstimationRepository {
 
@@ -24,5 +26,8 @@ public interface ChassisEstimationRepository {
 
     ChassisEstimationInfo findChassisEstimationInfoById(final long estimationId);
 
-    List<ChassisEstimationInfo> findChassisEstimationInfoByUserId(final long userId);
+    Slice<ChassisEstimationInfo> findChassisEstimationInfoByUserId(
+            final long userId,
+            final Pageable pageable,
+            final long lastEstimationId);
 }

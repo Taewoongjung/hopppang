@@ -3,9 +3,11 @@ package kr.hoppang.application.readmodel.chassis.handlers;
 import kr.hoppang.abstraction.domain.IQueryHandler;
 import kr.hoppang.application.readmodel.chassis.queries.FindAllChassisInformationOfSingleUserQuery;
 import kr.hoppang.application.readmodel.chassis.queryresults.FindAllChassisInformationOfSingleUserQueryResult;
+import kr.hoppang.domain.chassis.estimation.ChassisEstimationInfo;
 import kr.hoppang.domain.chassis.estimation.repository.ChassisEstimationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,8 +30,14 @@ public class FindAllChassisInformationOfSingleUserQueryHandler implements
     public FindAllChassisInformationOfSingleUserQueryResult handle(
             final FindAllChassisInformationOfSingleUserQuery query) {
 
-        chassisEstimationRepository.findChassisEstimationInfoByUserId(query.userSrl());
+        Slice<ChassisEstimationInfo> content = chassisEstimationRepository.findChassisEstimationInfoByUserId(
+                query.userSrl(),
+                query.pageable(),
+                query.lastEstimationId());
 
-        return null;
+        return FindAllChassisInformationOfSingleUserQueryResult.builder()
+                .chassisEstimationInfoList(content.getContent())
+                .isEndOfList(content.isLast())
+                .build();
     }
 }

@@ -1,5 +1,6 @@
 package kr.hoppang.adapter.outbound.jpa.repository.chassis.estimation;
 
+import static com.querydsl.core.types.ExpressionUtils.allOf;
 import static com.querydsl.core.types.Projections.constructor;
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_ESTIMATION;
 import static kr.hoppang.adapter.common.util.CheckUtil.check;
@@ -8,15 +9,11 @@ import static kr.hoppang.util.converter.chassis.estimation.ChassisEstimationConv
 import static kr.hoppang.util.converter.chassis.estimation.ChassisEstimationConverter.chassisEstimationSizeInfoToEntity;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import kr.hoppang.adapter.outbound.jpa.entity.chassis.estimation.ChassisEstimationInfoEntity;
 import kr.hoppang.adapter.outbound.jpa.entity.chassis.estimation.ChassisEstimationSizeInfoEntity;
-import kr.hoppang.adapter.outbound.jpa.repository.chassis.estimation.dto.FindChassisEstimationInfoByUserIdRepositoryDto;
 import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationInfo;
@@ -24,7 +21,9 @@ import kr.hoppang.domain.chassis.estimation.ChassisEstimationSizeInfo;
 import kr.hoppang.domain.chassis.estimation.repository.ChassisEstimationRepository;
 import kr.hoppang.domain.chassis.estimation.repository.dto.FindChassisEstimationInfosResult;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -164,35 +163,45 @@ public class ChassisEstimationInfoRepositoryAdapter implements ChassisEstimation
     }
 
     @Override
-    public Slice<ChassisEstimationInfo> findChassisEstimationInfoByUserId(final long userId) {
+    public Slice<ChassisEstimationInfo> findChassisEstimationInfoByUserId(
+            final long userId,
+            final Pageable pageable,
+            final long lastEstimationId
+    ) {
 
-        queryFactory.select(
-                        constructor(
-                                ChassisEstimationInfo.class,
-                                chassisEstimationInfoEntity.id,
-                                chassisEstimationInfoEntity.userId,
-                                chassisEstimationInfoEntity.companyType,
-                                chassisEstimationInfoEntity.laborFee,
-                                chassisEstimationInfoEntity.demolitionFee,
-                                chassisEstimationInfoEntity.maintenanceFee,
-                                chassisEstimationInfoEntity.freightTransportFee,
-                                chassisEstimationInfoEntity.deliveryFee,
-                                chassisEstimationInfoEntity.appliedIncrementRate,
-                                chassisEstimationInfoEntity.totalPrice,
-                                chassisEstimationInfoEntity.customerLivingFloor,
-                                chassisEstimationInfoEntity.createdAt
+        List<ChassisEstimationInfo> content =
+                queryFactory.select(
+                                constructor(
+                                        ChassisEstimationInfo.class,
+                                        chassisEstimationInfoEntity.id,
+                                        chassisEstimationInfoEntity.userId,
+                                        chassisEstimationInfoEntity.companyType,
+                                        chassisEstimationInfoEntity.laborFee,
+                                        chassisEstimationInfoEntity.demolitionFee,
+                                        chassisEstimationInfoEntity.maintenanceFee,
+                                        chassisEstimationInfoEntity.freightTransportFee,
+                                        chassisEstimationInfoEntity.deliveryFee,
+                                        chassisEstimationInfoEntity.appliedIncrementRate,
+                                        chassisEstimationInfoEntity.totalPrice,
+                                        chassisEstimationInfoEntity.customerLivingFloor,
+                                        chassisEstimationInfoEntity.createdAt
+                                )
+                        ).from(chassisEstimationInfoEntity)
+                        .orderBy(chassisEstimationInfoEntity.id.desc())
+                        .limit(pageable.getPageSize() + 1)
+                        .where(
+                                allOf(
+                                        chassisEstimationInfoEntity.userId.eq(userId),
+                                        chassisEstimationInfoEntity.id.lt(lastEstimationId)
+                                )
                         )
-                ).from(chassisEstimationInfoEntity)
-                .where(chassisEstimationInfoEntity.userId.eq(userId));
+                        .fetch();
 
-        List<ChassisEstimationInfoEntity> chassisList = chassisEstimationJpaRepository.findAllByUserId(
-                userId);
+        boolean hasNextPage = content.size() > pageable.getPageSize();
+        if(hasNextPage) {
+            content.remove(content.size() - 1);
+        }
 
-        return Optional.ofNullable(chassisList)
-                .map(cList ->
-                        cList.stream()
-                                .map(ChassisEstimationInfoEntity::toPojo)
-                                .toList()
-                ).orElse(Collections.emptyList());
+        return new SliceImpl<>(content);
     }
 }
