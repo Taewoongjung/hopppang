@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 public record FindAllChassisInformationOfSingleUserQuery(
         long userId,
         Pageable pageable,
-        long lastEstimationId
+        Long lastEstimationId
 ) implements IQuery {
 
 }

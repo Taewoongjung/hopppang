@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
 import java.util.List;
 import kr.hoppang.adapter.inbound.chassis.webdto.GetAllChassisInformationOfSingleUserWebDtoV1.Response.Estimation.Chassis;
+import kr.hoppang.domain.chassis.estimation.ChassisEstimationAddress;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationInfo;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -26,6 +27,9 @@ public record GetAllChassisInformationOfSingleUserWebDtoV1() {
 
             @JsonProperty(value = "companyType")
             String companyType,
+
+            @JsonProperty(value = "fullAddress")
+            String fullAddress,
 
             @JsonProperty(value = "chassisList")
             List<Chassis> chassisList,
@@ -66,6 +70,11 @@ public record GetAllChassisInformationOfSingleUserWebDtoV1() {
                                                             chassisEstimation.getCompanyType()
                                                                     .getCompanyName()
                                                     )
+                                                    .fullAddress(
+                                                            getFullAddress(
+                                                                    chassisEstimation.getChassisEstimationAddress()
+                                                            )
+                                                    )
                                                     .chassisList(
                                                             chassisEstimation.getChassisEstimationSizeInfoList()
                                                                     .stream()
@@ -92,5 +101,13 @@ public record GetAllChassisInformationOfSingleUserWebDtoV1() {
                     .isLastPage(isEndOfList)
                     .build();
         }
+    }
+
+    private static String getFullAddress(final ChassisEstimationAddress chassisEstimationAddress) {
+        return "[" + chassisEstimationAddress.getZipCode() + "] "
+                + chassisEstimationAddress.getState() + " "
+                + chassisEstimationAddress.getCity() + " "
+                + chassisEstimationAddress.getTown() + " "
+                + chassisEstimationAddress.getRemainAddress();
     }
 }

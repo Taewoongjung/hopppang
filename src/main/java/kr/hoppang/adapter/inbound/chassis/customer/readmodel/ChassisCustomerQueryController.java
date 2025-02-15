@@ -27,7 +27,7 @@ public class ChassisCustomerQueryController {
 
     @GetMapping(path = "")
     public ResponseEntity<GetAllChassisInformationOfSingleUserWebDtoV1.Response> getAllChassisInformationOfSingleUser(
-            @RequestParam("lastEstimationId") final Long lastEstimationId,
+            @RequestParam(value = "lastEstimationId", required = false) final Long lastEstimationId,
             @PageableDefault(size = 5) final Pageable pageable,
             @AuthenticationUserId final Long userId
     ) {

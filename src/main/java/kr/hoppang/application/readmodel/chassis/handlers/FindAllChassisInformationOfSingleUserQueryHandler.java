@@ -4,6 +4,7 @@ import kr.hoppang.abstraction.domain.IQueryHandler;
 import kr.hoppang.adapter.outbound.jpa.repository.chassis.estimation.dto.FindChassisEstimationInfoByUserIdRepositoryDto;
 import kr.hoppang.application.readmodel.chassis.queries.FindAllChassisInformationOfSingleUserQuery;
 import kr.hoppang.application.readmodel.chassis.queryresults.FindAllChassisInformationOfSingleUserQueryResult;
+import kr.hoppang.domain.chassis.estimation.ChassisEstimationAddress;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationInfo;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationSizeInfo;
 import kr.hoppang.domain.chassis.estimation.repository.ChassisEstimationRepository;
@@ -57,6 +58,18 @@ public class FindAllChassisInformationOfSingleUserQueryHandler implements
                                                 .customerLivingFloor(
                                                         estimation.customerLivingFloor())
                                                 .createdAt(estimation.createdAt())
+                                                .chassisEstimationAddress(
+                                                        ChassisEstimationAddress.builder()
+                                                                .zipCode(estimation.address().zipCode())
+                                                                .state(estimation.address().state())
+                                                                .city(estimation.address().city())
+                                                                .town(estimation.address().town())
+                                                                .remainAddress(
+                                                                        estimation.address()
+                                                                                .remainAddress()
+                                                                )
+                                                                .build()
+                                                )
                                                 .chassisEstimationSizeInfoList(
                                                         estimation.chassisEstimationSizeInfoList()
                                                                 .stream()

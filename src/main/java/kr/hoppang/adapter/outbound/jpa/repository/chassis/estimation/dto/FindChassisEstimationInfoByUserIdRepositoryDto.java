@@ -5,6 +5,7 @@ import java.util.List;
 import kr.hoppang.adapter.outbound.jpa.entity.chassis.estimation.ChassisEstimationInfoEntity;
 import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
+import lombok.AccessLevel;
 import lombok.Builder;
 
 public record FindChassisEstimationInfoByUserIdRepositoryDto() {
@@ -24,14 +25,24 @@ public record FindChassisEstimationInfoByUserIdRepositoryDto() {
             int totalPrice,
             int customerLivingFloor,
             LocalDateTime createdAt,
+            ChassisEstimatedAddress address,
             List<ChassisSizeInfo> chassisEstimationSizeInfoList
     ) {
 
-        @Builder
+        @Builder(access = AccessLevel.PRIVATE)
         public record ChassisSizeInfo(
                 ChassisType chassisType,
                 int width,
                 int height
+        ) { }
+
+        @Builder(access = AccessLevel.PRIVATE)
+        public record ChassisEstimatedAddress(
+                String zipCode,
+                String state,
+                String city,
+                String town,
+                String remainAddress
         ) { }
 
         public static Response of(final ChassisEstimationInfoEntity chassisEstimation) {
@@ -49,6 +60,17 @@ public record FindChassisEstimationInfoByUserIdRepositoryDto() {
                     .totalPrice(chassisEstimation.getTotalPrice())
                     .customerLivingFloor(chassisEstimation.getCustomerLivingFloor())
                     .createdAt(chassisEstimation.getCreatedAt())
+                    .address(
+                            ChassisEstimatedAddress.builder()
+                                    .zipCode(chassisEstimation.getChassisEstimationAddress()
+                                            .getZipCode())
+                                    .state(chassisEstimation.getChassisEstimationAddress().getState())
+                                    .city(chassisEstimation.getChassisEstimationAddress().getCity())
+                                    .town(chassisEstimation.getChassisEstimationAddress().getTown())
+                                    .remainAddress(chassisEstimation.getChassisEstimationAddress()
+                                            .getRemainAddress())
+                                    .build()
+                    )
                     .chassisEstimationSizeInfoList(
                             chassisEstimation.getChassisEstimationSizeInfoList().stream()
                                     .map(sizeInfo ->

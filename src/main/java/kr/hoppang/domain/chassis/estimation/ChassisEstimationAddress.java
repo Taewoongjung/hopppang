@@ -2,10 +2,12 @@ package kr.hoppang.domain.chassis.estimation;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import kr.hoppang.util.common.BoolType;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
 @Getter
+@Builder
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ChassisEstimationAddress {

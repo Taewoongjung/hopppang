@@ -166,18 +166,19 @@ public class ChassisEstimationInfoRepositoryAdapter implements ChassisEstimation
     public Slice<FindChassisEstimationInfoByUserIdRepositoryDto.Response> findChassisEstimationInfoByUserId(
             final long userId,
             final Pageable pageable,
-            final long lastEstimationId
+            final Long lastEstimationId
     ) {
 
         BooleanBuilder whereClause = new BooleanBuilder();
         whereClause.and(chassisEstimationInfoEntity.userId.eq(userId));
 
-        if (lastEstimationId > 0) {
+        if (lastEstimationId != null && lastEstimationId > 0) {
             whereClause.and(chassisEstimationInfoEntity.id.lt(lastEstimationId));
         }
 
         List<ChassisEstimationInfoEntity> results = queryFactory.selectFrom(chassisEstimationInfoEntity)
                 .leftJoin(chassisEstimationInfoEntity.chassisEstimationSizeInfoList, chassisEstimationSizeInfoEntity)
+                .leftJoin(chassisEstimationInfoEntity.chassisEstimationAddress, chassisEstimationAddressEntity)
                 .where(whereClause)
                 .limit(pageable.getPageSize() + 1)
                 .fetch();

@@ -30,5 +30,5 @@ public interface ChassisEstimationRepository {
     Slice<FindChassisEstimationInfoByUserIdRepositoryDto.Response> findChassisEstimationInfoByUserId(
             final long userId,
             final Pageable pageable,
-            final long lastEstimationId);
+            final Long lastEstimationId);
 }
