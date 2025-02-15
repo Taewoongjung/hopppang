@@ -1,7 +1,9 @@
 package kr.hoppang.application.readmodel.chassis.handlers;
 
+import java.util.List;
 import kr.hoppang.abstraction.domain.IQueryHandler;
 import kr.hoppang.adapter.outbound.jpa.repository.chassis.estimation.dto.FindChassisEstimationInfoByUserIdRepositoryDto;
+import kr.hoppang.adapter.outbound.jpa.repository.chassis.estimation.dto.FindChassisEstimationInfoByUserIdRepositoryDto.Response.EstimationChassis;
 import kr.hoppang.application.readmodel.chassis.queries.FindAllChassisInformationOfSingleUserQuery;
 import kr.hoppang.application.readmodel.chassis.queryresults.FindAllChassisInformationOfSingleUserQueryResult;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationAddress;
@@ -10,7 +12,6 @@ import kr.hoppang.domain.chassis.estimation.ChassisEstimationSizeInfo;
 import kr.hoppang.domain.chassis.estimation.repository.ChassisEstimationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,14 +34,16 @@ public class FindAllChassisInformationOfSingleUserQueryHandler implements
     public FindAllChassisInformationOfSingleUserQueryResult handle(
             final FindAllChassisInformationOfSingleUserQuery query) {
 
-        Slice<FindChassisEstimationInfoByUserIdRepositoryDto.Response> content = chassisEstimationRepository.findChassisEstimationInfoByUserId(
+        FindChassisEstimationInfoByUserIdRepositoryDto.Response responseFromRepository = chassisEstimationRepository.findChassisEstimationInfoByUserId(
                 query.userId(),
                 query.pageable(),
                 query.lastEstimationId());
 
+        List<EstimationChassis> estimationChassisListFromRepository = responseFromRepository.estimationChassisList().getContent();
+
         return FindAllChassisInformationOfSingleUserQueryResult.builder()
                 .chassisEstimationInfoList(
-                        content.getContent().stream()
+                        estimationChassisListFromRepository.stream()
                                 .map(estimation ->
                                         ChassisEstimationInfo.builder()
                                                 .id(estimation.id())
@@ -85,7 +88,8 @@ public class FindAllChassisInformationOfSingleUserQueryHandler implements
                                                 .build()
                                 ).toList()
                 )
-                .isEndOfList(!content.hasNext())
+                .isEndOfList(!responseFromRepository.estimationChassisList().hasNext())
+                .lastEstimationId(responseFromRepository.lastEstimationId())
                 .build();
     }
 }

@@ -5,6 +5,7 @@ import static kr.hoppang.util.calculator.ChassisPriceCalculator.calculateSurtax;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import kr.hoppang.adapter.inbound.chassis.webdto.GetAllChassisInformationOfSingleUserWebDtoV1.Response.Estimation.Chassis;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationAddress;
@@ -17,6 +18,7 @@ public record GetAllChassisInformationOfSingleUserWebDtoV1() {
     @Builder(access = AccessLevel.PRIVATE)
     public record Response(
             List<Estimation> estimationList,
+            Long lastEstimationId,
             boolean isLastPage
     ) {
 
@@ -57,12 +59,15 @@ public record GetAllChassisInformationOfSingleUserWebDtoV1() {
 
         public static Response of(
                 final List<ChassisEstimationInfo> chassisEstimationInfoList,
+                final Long lastEstimationId,
                 final boolean isEndOfList
         ) {
 
             return Response.builder()
                     .estimationList(
                             chassisEstimationInfoList.stream()
+                                    .sorted(Comparator.comparing(ChassisEstimationInfo::getId)
+                                            .reversed())
                                     .map(chassisEstimation ->
                                             Estimation.builder()
                                                     .id(chassisEstimation.getId())
@@ -98,6 +103,7 @@ public record GetAllChassisInformationOfSingleUserWebDtoV1() {
                                     )
                                     .toList()
                     )
+                    .lastEstimationId(lastEstimationId)
                     .isLastPage(isEndOfList)
                     .build();
         }

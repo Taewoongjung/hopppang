@@ -163,7 +163,7 @@ public class ChassisEstimationInfoRepositoryAdapter implements ChassisEstimation
     }
 
     @Override
-    public Slice<FindChassisEstimationInfoByUserIdRepositoryDto.Response> findChassisEstimationInfoByUserId(
+    public FindChassisEstimationInfoByUserIdRepositoryDto.Response findChassisEstimationInfoByUserId(
             final long userId,
             final Pageable pageable,
             final Long lastEstimationId
@@ -176,22 +176,28 @@ public class ChassisEstimationInfoRepositoryAdapter implements ChassisEstimation
             whereClause.and(chassisEstimationInfoEntity.id.lt(lastEstimationId));
         }
 
+        int pageSize = pageable.getPageSize();
+
         List<ChassisEstimationInfoEntity> results = queryFactory.selectFrom(chassisEstimationInfoEntity)
-                .leftJoin(chassisEstimationInfoEntity.chassisEstimationSizeInfoList, chassisEstimationSizeInfoEntity)
-                .leftJoin(chassisEstimationInfoEntity.chassisEstimationAddress, chassisEstimationAddressEntity)
                 .where(whereClause)
-                .limit(pageable.getPageSize() + 1)
+                .orderBy(chassisEstimationInfoEntity.id.desc())
+                .limit(pageSize + 1)
                 .fetch();
 
-        boolean hasNextPage = results.size() > pageable.getPageSize();
+        Long lastId = null;
+        boolean hasNextPage = results.size() > pageSize;
         if (hasNextPage) {
-            results.remove(results.size() - 1);
+            lastId = results.get(pageSize).getId();
+            results = results.subList(0, pageSize);
         }
 
-        List<FindChassisEstimationInfoByUserIdRepositoryDto.Response> content = results.stream()
+        List<FindChassisEstimationInfoByUserIdRepositoryDto.Response.EstimationChassis> content = results.stream()
                 .map(FindChassisEstimationInfoByUserIdRepositoryDto.Response::of)
                 .toList();
 
-        return new SliceImpl<>(content, pageable, hasNextPage);
+        return FindChassisEstimationInfoByUserIdRepositoryDto.Response.builder()
+                .estimationChassisList(new SliceImpl<>(content, pageable, hasNextPage))
+                .lastEstimationId(lastId)
+                .build();
     }
 }

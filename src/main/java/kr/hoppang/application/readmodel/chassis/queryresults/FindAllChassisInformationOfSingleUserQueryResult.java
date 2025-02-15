@@ -7,6 +7,7 @@ import lombok.Builder;
 @Builder
 public record FindAllChassisInformationOfSingleUserQueryResult(
         List<ChassisEstimationInfo> chassisEstimationInfoList,
+        Long lastEstimationId,
         boolean isEndOfList
 ) {
 

@@ -44,6 +44,7 @@ public class ChassisCustomerQueryController {
                 .body(
                         GetAllChassisInformationOfSingleUserWebDtoV1.Response.of(
                                 result.chassisEstimationInfoList(),
+                                result.lastEstimationId(),
                                 result.isEndOfList()
                         )
                 );

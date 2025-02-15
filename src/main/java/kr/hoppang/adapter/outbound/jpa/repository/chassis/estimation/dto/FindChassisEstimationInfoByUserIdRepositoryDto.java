@@ -3,50 +3,60 @@ package kr.hoppang.adapter.outbound.jpa.repository.chassis.estimation.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 import kr.hoppang.adapter.outbound.jpa.entity.chassis.estimation.ChassisEstimationInfoEntity;
+import kr.hoppang.adapter.outbound.jpa.repository.chassis.estimation.dto.FindChassisEstimationInfoByUserIdRepositoryDto.Response.EstimationChassis.ChassisEstimatedAddress;
+import kr.hoppang.adapter.outbound.jpa.repository.chassis.estimation.dto.FindChassisEstimationInfoByUserIdRepositoryDto.Response.EstimationChassis.ChassisSizeInfo;
 import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
 import lombok.AccessLevel;
 import lombok.Builder;
+import org.springframework.data.domain.Slice;
 
 public record FindChassisEstimationInfoByUserIdRepositoryDto() {
 
     @Builder
     public record Response(
-            Long id,
-            Long userId,
-            CompanyType companyType,
-            int ladderCarFee,
-            int laborFee,
-            int demolitionFee,
-            int maintenanceFee,
-            int freightTransportFee,
-            int deliveryFee,
-            int appliedIncrementRate,
-            int totalPrice,
-            int customerLivingFloor,
-            LocalDateTime createdAt,
-            ChassisEstimatedAddress address,
-            List<ChassisSizeInfo> chassisEstimationSizeInfoList
+            Slice<EstimationChassis> estimationChassisList,
+            Long lastEstimationId
     ) {
 
-        @Builder(access = AccessLevel.PRIVATE)
-        public record ChassisSizeInfo(
-                ChassisType chassisType,
-                int width,
-                int height
-        ) { }
+        @Builder
+        public record EstimationChassis(
+                Long id,
+                Long userId,
+                CompanyType companyType,
+                int ladderCarFee,
+                int laborFee,
+                int demolitionFee,
+                int maintenanceFee,
+                int freightTransportFee,
+                int deliveryFee,
+                int appliedIncrementRate,
+                int totalPrice,
+                int customerLivingFloor,
+                LocalDateTime createdAt,
+                ChassisEstimatedAddress address,
+                List<ChassisSizeInfo> chassisEstimationSizeInfoList
+        ) {
 
-        @Builder(access = AccessLevel.PRIVATE)
-        public record ChassisEstimatedAddress(
-                String zipCode,
-                String state,
-                String city,
-                String town,
-                String remainAddress
-        ) { }
+            @Builder(access = AccessLevel.PRIVATE)
+            public record ChassisSizeInfo(
+                    ChassisType chassisType,
+                    int width,
+                    int height
+            ) { }
 
-        public static Response of(final ChassisEstimationInfoEntity chassisEstimation) {
-            return Response.builder()
+            @Builder(access = AccessLevel.PRIVATE)
+            public record ChassisEstimatedAddress(
+                    String zipCode,
+                    String state,
+                    String city,
+                    String town,
+                    String remainAddress
+            ) { }
+        }
+
+        public static EstimationChassis of(final ChassisEstimationInfoEntity chassisEstimation) {
+            return EstimationChassis.builder()
                     .id(chassisEstimation.getId())
                     .userId(chassisEstimation.getUserId())
                     .companyType(chassisEstimation.getCompanyType())
