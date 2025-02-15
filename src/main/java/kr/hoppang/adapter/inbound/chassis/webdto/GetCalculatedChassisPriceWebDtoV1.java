@@ -35,7 +35,7 @@ public class GetCalculatedChassisPriceWebDtoV1 {
             this.reqCalculateChassisPriceList.forEach(ReqCalculateChassisPrice::checkIfNull);
         }
 
-        public CalculateChassisPriceCommand toQuery(final User user) {
+        public CalculateChassisPriceCommand toQuery(final Long userId) {
             List<CalculateChassisPrice> queryList = new ArrayList<>();
 
             this.reqCalculateChassisPriceList.forEach(e -> {
@@ -61,7 +61,7 @@ public class GetCalculatedChassisPriceWebDtoV1 {
                     reqCalculateChassisPriceList.get(0).floorCustomerLiving,
                     reqCalculateChassisPriceList.get(0).isScheduledForDemolition,
                     reqCalculateChassisPriceList.get(0).isResident,
-                    user.getId()
+                    userId
             );
         }
     }

@@ -1,6 +1,5 @@
 package kr.hoppang.adapter.outbound.jpa.repository.chassis.estimation;
 
-import static com.querydsl.core.types.ExpressionUtils.allOf;
 import static com.querydsl.core.types.Projections.constructor;
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_ESTIMATION;
 import static kr.hoppang.adapter.common.util.CheckUtil.check;
@@ -14,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import kr.hoppang.adapter.outbound.jpa.entity.chassis.estimation.ChassisEstimationInfoEntity;
 import kr.hoppang.adapter.outbound.jpa.entity.chassis.estimation.ChassisEstimationSizeInfoEntity;
+import kr.hoppang.adapter.outbound.jpa.repository.chassis.estimation.dto.FindChassisEstimationInfoByUserIdRepositoryDto;
 import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationInfo;
@@ -163,45 +163,34 @@ public class ChassisEstimationInfoRepositoryAdapter implements ChassisEstimation
     }
 
     @Override
-    public Slice<ChassisEstimationInfo> findChassisEstimationInfoByUserId(
+    public Slice<FindChassisEstimationInfoByUserIdRepositoryDto.Response> findChassisEstimationInfoByUserId(
             final long userId,
             final Pageable pageable,
             final long lastEstimationId
     ) {
 
-        List<ChassisEstimationInfo> content =
-                queryFactory.select(
-                                constructor(
-                                        ChassisEstimationInfo.class,
-                                        chassisEstimationInfoEntity.id,
-                                        chassisEstimationInfoEntity.userId,
-                                        chassisEstimationInfoEntity.companyType,
-                                        chassisEstimationInfoEntity.laborFee,
-                                        chassisEstimationInfoEntity.demolitionFee,
-                                        chassisEstimationInfoEntity.maintenanceFee,
-                                        chassisEstimationInfoEntity.freightTransportFee,
-                                        chassisEstimationInfoEntity.deliveryFee,
-                                        chassisEstimationInfoEntity.appliedIncrementRate,
-                                        chassisEstimationInfoEntity.totalPrice,
-                                        chassisEstimationInfoEntity.customerLivingFloor,
-                                        chassisEstimationInfoEntity.createdAt
-                                )
-                        ).from(chassisEstimationInfoEntity)
-                        .orderBy(chassisEstimationInfoEntity.id.desc())
-                        .limit(pageable.getPageSize() + 1)
-                        .where(
-                                allOf(
-                                        chassisEstimationInfoEntity.userId.eq(userId),
-                                        chassisEstimationInfoEntity.id.lt(lastEstimationId)
-                                )
-                        )
-                        .fetch();
+        BooleanBuilder whereClause = new BooleanBuilder();
+        whereClause.and(chassisEstimationInfoEntity.userId.eq(userId));
 
-        boolean hasNextPage = content.size() > pageable.getPageSize();
-        if(hasNextPage) {
-            content.remove(content.size() - 1);
+        if (lastEstimationId > 0) {
+            whereClause.and(chassisEstimationInfoEntity.id.lt(lastEstimationId));
         }
 
-        return new SliceImpl<>(content);
+        List<ChassisEstimationInfoEntity> results = queryFactory.selectFrom(chassisEstimationInfoEntity)
+                .leftJoin(chassisEstimationInfoEntity.chassisEstimationSizeInfoList, chassisEstimationSizeInfoEntity)
+                .where(whereClause)
+                .limit(pageable.getPageSize() + 1)
+                .fetch();
+
+        boolean hasNextPage = results.size() > pageable.getPageSize();
+        if (hasNextPage) {
+            results.remove(results.size() - 1);
+        }
+
+        List<FindChassisEstimationInfoByUserIdRepositoryDto.Response> content = results.stream()
+                .map(FindChassisEstimationInfoByUserIdRepositoryDto.Response::of)
+                .toList();
+
+        return new SliceImpl<>(content, pageable, hasNextPage);
     }
 }

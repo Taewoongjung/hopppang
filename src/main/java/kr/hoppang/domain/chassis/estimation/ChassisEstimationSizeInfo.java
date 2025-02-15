@@ -2,11 +2,12 @@ package kr.hoppang.domain.chassis.estimation;
 
 import java.time.LocalDateTime;
 import kr.hoppang.domain.chassis.ChassisType;
-import kr.hoppang.domain.chassis.CompanyType;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
 @Getter
+@Builder
 @ToString
 public class ChassisEstimationSizeInfo {
 

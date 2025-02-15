@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import kr.hoppang.domain.chassis.CompanyType;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -28,6 +29,7 @@ public class ChassisEstimationInfo {
     private final ChassisEstimationAddress chassisEstimationAddress;
     private List<ChassisEstimationSizeInfo> chassisEstimationSizeInfoList = new ArrayList<>();
 
+    @Builder
     private ChassisEstimationInfo(
             final Long id,
             final Long userId,

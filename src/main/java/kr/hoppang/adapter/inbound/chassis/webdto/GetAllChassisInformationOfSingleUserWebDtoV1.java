@@ -2,7 +2,9 @@ package kr.hoppang.adapter.inbound.chassis.webdto;
 
 import static kr.hoppang.util.calculator.ChassisPriceCalculator.calculateSurtax;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.LocalDateTime;
 import java.util.List;
 import kr.hoppang.adapter.inbound.chassis.webdto.GetAllChassisInformationOfSingleUserWebDtoV1.Response.Estimation.Chassis;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationInfo;
@@ -29,7 +31,11 @@ public record GetAllChassisInformationOfSingleUserWebDtoV1() {
             List<Chassis> chassisList,
 
             @JsonProperty(value = "wholePrice")
-            int wholePriceWithSurtax
+            int wholePriceWithSurtax,
+
+            @JsonProperty(value = "estimatedAt")
+            @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+            LocalDateTime estimatedAt
         ) {
 
             @Builder(access = AccessLevel.PRIVATE)
@@ -78,6 +84,7 @@ public record GetAllChassisInformationOfSingleUserWebDtoV1() {
                                                                     chassisEstimation.getTotalPrice()
                                                             )
                                                     )
+                                                    .estimatedAt(chassisEstimation.getCreatedAt())
                                                     .build()
                                     )
                                     .toList()

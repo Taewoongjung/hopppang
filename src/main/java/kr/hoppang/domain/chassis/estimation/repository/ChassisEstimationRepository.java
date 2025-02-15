@@ -2,6 +2,7 @@ package kr.hoppang.domain.chassis.estimation.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import kr.hoppang.adapter.outbound.jpa.repository.chassis.estimation.dto.FindChassisEstimationInfoByUserIdRepositoryDto;
 import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationInfo;
@@ -26,7 +27,7 @@ public interface ChassisEstimationRepository {
 
     ChassisEstimationInfo findChassisEstimationInfoById(final long estimationId);
 
-    Slice<ChassisEstimationInfo> findChassisEstimationInfoByUserId(
+    Slice<FindChassisEstimationInfoByUserIdRepositoryDto.Response> findChassisEstimationInfoByUserId(
             final long userId,
             final Pageable pageable,
             final long lastEstimationId);

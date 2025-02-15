@@ -5,6 +5,7 @@ import static kr.hoppang.adapter.common.util.CheckUtil.check;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import kr.hoppang.adapter.inbound.user.AuthenticationUserId;
 import kr.hoppang.adapter.inbound.user.webdto.RequestValidationWebDtoV1;
 import kr.hoppang.adapter.inbound.user.webdto.SignUpDtoWebDtoV1;
 import kr.hoppang.adapter.inbound.user.webdto.SocialSignUpFinalWebDtoV1;
@@ -33,7 +34,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -242,10 +242,10 @@ public class UserCommandController {
     public ResponseEntity<Boolean> withdrawUser(
             @PathVariable(value = "userId") final Long userId,
             @RequestBody final WithdrawUserWebDtoV1.Req req,
-            @AuthenticationPrincipal final User user
+            @AuthenticationUserId final Long authenticatedUserId
     ) {
 
-        check(!userId.equals(user.getId()), NOT_AUTHORIZED_USER);
+        check(!userId.equals(authenticatedUserId), NOT_AUTHORIZED_USER);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(withdrawUserCommandHandler.handle(
