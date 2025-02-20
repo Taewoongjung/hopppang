@@ -24,6 +24,8 @@ public class SmsUtilService implements IThirdPartyValidationCheckSender {
         cacheSmsValidationRedisRepository.makeBucketByKey(targetPhoneNumber, validationNumber);
 
         smsService.sendSignUpVerificationSms(targetPhoneNumber, String.valueOf(validationNumber));
+
+        log.info("sent validation number is {}", validationNumber);
     }
 
     private int createNumber() {

@@ -82,7 +82,7 @@ public class GoogleOauthService implements OAuthService {
 
     private String getTokenInfoFromApple(final String code) {
         return webClient.post()
-                .uri("https://oauth2.googleapis.com/token")
+                .uri("https://oauth2.googleapis.com/token?access_type=offline")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .body(BodyInserters.fromFormData(
                                 "grant_type", "authorization_code")
