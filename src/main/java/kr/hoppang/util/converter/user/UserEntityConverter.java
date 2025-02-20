@@ -3,10 +3,12 @@ package kr.hoppang.util.converter.user;
 import kr.hoppang.adapter.outbound.jpa.entity.user.UserAddressEntity;
 import kr.hoppang.adapter.outbound.jpa.entity.user.UserDeviceEntity;
 import kr.hoppang.adapter.outbound.jpa.entity.user.UserEntity;
+import kr.hoppang.adapter.outbound.jpa.entity.user.UserLoginHistoryEntity;
 import kr.hoppang.adapter.outbound.jpa.entity.user.UserTokenEntity;
 import kr.hoppang.domain.user.User;
 import kr.hoppang.domain.user.UserAddress;
 import kr.hoppang.domain.user.UserDevice;
+import kr.hoppang.domain.user.UserLoginHistory;
 import kr.hoppang.domain.user.UserToken;
 
 public class UserEntityConverter {
@@ -50,5 +52,14 @@ public class UserEntityConverter {
             final UserDevice userDevice) {
 
         return UserDeviceEntity.of(userId, userDevice.getDeviceType(), userDevice.getDeviceId());
+    }
+
+    public static UserLoginHistoryEntity userLoginHistoryToEntity(
+            final UserLoginHistory userLoginHistory) {
+
+        return UserLoginHistoryEntity.of(
+                userLoginHistory.getUserId(),
+                userLoginHistory.getCreatedAt()
+        );
     }
 }

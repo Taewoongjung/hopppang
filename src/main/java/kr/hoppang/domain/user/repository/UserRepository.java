@@ -8,6 +8,7 @@ import kr.hoppang.domain.user.User;
 import kr.hoppang.domain.user.UserAddress;
 import kr.hoppang.domain.user.UserConfigInfo;
 import kr.hoppang.domain.user.UserDevice;
+import kr.hoppang.domain.user.UserLoginHistory;
 import kr.hoppang.domain.user.UserToken;
 
 public interface UserRepository {
@@ -21,8 +22,6 @@ public interface UserRepository {
     User findIfExistUserByEmail(final String email, final OauthType oauthType);
 
     User save(final User user);
-
-    User findIfExistUserByPhoneNumber(final String tel);
 
     void updateToken(final String email, final TokenType tokenType, final String token,
             final LocalDateTime expireTime);
@@ -43,4 +42,6 @@ public interface UserRepository {
     void updateUserConfiguration(final long id, final boolean isPushOn);
 
     UserConfigInfo findUserConfigByUserId(final long userId);
+
+    void createUserLoginHistory(final UserLoginHistory userLoginHistory);
 }

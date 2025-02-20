@@ -5,6 +5,7 @@ import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_USER;
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_USER_CONFIGURATION;
 import static kr.hoppang.adapter.common.util.CheckUtil.check;
 import static kr.hoppang.util.common.BoolType.convertBooleanToType;
+import static kr.hoppang.util.converter.user.UserEntityConverter.userLoginHistoryToEntity;
 import static kr.hoppang.util.converter.user.UserEntityConverter.userToEntity;
 import static kr.hoppang.util.converter.user.UserEntityConverter.userTokenToEntity;
 
@@ -22,6 +23,7 @@ import kr.hoppang.domain.user.User;
 import kr.hoppang.domain.user.UserAddress;
 import kr.hoppang.domain.user.UserConfigInfo;
 import kr.hoppang.domain.user.UserDevice;
+import kr.hoppang.domain.user.UserLoginHistory;
 import kr.hoppang.domain.user.UserToken;
 import kr.hoppang.domain.user.repository.UserRepository;
 import lombok.Getter;
@@ -37,6 +39,8 @@ public class UserRepositoryAdapter implements UserRepository {
 
     private final UserJpaRepository userJpaRepository;
     private final UserConfigInfoJpaRepository userConfigInfoJpaRepository;
+    private final UserLoginHistoryJpaRepository userLoginHistoryJpaRepository;
+
 
     @Override
     @Transactional(readOnly = true)
@@ -99,15 +103,6 @@ public class UserRepositoryAdapter implements UserRepository {
         }
 
         return entity.toPojoWithRelations();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public User findIfExistUserByPhoneNumber(final String tel) {
-
-        UserEntity entity = userJpaRepository.findByTel(tel);
-
-        return entity != null ? entity.toPojoWithRelations() : null;
     }
 
     @Override
@@ -241,5 +236,11 @@ public class UserRepositoryAdapter implements UserRepository {
         check(userConfigInfo == null, NOT_EXIST_USER_CONFIGURATION);
 
         return userConfigInfo.toPojo();
+    }
+
+    @Override
+    public void createUserLoginHistory(final UserLoginHistory userLoginHistory) {
+
+        userLoginHistoryJpaRepository.save(userLoginHistoryToEntity(userLoginHistory));
     }
 }
