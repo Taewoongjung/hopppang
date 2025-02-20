@@ -4,6 +4,7 @@ import static kr.hoppang.adapter.common.util.VersatileUtil.convertLocalDateTimeT
 
 import kr.hoppang.abstraction.domain.ICommandHandler;
 import kr.hoppang.application.command.user.commandresults.OAuthLoginCommandResult;
+import kr.hoppang.application.command.user.commands.AddUserLoginHistoryCommand;
 import kr.hoppang.application.command.user.commands.OAuthLoginCommand;
 import kr.hoppang.application.command.user.commands.SignUpCommand;
 import kr.hoppang.application.command.user.oauth.OAuthServiceAdapter;
@@ -12,6 +13,7 @@ import kr.hoppang.config.security.jwt.JWTUtil;
 import kr.hoppang.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +24,9 @@ public class OAuthLoginCommandHandler implements ICommandHandler<OAuthLoginComma
 
     private final JWTUtil jwtUtil;
     private final OAuthServiceAdapter oAuthServiceAdapter;
+    private final ApplicationEventPublisher eventPublisher;
     private final SignUpCommandHandler signUpCommandHandler;
+
 
     @Override
     public boolean isCommandHandler() {
@@ -61,6 +65,12 @@ public class OAuthLoginCommandHandler implements ICommandHandler<OAuthLoginComma
                 ));
 
         log.info("[핸들러 - 소셜 ({}) 로그인] 성공", command.oauthType().getType());
+
+        eventPublisher.publishEvent(
+                AddUserLoginHistoryCommand.builder()
+                        .userId(registeredUser.getId())
+                        .build()
+        );
 
         return new OAuthLoginCommandResult(
                 registeredUser.isFirstLogin(),
