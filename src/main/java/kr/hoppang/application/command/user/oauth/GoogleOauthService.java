@@ -82,7 +82,7 @@ public class GoogleOauthService implements OAuthService {
 
     private String getTokenInfoFromApple(final String code) {
         return webClient.post()
-                .uri("https://oauth2.googleapis.com/token?access_type=offline")
+                .uri("https://oauth2.googleapis.com/token")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .body(BodyInserters.fromFormData(
                                 "grant_type", "authorization_code")
@@ -155,7 +155,7 @@ public class GoogleOauthService implements OAuthService {
                 .retrieve()
                 .bodyToMono(String.class).onErrorResume(e -> {
                     // 에러 처리 로직
-                    log.error("Error occurred while processing Kakao response: ", e);
+                    log.error("Error occurred while processing Google response: ", e);
                     return Mono.empty();
                 }).block();
 

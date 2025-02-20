@@ -10,7 +10,6 @@ import kr.hoppang.application.command.user.commands.SendPhoneValidationSmsComman
 import kr.hoppang.domain.user.OauthType;
 import kr.hoppang.domain.user.User;
 import kr.hoppang.domain.user.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
