@@ -1,8 +1,13 @@
 package kr.hoppang.application.command.user.oauth.dto;
 
-public record GoogleUserResource(String id,
-                                String email,
-                                String verified_email,
-                                String picture) {
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-}
+@JsonIgnoreProperties(ignoreUnknown = true)
+public record GoogleUserResource(
+        @JsonProperty("id") String id,
+        @JsonProperty("email") String email,
+        @JsonProperty("verified_email") boolean verifiedEmail,
+        @JsonProperty("picture") String picture,
+        @JsonProperty("hd") String hd
+) {}
