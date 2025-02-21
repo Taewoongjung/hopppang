@@ -4,9 +4,10 @@ import java.util.Date;
 import kr.hoppang.domain.user.OauthType;
 import kr.hoppang.domain.user.UserRole;
 
-public record OAuthServiceLogInResultDto(String email,
-                                         UserRole userRole,
-                                         OauthType oauthType,
-                                         Date accessTokenExpireIn) {
-
-}
+public record OAuthServiceLogInResultDto(
+        long userId,
+        String email,
+        UserRole userRole,
+        OauthType oauthType,
+        Date accessTokenExpireIn
+) { }

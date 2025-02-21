@@ -214,6 +214,7 @@ public class AppleOauthService implements OAuthService {
                 refreshedAccessTokenExpireIn);
 
         return new OAuthServiceLogInResultDto(
+                user.getId(),
                 user.getEmail(),
                 user.getUserRole(),
                 user.getOauthType(),

@@ -190,6 +190,7 @@ public class GoogleOauthService implements OAuthService {
                 accessTokenExpireInLocalDateTime);
 
         return new OAuthServiceLogInResultDto(
+                user.getId(),
                 user.getEmail(),
                 user.getUserRole(),
                 user.getOauthType(),
