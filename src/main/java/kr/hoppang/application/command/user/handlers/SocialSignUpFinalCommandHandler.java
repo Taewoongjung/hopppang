@@ -6,7 +6,6 @@ import static kr.hoppang.adapter.common.util.CheckUtil.check;
 
 import kr.hoppang.abstraction.domain.ICommandHandler;
 import kr.hoppang.adapter.common.exception.custom.HoppangLoginException;
-import kr.hoppang.adapter.outbound.alarm.dto.NewUser;
 import kr.hoppang.adapter.outbound.cache.dto.TearDownBucketByKey;
 import kr.hoppang.adapter.outbound.cache.sms.CacheSmsValidationRedisRepository;
 import kr.hoppang.application.command.user.commands.SocialSignUpFinalCommand;
@@ -51,11 +50,6 @@ public class SocialSignUpFinalCommandHandler implements ICommandHandler<SocialSi
 
             // 검증 후 해당 버킷 삭제
             eventPublisher.publishEvent(new TearDownBucketByKey(updatedUser.getTel()));
-
-            // 새로운 유저 회원가입 시 알람 발송
-            eventPublisher.publishEvent(
-                    new NewUser(updatedUser.getName(), updatedUser.getEmail(), updatedUser.getTel(),
-                            updatedUser.getOauthType(), updatedUser.getCreatedAt()));
 
             return updatedUser.getName();
         }
