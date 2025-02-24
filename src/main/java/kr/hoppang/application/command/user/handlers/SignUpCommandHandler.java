@@ -147,7 +147,7 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
 
             // 새로운 유저 회원가입 시 알람 발송
             eventPublisher.publishEvent(
-                    new NewUser(event.name(), event.email(), event.tel(), event.oauthType(),
+                    new NewUser(event.name(), event.email(), event.oauthType(),
                             registeredUser.getCreatedAt()));
 
             return registeredUser;
@@ -165,7 +165,7 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
 
             // 새로운 유저 회원가입 시 알람 발송
             eventPublisher.publishEvent(
-                    new NewUser(event.name(), event.email(), event.tel(), event.oauthType(),
+                    new NewUser(event.name(), event.email(), event.oauthType(),
                             registeredUser.getCreatedAt()));
 
             // 새로운 유저 캐시 데이터에 추가

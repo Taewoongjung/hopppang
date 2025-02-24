@@ -191,8 +191,6 @@ public class SlackAlarm implements AlarmService {
             blocks.add(section(section -> section.text(markdownText(
                     "*:email: 이메일:* " + newUser.userEmail()))));
             blocks.add(section(section -> section.text(markdownText(
-                    "*:phone: 전화번호:* " + newUser.userTel()))));
-            blocks.add(section(section -> section.text(markdownText(
                     "*:key: 가입 방식:* " + newUser.oauthType().getType()))));
 
             blocks.add(divider());
