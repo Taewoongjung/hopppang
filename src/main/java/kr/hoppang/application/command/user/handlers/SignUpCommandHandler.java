@@ -145,7 +145,7 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
         // 소셜 로그인 최초에는 유저 전화번호가 빈값일 것이기 때문이다. (전화번호가 있는건 이메일 로그인(NON)이다.)
         if ("".equals(event.tel())) {
 
-            // @TODO 유저 인입 이벤트 발송
+            // 새로운 유저 회원가입 시 알람 발송
             eventPublisher.publishEvent(
                     new NewUser(event.name(), event.email(), event.tel(), event.oauthType(),
                             registeredUser.getCreatedAt()));
