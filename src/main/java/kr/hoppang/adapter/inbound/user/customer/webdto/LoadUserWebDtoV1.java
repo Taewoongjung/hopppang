@@ -1,4 +1,4 @@
-package kr.hoppang.adapter.inbound.user.webdto;
+package kr.hoppang.adapter.inbound.user.customer.webdto;
 
 public class LoadUserWebDtoV1 {
 

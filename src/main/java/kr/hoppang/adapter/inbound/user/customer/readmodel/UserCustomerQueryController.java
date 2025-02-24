@@ -1,4 +1,4 @@
-package kr.hoppang.adapter.inbound.user.readmodel;
+package kr.hoppang.adapter.inbound.user.customer.readmodel;
 
 import static kr.hoppang.domain.user.OauthType.APL;
 import static kr.hoppang.domain.user.OauthType.GLE;
@@ -6,8 +6,8 @@ import static kr.hoppang.domain.user.OauthType.KKO;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.stream.Collectors;
-import kr.hoppang.adapter.inbound.user.webdto.GetUserConfigurationInfoWebDtoV1;
-import kr.hoppang.adapter.inbound.user.webdto.LoadUserWebDtoV1;
+import kr.hoppang.adapter.inbound.user.customer.webdto.GetUserConfigurationInfoWebDtoV1;
+import kr.hoppang.adapter.inbound.user.customer.webdto.LoadUserWebDtoV1;
 import kr.hoppang.application.command.user.oauth.OAuthServiceAdapter;
 import kr.hoppang.application.readmodel.user.handlers.GetUserConfigurationInfoQueryHandler;
 import kr.hoppang.application.readmodel.user.handlers.LoadUserByTokenQueryHandler;
@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class UserQueryController {
+public class UserCustomerQueryController {
 
     private final OAuthServiceAdapter oAuthServiceAdapter;
     private final LoadUserByTokenQueryHandler loadUserByTokenCommandHandler;

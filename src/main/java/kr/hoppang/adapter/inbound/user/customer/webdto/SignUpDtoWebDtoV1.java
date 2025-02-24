@@ -1,4 +1,4 @@
-package kr.hoppang.adapter.inbound.user.webdto;
+package kr.hoppang.adapter.inbound.user.customer.webdto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;

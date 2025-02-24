@@ -1,4 +1,4 @@
-package kr.hoppang.adapter.inbound.user.webdto;
+package kr.hoppang.adapter.inbound.user.customer.webdto;
 
 import kr.hoppang.domain.user.OauthType;
 

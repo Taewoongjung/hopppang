@@ -1,4 +1,4 @@
-package kr.hoppang.adapter.inbound.user.command;
+package kr.hoppang.adapter.inbound.user.customer.command;
 
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_AUTHORIZED_USER;
 import static kr.hoppang.adapter.common.util.CheckUtil.check;
@@ -6,13 +6,13 @@ import static kr.hoppang.adapter.common.util.CheckUtil.check;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import kr.hoppang.adapter.inbound.user.AuthenticationUserId;
-import kr.hoppang.adapter.inbound.user.webdto.RequestValidationWebDtoV1;
-import kr.hoppang.adapter.inbound.user.webdto.SignUpDtoWebDtoV1;
-import kr.hoppang.adapter.inbound.user.webdto.SocialSignUpFinalWebDtoV1;
-import kr.hoppang.adapter.inbound.user.webdto.SsoSignUpWebDtoV1;
-import kr.hoppang.adapter.inbound.user.webdto.SsoSignUpWebDtoV1.Res;
-import kr.hoppang.adapter.inbound.user.webdto.UpdateUserConfigWebDtoV1;
-import kr.hoppang.adapter.inbound.user.webdto.WithdrawUserWebDtoV1;
+import kr.hoppang.adapter.inbound.user.customer.webdto.RequestValidationWebDtoV1;
+import kr.hoppang.adapter.inbound.user.customer.webdto.SignUpDtoWebDtoV1;
+import kr.hoppang.adapter.inbound.user.customer.webdto.SocialSignUpFinalWebDtoV1;
+import kr.hoppang.adapter.inbound.user.customer.webdto.SsoSignUpWebDtoV1;
+import kr.hoppang.adapter.inbound.user.customer.webdto.SsoSignUpWebDtoV1.Res;
+import kr.hoppang.adapter.inbound.user.customer.webdto.UpdateUserConfigWebDtoV1;
+import kr.hoppang.adapter.inbound.user.customer.webdto.WithdrawUserWebDtoV1;
 import kr.hoppang.application.command.user.commandresults.OAuthLoginCommandResult;
 import kr.hoppang.application.command.user.commands.OAuthLoginCommand;
 import kr.hoppang.application.command.user.commands.RefreshAccessTokenCommand;
@@ -45,7 +45,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class UserCommandController {
+public class UserCustomerCommandController {
 
     private final SignUpCommandHandler signUpCommandHandler;
     private final OAuthLoginCommandHandler oAuthLoginCommandHandler;

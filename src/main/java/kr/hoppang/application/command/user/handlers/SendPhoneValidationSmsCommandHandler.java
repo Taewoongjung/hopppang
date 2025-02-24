@@ -4,7 +4,7 @@ import static kr.hoppang.adapter.common.util.CheckUtil.duplicatedSsoLoginCheck;
 
 import kr.hoppang.abstraction.domain.ICommandHandler;
 import kr.hoppang.abstraction.serviceutill.IThirdPartyValidationCheckSender;
-import kr.hoppang.adapter.inbound.user.webdto.ValidationType;
+import kr.hoppang.adapter.inbound.user.customer.webdto.ValidationType;
 import kr.hoppang.adapter.outbound.cache.dto.TearDownBucketByKey;
 import kr.hoppang.application.command.user.commands.SendPhoneValidationSmsCommand;
 import kr.hoppang.domain.user.OauthType;
