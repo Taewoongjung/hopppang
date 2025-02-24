@@ -26,7 +26,7 @@ public record SearchAllAvailableUsersWebDtoV1() {
             @NotNull
             @Range(
                     min = 1,
-                    max = 1000,
+                    max = 100,
                     message = "limit는 최소 {min}개 최대 {max}개를 초과할 수 없습니다."
             )
             @BindParam(value = "limit")

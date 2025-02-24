@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ErrorType {
 
+    INVALID_REQUEST(1, "잘못된 요청입니다."),
+
     // 도메인 depth 순서로 작성
     PLEASE_TRY_LATER(2, "시간을 두고 다시 시도 해주세요."),
     YET_EXPIRED_TOKEN(3, "아직 유효한 토큰입니다."),

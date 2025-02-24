@@ -48,4 +48,6 @@ public interface UserRepository {
     List<User> findAllAvailableUsers(final long offset, final int limit);
 
     Long findCountOfAllAvailableUsers();
+
+    List<User> findAllUsersBetween(final LocalDateTime start, final LocalDateTime end);
 }

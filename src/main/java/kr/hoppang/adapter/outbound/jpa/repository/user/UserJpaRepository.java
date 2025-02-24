@@ -11,22 +11,22 @@ import org.springframework.data.repository.query.Param;
 
 public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
 
-    UserEntity findByEmail(final String email);
+    UserEntity findByEmail(String email);
 
-    UserEntity findByEmailAndOauthType(final String email, final OauthType oauthType);
+    UserEntity findByEmailAndOauthType(String email, OauthType oauthType);
 
-    void deleteByEmail(final String email);
+    void deleteByEmail(String email);
 
     @Modifying
     @Query("UPDATE UserEntity UE "
             + "SET UE.deletedAt = :now "
             + "WHERE UE.id = :userId ")
-    void deleteUserSoftly(final long userId, @Param("now") final LocalDateTime now);
+    void deleteUserSoftly(long userId, @Param("now") LocalDateTime now);
 
     @Modifying
     @Query("DELETE FROM UserTokenEntity UTE "
             + "WHERE UTE.userId = :userId ")
-    void deleteAllTokensOfTheUser(final long userId);
+    void deleteAllTokensOfTheUser(long userId);
 
-    List<UserEntity> findAllByDeletedAtIsNull();
+    List<UserEntity> findAllByCreatedAtBetween(LocalDateTime from, LocalDateTime to);
 }

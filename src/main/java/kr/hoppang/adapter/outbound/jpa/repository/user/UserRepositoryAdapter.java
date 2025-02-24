@@ -277,4 +277,12 @@ public class UserRepositoryAdapter implements UserRepository {
 
         return count != null ? count : 0;
     }
+
+    @Override
+    public List<User> findAllUsersBetween(final LocalDateTime start, final LocalDateTime end) {
+
+        return userJpaRepository.findAllByCreatedAtBetween(start, end).stream()
+                .map(UserEntity::toPojo)
+                .toList();
+    }
 }
