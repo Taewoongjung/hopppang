@@ -4,11 +4,13 @@ import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_TOKEN;
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_USER;
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_USER_CONFIGURATION;
 import static kr.hoppang.adapter.common.util.CheckUtil.check;
+import static kr.hoppang.adapter.outbound.jpa.entity.user.QUserEntity.userEntity;
 import static kr.hoppang.util.common.BoolType.convertBooleanToType;
 import static kr.hoppang.util.converter.user.UserEntityConverter.userLoginHistoryToEntity;
 import static kr.hoppang.util.converter.user.UserEntityConverter.userToEntity;
 import static kr.hoppang.util.converter.user.UserEntityConverter.userTokenToEntity;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserRepositoryAdapter implements UserRepository {
 
+    private final JPAQueryFactory queryFactory;
     private final UserJpaRepository userJpaRepository;
     private final UserConfigInfoJpaRepository userConfigInfoJpaRepository;
     private final UserLoginHistoryJpaRepository userLoginHistoryJpaRepository;
@@ -245,9 +248,15 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
-    public List<User> findAllAvailableUsers() {
+    public List<User> findAllAvailableUsers(final long offset, final int limit) {
 
-        List<UserEntity> userEntityList = userJpaRepository.findAllByDeletedAtIsNull();
+        List<UserEntity> userEntityList = queryFactory
+                .select(userEntity)
+                .from(userEntity)
+                .where(userEntity.deletedAt.isNull())
+                .offset(offset)
+                .limit(limit)
+                .fetch();
 
         if (userEntityList.isEmpty()) {
             return List.of();
@@ -256,5 +265,16 @@ public class UserRepositoryAdapter implements UserRepository {
         return userEntityList.stream()
                 .map(UserEntity::toPojo)
                 .toList();
+    }
+
+    @Override
+    public Long findCountOfAllAvailableUsers() {
+
+        Long count = queryFactory.select(userEntity.count())
+                .from(userEntity)
+                .where(userEntity.deletedAt.isNull())
+                .fetchOne();
+
+        return count != null ? count : 0;
     }
 }

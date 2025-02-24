@@ -45,5 +45,7 @@ public interface UserRepository {
 
     void createUserLoginHistory(final UserLoginHistory userLoginHistory);
 
-    List<User> findAllAvailableUsers();
+    List<User> findAllAvailableUsers(final long offset, final int limit);
+
+    Long findCountOfAllAvailableUsers();
 }

@@ -8,9 +8,13 @@ import lombok.Builder;
 public record GetAllUsersQuery() {
 
     @Builder
-    public record Request() implements IQuery { }
+    public record Request(
+            long offset,
+            int limit
+    ) implements IQuery { }
 
     public record Response(
-            List<User> userList
+            List<User> userList,
+            long count
     ) { }
 }

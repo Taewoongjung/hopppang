@@ -2,6 +2,7 @@ package kr.hoppang.adapter.inbound.user.admin.readmodel;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+import jakarta.validation.Valid;
 import kr.hoppang.adapter.inbound.user.admin.webdto.SearchAllAvailableUsersWebDtoV1;
 import kr.hoppang.application.readmodel.user.handlers.GetAllUsersQueryHandler;
 import kr.hoppang.application.readmodel.user.queries.GetAllUsersQuery;
@@ -22,17 +23,25 @@ public class UserAdminQueryController {
 
     @GetMapping(
             value = "",
+            consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<SearchAllAvailableUsersWebDtoV1.Response> searchAllAvailableUsers() {
+    public ResponseEntity<SearchAllAvailableUsersWebDtoV1.Res> searchAllAvailableUsers(
+            @Valid SearchAllAvailableUsersWebDtoV1.Req request
+    ) {
+
+        GetAllUsersQuery.Response response = getAllUsersQueryHandler.handle(
+                GetAllUsersQuery.Request.builder()
+                        .offset(request.offset())
+                        .limit(request.limit())
+                        .build()
+        );
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(
-                        SearchAllAvailableUsersWebDtoV1.Response.of(
-                                getAllUsersQueryHandler.handle(GetAllUsersQuery.Request
-                                        .builder()
-                                        .build()
-                                ).userList()
+                        SearchAllAvailableUsersWebDtoV1.Res.of(
+                                response.userList(),
+                                response.count()
                         )
                 );
     }
