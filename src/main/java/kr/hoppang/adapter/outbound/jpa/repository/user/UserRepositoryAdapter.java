@@ -243,4 +243,18 @@ public class UserRepositoryAdapter implements UserRepository {
 
         userLoginHistoryJpaRepository.save(userLoginHistoryToEntity(userLoginHistory));
     }
+
+    @Override
+    public List<User> findAllAvailableUsers() {
+
+        List<UserEntity> userEntityList = userJpaRepository.findAllByDeletedAtIsNull();
+
+        if (userEntityList.isEmpty()) {
+            return List.of();
+        }
+
+        return userEntityList.stream()
+                .map(UserEntity::toPojo)
+                .toList();
+    }
 }

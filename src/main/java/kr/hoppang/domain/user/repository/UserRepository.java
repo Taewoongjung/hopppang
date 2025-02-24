@@ -44,4 +44,6 @@ public interface UserRepository {
     UserConfigInfo findUserConfigByUserId(final long userId);
 
     void createUserLoginHistory(final UserLoginHistory userLoginHistory);
+
+    List<User> findAllAvailableUsers();
 }
