@@ -207,7 +207,13 @@ public class ChassisEstimationInfoRepositoryAdapter implements ChassisEstimation
                 .from(chassisEstimationInfoEntity)
                 .innerJoin(userEntity)
                 .on(chassisEstimationInfoEntity.userId.eq(userEntity.id))
-                .where(userEntity.role.eq(UserRole.ROLE_CUSTOMER))
+                .where(
+                        userEntity.role.eq(UserRole.ROLE_CUSTOMER)
+                                .and(userEntity.tel.notIn(
+                                                "01088257754", "01029143611"
+                                        )
+                                )
+                )
                 .fetchOne();
 
         return count == null ? 0 : count;
