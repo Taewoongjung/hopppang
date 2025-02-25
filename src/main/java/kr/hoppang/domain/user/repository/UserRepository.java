@@ -49,6 +49,8 @@ public interface UserRepository {
 
     Long findCountOfAllAvailableUsers();
 
+    Long findCountOfAllUsers();
+
     List<User> findAllRegisteredUsersBetween(final LocalDateTime start, final LocalDateTime end);
 
     List<User> findAllDeletedUsersBetween(final LocalDateTime start, final LocalDateTime end);

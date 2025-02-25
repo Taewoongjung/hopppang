@@ -26,6 +26,7 @@ import kr.hoppang.domain.user.UserAddress;
 import kr.hoppang.domain.user.UserConfigInfo;
 import kr.hoppang.domain.user.UserDevice;
 import kr.hoppang.domain.user.UserLoginHistory;
+import kr.hoppang.domain.user.UserRole;
 import kr.hoppang.domain.user.UserToken;
 import kr.hoppang.domain.user.repository.UserRepository;
 import lombok.Getter;
@@ -273,6 +274,24 @@ public class UserRepositoryAdapter implements UserRepository {
         Long count = queryFactory.select(userEntity.count())
                 .from(userEntity)
                 .where(userEntity.deletedAt.isNull())
+                .fetchOne();
+
+        return count != null ? count : 0;
+    }
+
+    @Override
+    public Long findCountOfAllUsers() {
+
+        Long count = queryFactory
+                .select(userEntity.email.count())
+                .from(userEntity)
+                .where(
+                        userEntity.role.eq(UserRole.ROLE_CUSTOMER)
+                                .and(userEntity.tel.notIn(
+                                        "01088257754", "01029143611"
+                                ))
+                )
+                .groupBy(userEntity.email, userEntity.tel)
                 .fetchOne();
 
         return count != null ? count : 0;

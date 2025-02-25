@@ -5,7 +5,9 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import jakarta.validation.Valid;
 import kr.hoppang.adapter.inbound.user.admin.webdto.SearchAllAvailableUsersWebDtoV1;
 import kr.hoppang.adapter.inbound.user.admin.webdto.SearchUserStatisticsWebDtoV1;
+import kr.hoppang.application.readmodel.chassis.queries.EmptyQuery;
 import kr.hoppang.application.readmodel.user.handlers.FindAllUsersQueryHandler;
+import kr.hoppang.application.readmodel.user.handlers.FindCountAllUsersQueryHandler;
 import kr.hoppang.application.readmodel.user.handlers.FindStatisticsOfUserQueryHandler;
 import kr.hoppang.application.readmodel.user.queries.FindAllUsersQuery;
 import kr.hoppang.application.readmodel.user.queries.FindStatisticsOfUserQuery;
@@ -21,8 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/api/admin/users")
 public class UserAdminQueryController {
 
-    private final FindAllUsersQueryHandler getAllUsersQueryHandler;
-    private final FindStatisticsOfUserQueryHandler getStatisticsOfUserQueryHandler;
+    private final FindAllUsersQueryHandler findAllUsersQueryHandler;
+    private final FindCountAllUsersQueryHandler findCountAllUsersQueryHandler;
+    private final FindStatisticsOfUserQueryHandler findStatisticsOfUserQueryHandler;
 
     @GetMapping(
             value = "",
@@ -33,7 +36,7 @@ public class UserAdminQueryController {
             @Valid SearchAllAvailableUsersWebDtoV1.Req request
     ) {
 
-        FindAllUsersQuery.Response response = getAllUsersQueryHandler.handle(
+        FindAllUsersQuery.Response response = findAllUsersQueryHandler.handle(
                 FindAllUsersQuery.Request.builder()
                         .offset(request.offset())
                         .limit(request.limit())
@@ -59,13 +62,24 @@ public class UserAdminQueryController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(SearchUserStatisticsWebDtoV1.Response.of(
-                                getStatisticsOfUserQueryHandler.handle(
+                        findStatisticsOfUserQueryHandler.handle(
                                         FindStatisticsOfUserQuery.Request.builder()
                                                 .searchPeriodType(request.searchPeriodType())
                                                 .searchPeriodValue(request.searchPeriodValue())
                                                 .build()
                                 )
                         )
+                );
+    }
+
+    @GetMapping(
+            value = "/all/counts"
+    )
+    public ResponseEntity<Object> getCountAllUsers() {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(
+                        findCountAllUsersQueryHandler.handle(EmptyQuery.builder().build())
                 );
     }
 }
