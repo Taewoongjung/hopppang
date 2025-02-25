@@ -2,10 +2,13 @@ package kr.hoppang.adapter.inbound.chassis.admin.readmodel;
 
 import static kr.hoppang.adapter.common.util.VersatileUtil.convertStringToLocalDateTime;
 import static kr.hoppang.application.readmodel.chassis.queryresults.FindChassisEstimationInformationQueryResult.toWebResponseObject;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 import kr.hoppang.adapter.inbound.chassis.admin.webdto.GetAllEstimationsProvidedToCustomersWebDtoV1;
+import kr.hoppang.adapter.inbound.chassis.admin.webdto.GetEstimatedStatisticsWebDtoV1;
 import kr.hoppang.adapter.inbound.chassis.webdto.GetChassisEstimationInformationWebDtoV1;
 import kr.hoppang.adapter.inbound.chassis.webdto.GetChassisPriceAdditionalCriteriaWebDtoV1;
 import kr.hoppang.adapter.inbound.chassis.webdto.GetChassisPriceInformationWebDtoV1;
@@ -14,10 +17,12 @@ import kr.hoppang.application.readmodel.chassis.handlers.FindAllEstimationsProvi
 import kr.hoppang.application.readmodel.chassis.handlers.FindChassisEstimationInformationQueryHandler;
 import kr.hoppang.application.readmodel.chassis.handlers.FindChassisPriceAdditionalCriteriaQueryHandler;
 import kr.hoppang.application.readmodel.chassis.handlers.FindChassisPriceInfoByTypeAndCompanyTypeQueryHandler;
+import kr.hoppang.application.readmodel.chassis.handlers.FindEstimatedStatisticsQueryHandler;
 import kr.hoppang.application.readmodel.chassis.queries.EmptyQuery;
 import kr.hoppang.application.readmodel.chassis.queries.FindChassisEstimationInformationQuery;
 import kr.hoppang.application.readmodel.chassis.queries.FindChassisPriceAdditionalCriteriaQuery;
 import kr.hoppang.application.readmodel.chassis.queries.FindChassisPriceInfoByCompanyTypeQuery;
+import kr.hoppang.application.readmodel.chassis.queries.FindEstimatedStatisticsQuery;
 import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
 import kr.hoppang.domain.chassis.price.pricecriteria.AdditionalChassisPriceCriteria;
@@ -36,12 +41,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/api/admin/chassis")
 public class ChassisAdminQueryController {
 
+    private final FindEstimatedStatisticsQueryHandler findEstimatedStatisticsQueryHandler;
     private final FindChassisEstimationInformationQueryHandler findChassisEstimationInformationQueryHandler;
     private final FindChassisPriceAdditionalCriteriaQueryHandler findChassisPriceAdditionalCriteriaQueryHandler;
     private final FindChassisPriceInfoByTypeAndCompanyTypeQueryHandler findChassisPriceInfoByCompanyTypeQueryHandler;
     private final FindAllEstimationsProvidedToCustomersQueryHandler findAllEstimationsProvidedToCustomersQueryHandler;
 
-    @GetMapping(value = "/prices")
+
+    @GetMapping(
+            value = "/prices",
+            produces = APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<GetChassisPriceInformationWebDtoV1.Res> getChassisPriceInformation(
             @RequestParam(value = "companyType") final CompanyType companyType,
             @RequestParam(value = "chassisType") final ChassisType chassisType
@@ -55,7 +65,10 @@ public class ChassisAdminQueryController {
                 ));
     }
 
-    @GetMapping(value = "/prices/additions/criteria")
+    @GetMapping(
+            value = "/prices/additions/criteria",
+            produces = APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<List<GetChassisPriceAdditionalCriteriaWebDtoV1.Res>> getChassisPriceAdditionalCriteria() {
 
         List<AdditionalChassisPriceCriteria> responseList = findChassisPriceAdditionalCriteriaQueryHandler
@@ -94,7 +107,10 @@ public class ChassisAdminQueryController {
                 )));
     }
 
-    @GetMapping(value = "/estimations/count")
+    @GetMapping(
+            value = "/estimations/count",
+            produces = APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<GetCountOfChassisEstimationInformationWebDtoV1.Res> getCountOfChassisEstimationInformation(
             @RequestParam(value = "estimationIdList", required = false) final List<Long> estimationIdList,
             @RequestParam(value = "companyType", required = false) final CompanyType companyType,
@@ -122,7 +138,10 @@ public class ChassisAdminQueryController {
                                         )).size()));
     }
 
-    @GetMapping(value = "/users/estimations/count")
+    @GetMapping(
+            value = "/users/estimations/count",
+            produces = APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<GetAllEstimationsProvidedToCustomersWebDtoV1.Res> getAllEstimationsProvidedToCustomers() {
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -134,6 +153,27 @@ public class ChassisAdminQueryController {
                                         )
                                 )
                                 .build()
+                );
+    }
+
+    @GetMapping(
+            value = "/estimations/statistics",
+            produces = APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<GetEstimatedStatisticsWebDtoV1.Res> getEstimatedStatistics(
+            @Valid GetEstimatedStatisticsWebDtoV1.Req req
+    ) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(
+                        GetEstimatedStatisticsWebDtoV1.Res.of(
+                                findEstimatedStatisticsQueryHandler.handle(
+                                        FindEstimatedStatisticsQuery.Req.builder()
+                                                .searchPeriodType(req.searchPeriodType())
+                                                .searchPeriodValue(req.searchPeriodValue())
+                                                .build()
+                                )
+                        )
                 );
     }
 }

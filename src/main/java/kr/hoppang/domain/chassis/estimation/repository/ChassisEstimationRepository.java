@@ -32,4 +32,7 @@ public interface ChassisEstimationRepository {
             final Long lastEstimationId);
 
     long findAllEstimationsProvidedToCustomer();
+
+    List<ChassisEstimationInfo> findAllRegisteredChassisEstimationsBetween(final LocalDateTime start,
+            final LocalDateTime end);
 }

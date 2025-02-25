@@ -218,4 +218,13 @@ public class ChassisEstimationInfoRepositoryAdapter implements ChassisEstimation
 
         return count == null ? 0 : count;
     }
+
+    @Override
+    public List<ChassisEstimationInfo> findAllRegisteredChassisEstimationsBetween(
+            final LocalDateTime start, final LocalDateTime end) {
+
+        return chassisEstimationJpaRepository.findAllByCreatedAtBetween(start, end).stream()
+                .map(ChassisEstimationInfoEntity::toPojo)
+                .toList();
+    }
 }
