@@ -8,6 +8,7 @@ import kr.hoppang.adapter.inbound.user.admin.webdto.SearchUserStatisticsWebDtoV1
 import kr.hoppang.application.readmodel.user.handlers.GetAllUsersQueryHandler;
 import kr.hoppang.application.readmodel.user.handlers.GetStatisticsOfUserQueryHandler;
 import kr.hoppang.application.readmodel.user.queries.GetAllUsersQuery;
+import kr.hoppang.application.readmodel.user.queries.GetStatisticsOfUserQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,8 +59,14 @@ public class UserAdminQueryController {
     ) {
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(
-                        null
+                .body(SearchUserStatisticsWebDtoV1.Response.of(
+                                getStatisticsOfUserQueryHandler.handle(
+                                        GetStatisticsOfUserQuery.Request.builder()
+                                                .searchPeriodType(request.searchPeriodType())
+                                                .searchPeriodValue(request.searchPeriodValue())
+                                                .build()
+                                )
+                        )
                 );
     }
 }

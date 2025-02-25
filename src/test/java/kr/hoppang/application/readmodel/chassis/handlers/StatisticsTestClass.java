@@ -1,4 +1,4 @@
-package kr.hoppang.application.readmodel.user.handlers;
+package kr.hoppang.application.readmodel.chassis.handlers;
 
 import static kr.hoppang.util.common.DayUtil.getKorDayOfWeek;
 import static kr.hoppang.util.common.DayUtil.getKorMonth;
@@ -6,123 +6,161 @@ import static kr.hoppang.util.common.DayUtil.getKorMonth;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import kr.hoppang.abstraction.domain.IQueryHandler;
-import kr.hoppang.application.readmodel.user.queries.GetStatisticsOfUserQuery;
-import kr.hoppang.application.readmodel.user.queries.GetStatisticsOfUserQuery.Request;
-import kr.hoppang.application.readmodel.user.queries.GetStatisticsOfUserQuery.Response;
 import kr.hoppang.application.readmodel.user.queries.GetStatisticsOfUserQuery.Response.StatisticsElement;
 import kr.hoppang.domain.statistics.SearchPeriodType;
 import kr.hoppang.domain.user.User;
-import kr.hoppang.domain.user.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.junit.jupiter.api.Test;
 
-@Service
-@RequiredArgsConstructor
-public class GetStatisticsOfUserQueryHandler implements IQueryHandler<GetStatisticsOfUserQuery.Request, GetStatisticsOfUserQuery.Response> {
+class StatisticsTestClass {
 
-    private final UserRepository userRepository;
+    @Test
+    public void NASDAQ() {
+        SearchPeriodType searchPeriodType = SearchPeriodType.MONTH;
+        int searchPeriodValue = 3;
+        LocalDateTime now = LocalDateTime.of(2025,2,17,0,0);
 
+//        System.out.println(getStatisticsRangeList(searchPeriodType, searchPeriodValue, now));
 
-    @Override
-    public boolean isQueryHandler() {
-        return true;
+//        System.out.println(extractNumbersFromRange(aa.get(0)));
+
+        LocalDate comp1 = LocalDate.of(2025,2,17);
+        LocalDate comp2 = LocalDate.of(2025, 2, 17);
+
+        System.out.println(comp1.equals(comp2));
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public Response handle(final Request query) {
+    private List<Integer> extractNumbersFromRange(final String range) {
+        // 괄호 제거 및 공백 제거 후 "~" 기준으로 나누기
+        String[] parts = range.replaceAll("[()]", "").trim().split(" ~ ");
 
-        List<User> allRegisteredUsersWithOutAnyFiltered = userRepository.findAllUsersBetween(query.getStartTimeForSearch(),
-                query.getEndTimeForSearch());
-
-        Map<LocalDate, List<User>> usersByDate = mapUsersToCreation(
-                query.getStatisticsRangeList(),
-                allRegisteredUsersWithOutAnyFiltered,
-                query.searchPeriodType()
-        );
-
-        return Response.of(
-                getStatisticsList(
-                        query.searchPeriodType(),
-                        query.searchPeriodValue(),
-                        LocalDateTime.now(),
-                        usersByDate
-                )
-        );
-    }
-
-    private Map<LocalDate, List<User>> mapUsersToCreation(
-            final List<List<LocalDateTime>> statisticsLabelRangeList,
-            final List<User> userList,
-            final SearchPeriodType searchPeriodType
-    ) {
-
-        if (statisticsLabelRangeList.isEmpty()) {
-            return new HashMap<>();
+        if (parts.length != 2) {
+            throw new IllegalArgumentException("Invalid range format: " + range);
         }
 
-        Map<LocalDate, List<User>> usersByDate = new HashMap<>();
+        try {
+            int start = Integer.parseInt(parts[0].trim());
+            int end = Integer.parseInt(parts[1].trim());
+            return List.of(start, end);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid number format in range: " + range, e);
+        }
+    }
 
-        List<User> filteredUsers = new ArrayList<>();
+    private List<List<LocalDateTime>> getStatisticsRangeList(
+            SearchPeriodType searchPeriodType,
+            int searchPeriodValue,
+            LocalDateTime now
+    ) {
 
-        // @TODO 주간, 월간은 차근차근 생각 해보면서 하기
-        for (List<LocalDateTime> dateRange : statisticsLabelRangeList) {
-//            if (searchPeriodType.equals(SearchPeriodType.WEEKLY)) {
-//                LocalDateTime from = dateRange.get(1);
-//                LocalDateTime to = dateRange.get(0);
-//                List<User> weeklyFilteredUsers = userList.stream()
-//                        .filter(user -> isBetween(from, user.getCreatedAt(), to))
-//                        .toList();
-//
-//                filteredUsers.addAll(weeklyFilteredUsers); // 기존 리스트에 추가
-//
-//                for (LocalDateTime targetDate : dateRange) {
-//                    LocalDate key = targetDate.toLocalDate();
-//                    usersByDate.computeIfAbsent(key, k -> new ArrayList<>()).addAll(weeklyFilteredUsers);
-//                }
-//                continue;
-//            }
+        List<List<LocalDateTime>> statisticsRangeList = new ArrayList<>();
 
-            for (LocalDateTime targetDate : dateRange) {
-                LocalDate key = targetDate.toLocalDate();
-
-//                // 특정 날짜에 해당하는 유저 리스트 가져오기
-//                if (searchPeriodType.equals(SearchPeriodType.MONTH)) {
-//
-//                }
-
-                if (searchPeriodType.equals(SearchPeriodType.DAILY)) {
-
-                    filteredUsers = userList.stream()
-                            .filter(user -> isEqual(user.getCreatedAt(), targetDate))
-                            .toList();
-                }
-
-                // 기존 리스트에 추가 (중복 방지)
-                usersByDate.computeIfAbsent(key, k -> new ArrayList<>()).addAll(filteredUsers);
+        if (searchPeriodType.equals(SearchPeriodType.DAILY)) {
+            for (int i = 0; i < searchPeriodValue; i++) {
+                statisticsRangeList.add(
+                        List.of(
+                                now.minusDays(i)
+                        )
+                );
             }
         }
 
-        return usersByDate;
+
+        if (searchPeriodType.equals(SearchPeriodType.WEEKLY)) {
+            List<LocalDateTime> bundle = new ArrayList<>();
+            for (int i = 0; i < searchPeriodValue; i++) {
+                for (int j = i * 7; j < (i + 1) * 7; j++) {
+                    bundle.add(now.minusDays(j));
+                }
+            }
+
+            statisticsRangeList = getStatisticsWeeklyRangeList(bundle);
+        }
+
+        if (searchPeriodType.equals(SearchPeriodType.MONTH)) {
+            for (int i = 0; i < searchPeriodValue; i++) {
+                statisticsRangeList.add(List.of(now.minusMonths(i)));
+            }
+        }
+
+        return statisticsRangeList;
     }
 
-    private boolean isBetween(final LocalDateTime from, final LocalDateTime target, final LocalDateTime to) {
-        return !target.isBefore(from) && !target.isAfter(to); // 경계값 포함
+    private List<List<LocalDateTime>> getStatisticsWeeklyRangeList(final List<LocalDateTime> weeklyLabelList) {
+
+        if (weeklyLabelList.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        if (weeklyLabelList.size() < 7) {
+            return List.of(
+                    List.of(
+                            weeklyLabelList.get(0),
+                            weeklyLabelList.get(weeklyLabelList.size() - 1)
+                    )
+            );
+        }
+
+        List<List<LocalDateTime>> labelRangeList = new ArrayList<>();
+        for (int i = 0; i < weeklyLabelList.size(); i += 7) {
+            labelRangeList.add(
+                    List.of(
+                            weeklyLabelList.get(i),
+                            weeklyLabelList.get(i + 6)
+                    )
+            );
+        }
+
+        return labelRangeList;
     }
 
-    private boolean isEqual(final LocalDateTime target1, final LocalDateTime target2) {
-        LocalDate comp1 = target1.toLocalDate();
-        LocalDate comp2 = target2.toLocalDate();
 
-        return comp1.equals(comp2);
+    @Test
+    void as() {
+        SearchPeriodType searchPeriodType = SearchPeriodType.DAILY;
+        int searchPeriodValue = 1;
+        LocalDateTime now = LocalDateTime.of(2025,2,6,0,0);
+
+        Map<LocalDate, List<User>> usersByDate = new HashMap<>();
+
+        // 특정 날짜에 몇 명의 사용자 데이터를 추가
+        usersByDate.put(LocalDate.of(2025, 1, 11), Arrays.asList(
+                User.of(1L, "User1", LocalDateTime.of(2025, 1, 11, 10, 0)),
+                User.of(2L, "User2", LocalDateTime.of(2025, 1, 11, 11, 0))
+        ));
+
+        usersByDate.put(LocalDate.of(2025, 2, 1), Arrays.asList(
+                User.of(1L, "User1", LocalDateTime.of(2025, 2, 1, 10, 0)),
+                User.of(2L, "User2", LocalDateTime.of(2025, 2, 1, 11, 0))
+        ));
+
+        usersByDate.put(LocalDate.of(2025, 2, 3), Collections.singletonList(
+                User.of(3L, "User3", LocalDateTime.of(2025, 2, 3, 9, 30))
+        ));
+
+        usersByDate.put(LocalDate.of(2025, 2, 5), Arrays.asList(
+                User.of(4L, "User4", LocalDateTime.of(2025, 2, 5, 14, 0)),
+                User.of(5L, "User5", LocalDateTime.of(2025, 2, 5, 15, 0)),
+                User.of(6L, "User6", LocalDateTime.of(2025, 2, 5, 16, 0))
+        ));
+
+        usersByDate.put(LocalDate.of(2025, 2, 10), Collections.singletonList(
+                User.of(7L, "User7", LocalDateTime.of(2025, 2, 10, 8, 45))
+        ));
+
+        usersByDate.put(LocalDate.of(2025, 2, 28), Arrays.asList(
+                User.of(8L, "User8", LocalDateTime.of(2025, 2, 28, 18, 0)),
+                User.of(9L, "User9", LocalDateTime.of(2025, 2, 28, 19, 0))
+        ));
+        System.out.println(getStatisticsList(searchPeriodType, searchPeriodValue, now, usersByDate));
+
     }
 
-    private List<StatisticsElement> getStatisticsList(
+    public List<StatisticsElement> getStatisticsList(
             SearchPeriodType searchPeriodType,
             int searchPeriodValue,
             LocalDateTime now,
@@ -140,7 +178,7 @@ public class GetStatisticsOfUserQueryHandler implements IQueryHandler<GetStatist
                 statisticsList.add(
                         StatisticsElement.builder()
                                 .sequence(i)
-                                .label(dayOfWeek + "(" + targetDate.getDayOfMonth() + ")")
+                                .label(dayOfWeek)
                                 .count(
                                         usersByDate.getOrDefault(
                                                 targetDate.toLocalDate(),

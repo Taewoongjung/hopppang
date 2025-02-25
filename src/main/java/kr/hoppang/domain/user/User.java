@@ -137,6 +137,18 @@ public class User extends Throwable implements UserDetails {
                 lastModified, createdAt);
     }
 
+    // test 전용 객체 생성
+    public static User of(
+            final Long id,
+            final String name,
+            final LocalDateTime createdAt
+    ) {
+
+        return new User(id, name, null, null, null, null, null, null,
+                null, null, null, null, null,
+                null, createdAt);
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(userRole.name()));

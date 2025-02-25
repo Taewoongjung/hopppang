@@ -1,7 +1,9 @@
 package kr.hoppang.adapter.inbound.user.admin.webdto;
 
 import jakarta.validation.constraints.Min;
-import java.util.Map;
+import java.util.List;
+import kr.hoppang.application.readmodel.user.queries.GetStatisticsOfUserQuery;
+import kr.hoppang.application.readmodel.user.queries.GetStatisticsOfUserQuery.Response.StatisticsElement;
 import kr.hoppang.domain.statistics.SearchPeriodType;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -20,7 +22,6 @@ public record SearchUserStatisticsWebDtoV1() {
             //    WEEKLY : 이번주 기준 - 3 (디폴트)
             //    MONTH : 이번달 기준 -5 (디폴트)
 
-
             @NonNull
             @Min(
                     value = 1,
@@ -33,12 +34,12 @@ public record SearchUserStatisticsWebDtoV1() {
 
     @Builder(access = AccessLevel.PRIVATE)
     public record Response(
-            Map<Integer, Integer> countOfEachElement,
-            int totalCount
+            List<StatisticsElement> statisticsElements
     ) {
 
-        public static Response of() {
+        public static Response of(final GetStatisticsOfUserQuery.Response responseFromHandler) {
             return Response.builder()
+                    .statisticsElements(responseFromHandler.statisticsElements())
                     .build();
         }
     }
