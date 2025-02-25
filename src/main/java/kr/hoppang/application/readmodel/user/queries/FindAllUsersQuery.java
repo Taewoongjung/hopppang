@@ -5,7 +5,7 @@ import kr.hoppang.abstraction.domain.IQuery;
 import kr.hoppang.domain.user.User;
 import lombok.Builder;
 
-public record GetAllUsersQuery() {
+public record FindAllUsersQuery() {
 
     @Builder
     public record Request(

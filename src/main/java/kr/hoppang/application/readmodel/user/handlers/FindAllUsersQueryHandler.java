@@ -2,7 +2,7 @@ package kr.hoppang.application.readmodel.user.handlers;
 
 import java.util.List;
 import kr.hoppang.abstraction.domain.IQueryHandler;
-import kr.hoppang.application.readmodel.user.queries.GetAllUsersQuery;
+import kr.hoppang.application.readmodel.user.queries.FindAllUsersQuery;
 import kr.hoppang.domain.user.User;
 import kr.hoppang.domain.user.repository.UserRepository;
 import kr.hoppang.util.CountQueryExecutionUtil;
@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class GetAllUsersQueryHandler implements IQueryHandler<GetAllUsersQuery.Request, GetAllUsersQuery.Response> {
+public class FindAllUsersQueryHandler implements IQueryHandler<FindAllUsersQuery.Request, FindAllUsersQuery.Response> {
 
     private final UserRepository userRepository;
 
@@ -26,7 +26,7 @@ public class GetAllUsersQueryHandler implements IQueryHandler<GetAllUsersQuery.R
 
     @Override
     @Transactional(readOnly = true)
-    public GetAllUsersQuery.Response handle(final GetAllUsersQuery.Request query) {
+    public FindAllUsersQuery.Response handle(final FindAllUsersQuery.Request query) {
 
         List<User> userList = userRepository.findAllAvailableUsers(query.offset(), query.limit());
 
@@ -37,6 +37,6 @@ public class GetAllUsersQueryHandler implements IQueryHandler<GetAllUsersQuery.R
                 userRepository::findCountOfAllAvailableUsers
         );
 
-        return new GetAllUsersQuery.Response(userList, count);
+        return new FindAllUsersQuery.Response(userList, count);
     }
 }

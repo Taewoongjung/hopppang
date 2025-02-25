@@ -14,7 +14,7 @@ import kr.hoppang.domain.statistics.SearchPeriodType;
 import lombok.AccessLevel;
 import lombok.Builder;
 
-public record GetStatisticsOfUserQuery() {
+public record FindStatisticsOfUserQuery() {
 
     @Builder
     public record Request(

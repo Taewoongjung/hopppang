@@ -10,10 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import kr.hoppang.abstraction.domain.IQueryHandler;
-import kr.hoppang.application.readmodel.user.queries.GetStatisticsOfUserQuery;
-import kr.hoppang.application.readmodel.user.queries.GetStatisticsOfUserQuery.Request;
-import kr.hoppang.application.readmodel.user.queries.GetStatisticsOfUserQuery.Response;
-import kr.hoppang.application.readmodel.user.queries.GetStatisticsOfUserQuery.Response.StatisticsElement;
+import kr.hoppang.application.readmodel.user.queries.FindStatisticsOfUserQuery;
+import kr.hoppang.application.readmodel.user.queries.FindStatisticsOfUserQuery.Request;
+import kr.hoppang.application.readmodel.user.queries.FindStatisticsOfUserQuery.Response;
+import kr.hoppang.application.readmodel.user.queries.FindStatisticsOfUserQuery.Response.StatisticsElement;
 import kr.hoppang.domain.statistics.SearchPeriodType;
 import kr.hoppang.domain.user.User;
 import kr.hoppang.domain.user.repository.UserRepository;
@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class GetStatisticsOfUserQueryHandler implements IQueryHandler<GetStatisticsOfUserQuery.Request, GetStatisticsOfUserQuery.Response> {
+public class FindStatisticsOfUserQueryHandler implements IQueryHandler<FindStatisticsOfUserQuery.Request, FindStatisticsOfUserQuery.Response> {
 
     private final UserRepository userRepository;
 

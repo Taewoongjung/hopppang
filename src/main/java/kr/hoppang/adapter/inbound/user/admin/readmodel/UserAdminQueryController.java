@@ -5,10 +5,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import jakarta.validation.Valid;
 import kr.hoppang.adapter.inbound.user.admin.webdto.SearchAllAvailableUsersWebDtoV1;
 import kr.hoppang.adapter.inbound.user.admin.webdto.SearchUserStatisticsWebDtoV1;
-import kr.hoppang.application.readmodel.user.handlers.GetAllUsersQueryHandler;
-import kr.hoppang.application.readmodel.user.handlers.GetStatisticsOfUserQueryHandler;
-import kr.hoppang.application.readmodel.user.queries.GetAllUsersQuery;
-import kr.hoppang.application.readmodel.user.queries.GetStatisticsOfUserQuery;
+import kr.hoppang.application.readmodel.user.handlers.FindAllUsersQueryHandler;
+import kr.hoppang.application.readmodel.user.handlers.FindStatisticsOfUserQueryHandler;
+import kr.hoppang.application.readmodel.user.queries.FindAllUsersQuery;
+import kr.hoppang.application.readmodel.user.queries.FindStatisticsOfUserQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/api/admin/users")
 public class UserAdminQueryController {
 
-    private final GetAllUsersQueryHandler getAllUsersQueryHandler;
-    private final GetStatisticsOfUserQueryHandler getStatisticsOfUserQueryHandler;
+    private final FindAllUsersQueryHandler getAllUsersQueryHandler;
+    private final FindStatisticsOfUserQueryHandler getStatisticsOfUserQueryHandler;
 
     @GetMapping(
             value = "",
@@ -33,8 +33,8 @@ public class UserAdminQueryController {
             @Valid SearchAllAvailableUsersWebDtoV1.Req request
     ) {
 
-        GetAllUsersQuery.Response response = getAllUsersQueryHandler.handle(
-                GetAllUsersQuery.Request.builder()
+        FindAllUsersQuery.Response response = getAllUsersQueryHandler.handle(
+                FindAllUsersQuery.Request.builder()
                         .offset(request.offset())
                         .limit(request.limit())
                         .build()
@@ -60,7 +60,7 @@ public class UserAdminQueryController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(SearchUserStatisticsWebDtoV1.Response.of(
                                 getStatisticsOfUserQueryHandler.handle(
-                                        GetStatisticsOfUserQuery.Request.builder()
+                                        FindStatisticsOfUserQuery.Request.builder()
                                                 .searchPeriodType(request.searchPeriodType())
                                                 .searchPeriodValue(request.searchPeriodValue())
                                                 .build()

@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import kr.hoppang.application.readmodel.user.queries.GetStatisticsOfUserQuery.Response.StatisticsElement;
+import kr.hoppang.application.readmodel.user.queries.FindStatisticsOfUserQuery.Response.StatisticsElement;
 import kr.hoppang.domain.statistics.SearchPeriodType;
 import kr.hoppang.domain.user.User;
 import org.junit.jupiter.api.Test;

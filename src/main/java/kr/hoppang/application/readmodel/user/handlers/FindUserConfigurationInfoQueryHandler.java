@@ -1,7 +1,7 @@
 package kr.hoppang.application.readmodel.user.handlers;
 
 import kr.hoppang.abstraction.domain.IQueryHandler;
-import kr.hoppang.application.readmodel.user.queries.GetUserConfigurationInfoQuery;
+import kr.hoppang.application.readmodel.user.queries.FindUserConfigurationInfoQuery;
 import kr.hoppang.domain.user.UserConfigInfo;
 import kr.hoppang.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class GetUserConfigurationInfoQueryHandler implements IQueryHandler<GetUserConfigurationInfoQuery, UserConfigInfo> {
+public class FindUserConfigurationInfoQueryHandler implements IQueryHandler<FindUserConfigurationInfoQuery, UserConfigInfo> {
 
     private final UserRepository userRepository;
 
@@ -24,7 +24,7 @@ public class GetUserConfigurationInfoQueryHandler implements IQueryHandler<GetUs
 
     @Override
     @Transactional(readOnly = true)
-    public UserConfigInfo handle(final GetUserConfigurationInfoQuery query) {
+    public UserConfigInfo handle(final FindUserConfigurationInfoQuery query) {
 
         return userRepository.findUserConfigByUserId(query.userId());
     }

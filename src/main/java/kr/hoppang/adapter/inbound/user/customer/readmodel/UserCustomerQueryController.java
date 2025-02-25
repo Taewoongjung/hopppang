@@ -9,10 +9,10 @@ import java.util.stream.Collectors;
 import kr.hoppang.adapter.inbound.user.customer.webdto.GetUserConfigurationInfoWebDtoV1;
 import kr.hoppang.adapter.inbound.user.customer.webdto.LoadUserWebDtoV1;
 import kr.hoppang.application.command.user.oauth.OAuthServiceAdapter;
-import kr.hoppang.application.readmodel.user.handlers.GetUserConfigurationInfoQueryHandler;
+import kr.hoppang.application.readmodel.user.handlers.FindUserConfigurationInfoQueryHandler;
 import kr.hoppang.application.readmodel.user.handlers.LoadUserByTokenQueryHandler;
 import kr.hoppang.application.readmodel.user.handlers.ValidationCheckOfPhoneNumberQueryHandler;
-import kr.hoppang.application.readmodel.user.queries.GetUserConfigurationInfoQuery;
+import kr.hoppang.application.readmodel.user.queries.FindUserConfigurationInfoQuery;
 import kr.hoppang.application.readmodel.user.queries.LoadUserByTokenQuery;
 import kr.hoppang.application.readmodel.user.queries.ValidationCheckOfPhoneNumberQuery;
 import kr.hoppang.domain.user.User;
@@ -34,7 +34,7 @@ public class UserCustomerQueryController {
 
     private final OAuthServiceAdapter oAuthServiceAdapter;
     private final LoadUserByTokenQueryHandler loadUserByTokenCommandHandler;
-    private final GetUserConfigurationInfoQueryHandler getUserConfigurationInfoQueryHandler;
+    private final FindUserConfigurationInfoQueryHandler getUserConfigurationInfoQueryHandler;
     private final ValidationCheckOfPhoneNumberQueryHandler validationCheckOfPhoneNumberQueryHandler;
 
     @GetMapping(value = "/api/me")
@@ -95,7 +95,7 @@ public class UserCustomerQueryController {
     ) {
 
         UserConfigInfo userConfigInfo = getUserConfigurationInfoQueryHandler.handle(
-                new GetUserConfigurationInfoQuery(userId));
+                new FindUserConfigurationInfoQuery(userId));
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new GetUserConfigurationInfoWebDtoV1.Res(userConfigInfo.getIsPushOnAsBoolean()));

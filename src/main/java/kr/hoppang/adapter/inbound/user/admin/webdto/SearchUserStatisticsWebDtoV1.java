@@ -2,8 +2,8 @@ package kr.hoppang.adapter.inbound.user.admin.webdto;
 
 import jakarta.validation.constraints.Min;
 import java.util.List;
-import kr.hoppang.application.readmodel.user.queries.GetStatisticsOfUserQuery;
-import kr.hoppang.application.readmodel.user.queries.GetStatisticsOfUserQuery.Response.StatisticsElement;
+import kr.hoppang.application.readmodel.user.queries.FindStatisticsOfUserQuery;
+import kr.hoppang.application.readmodel.user.queries.FindStatisticsOfUserQuery.Response.StatisticsElement;
 import kr.hoppang.domain.statistics.SearchPeriodType;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -34,7 +34,7 @@ public record SearchUserStatisticsWebDtoV1() {
             List<StatisticsElement> deletedUsersStatisticsElementList
     ) {
 
-        public static Response of(final GetStatisticsOfUserQuery.Response responseFromHandler) {
+        public static Response of(final FindStatisticsOfUserQuery.Response responseFromHandler) {
             return Response.builder()
                     .registeredUsersStatisticsElementList(
                             responseFromHandler.registeredUsersStatisticsElementList())
