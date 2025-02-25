@@ -30,4 +30,6 @@ public interface ChassisEstimationRepository {
             final long userId,
             final Pageable pageable,
             final Long lastEstimationId);
+
+    long findAllEstimationsProvidedToCustomer();
 }

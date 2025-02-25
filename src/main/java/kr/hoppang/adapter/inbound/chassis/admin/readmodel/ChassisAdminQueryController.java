@@ -5,13 +5,16 @@ import static kr.hoppang.application.readmodel.chassis.queryresults.FindChassisE
 
 import java.util.List;
 import java.util.stream.Collectors;
+import kr.hoppang.adapter.inbound.chassis.admin.webdto.GetAllEstimationsProvidedToCustomersWebDtoV1;
 import kr.hoppang.adapter.inbound.chassis.webdto.GetChassisEstimationInformationWebDtoV1;
 import kr.hoppang.adapter.inbound.chassis.webdto.GetChassisPriceAdditionalCriteriaWebDtoV1;
 import kr.hoppang.adapter.inbound.chassis.webdto.GetChassisPriceInformationWebDtoV1;
 import kr.hoppang.adapter.inbound.chassis.webdto.GetCountOfChassisEstimationInformationWebDtoV1;
+import kr.hoppang.application.readmodel.chassis.handlers.FindAllEstimationsProvidedToCustomersQueryHandler;
 import kr.hoppang.application.readmodel.chassis.handlers.FindChassisEstimationInformationQueryHandler;
 import kr.hoppang.application.readmodel.chassis.handlers.FindChassisPriceAdditionalCriteriaQueryHandler;
 import kr.hoppang.application.readmodel.chassis.handlers.FindChassisPriceInfoByTypeAndCompanyTypeQueryHandler;
+import kr.hoppang.application.readmodel.chassis.queries.EmptyQuery;
 import kr.hoppang.application.readmodel.chassis.queries.FindChassisEstimationInformationQuery;
 import kr.hoppang.application.readmodel.chassis.queries.FindChassisPriceAdditionalCriteriaQuery;
 import kr.hoppang.application.readmodel.chassis.queries.FindChassisPriceInfoByCompanyTypeQuery;
@@ -36,7 +39,7 @@ public class ChassisAdminQueryController {
     private final FindChassisEstimationInformationQueryHandler findChassisEstimationInformationQueryHandler;
     private final FindChassisPriceAdditionalCriteriaQueryHandler findChassisPriceAdditionalCriteriaQueryHandler;
     private final FindChassisPriceInfoByTypeAndCompanyTypeQueryHandler findChassisPriceInfoByCompanyTypeQueryHandler;
-
+    private final FindAllEstimationsProvidedToCustomersQueryHandler findAllEstimationsProvidedToCustomersQueryHandler;
 
     @GetMapping(value = "/prices")
     public ResponseEntity<GetChassisPriceInformationWebDtoV1.Res> getChassisPriceInformation(
@@ -117,5 +120,20 @@ public class ChassisAdminQueryController {
                                                                 .minusSeconds(1),
                                                         limit, offset)
                                         )).size()));
+    }
+
+    @GetMapping(value = "/users/estimations/count")
+    public ResponseEntity<GetAllEstimationsProvidedToCustomersWebDtoV1.Res> getAllEstimationsProvidedToCustomers() {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(
+                        GetAllEstimationsProvidedToCustomersWebDtoV1.Res.builder()
+                                .count(
+                                        findAllEstimationsProvidedToCustomersQueryHandler.handle(
+                                                EmptyQuery.builder().build()
+                                        )
+                                )
+                                .build()
+                );
     }
 }

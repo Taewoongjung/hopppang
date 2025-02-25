@@ -20,9 +20,9 @@ import kr.hoppang.domain.chassis.estimation.ChassisEstimationInfo;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationSizeInfo;
 import kr.hoppang.domain.chassis.estimation.repository.ChassisEstimationRepository;
 import kr.hoppang.domain.chassis.estimation.repository.dto.FindChassisEstimationInfosResult;
+import kr.hoppang.domain.user.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -199,5 +199,17 @@ public class ChassisEstimationInfoRepositoryAdapter implements ChassisEstimation
                 .estimationChassisList(new SliceImpl<>(content, pageable, hasNextPage))
                 .lastEstimationId(lastId)
                 .build();
+    }
+
+    @Override
+    public long findAllEstimationsProvidedToCustomer() {
+        Long count = queryFactory.select(chassisEstimationInfoEntity.count())
+                .from(chassisEstimationInfoEntity)
+                .innerJoin(userEntity)
+                .on(chassisEstimationInfoEntity.userId.eq(userEntity.id))
+                .where(userEntity.role.eq(UserRole.ROLE_CUSTOMER))
+                .fetchOne();
+
+        return count == null ? 0 : count;
     }
 }
