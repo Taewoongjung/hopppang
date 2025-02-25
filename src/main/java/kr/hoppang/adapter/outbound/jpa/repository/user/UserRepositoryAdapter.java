@@ -1,5 +1,6 @@
 package kr.hoppang.adapter.outbound.jpa.repository.user;
 
+import static com.querydsl.core.types.ExpressionUtils.allOf;
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_TOKEN;
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_USER;
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_USER_CONFIGURATION;
@@ -300,7 +301,19 @@ public class UserRepositoryAdapter implements UserRepository {
     public List<User> findAllRegisteredUsersBetween(final LocalDateTime start,
             final LocalDateTime end) {
 
-        return userJpaRepository.findAllByCreatedAtBetween(start, end).stream()
+        List<UserEntity> userEntityList = queryFactory.select(userEntity)
+                .from(userEntity)
+                .where(
+                        allOf(
+                                userEntity.role.eq(UserRole.ROLE_CUSTOMER),
+                                userEntity.tel.notIn(
+                                        "01088257754", "01029143611"
+                                ),
+                                userEntity.createdAt.between(start, end)
+                        )
+                ).fetch();
+
+        return userEntityList.stream()
                 .map(UserEntity::toPojo)
                 .toList();
     }
@@ -309,7 +322,19 @@ public class UserRepositoryAdapter implements UserRepository {
     public List<User> findAllDeletedUsersBetween(final LocalDateTime start,
             final LocalDateTime end) {
 
-        return userJpaRepository.findAllByDeletedAtBetween(start, end).stream()
+        List<UserEntity> userEntityList = queryFactory.select(userEntity)
+                .from(userEntity)
+                .where(
+                        allOf(
+                                userEntity.role.eq(UserRole.ROLE_CUSTOMER),
+                                userEntity.tel.notIn(
+                                        "01088257754", "01029143611"
+                                ),
+                                userEntity.deletedAt.between(start, end)
+                        )
+                ).fetch();
+
+        return userEntityList.stream()
                 .map(UserEntity::toPojo)
                 .toList();
     }

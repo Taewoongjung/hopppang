@@ -1,7 +1,6 @@
 package kr.hoppang.adapter.outbound.jpa.repository.user;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import kr.hoppang.adapter.outbound.jpa.entity.user.UserEntity;
 import kr.hoppang.domain.user.OauthType;
@@ -30,8 +29,4 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
     @Query("DELETE FROM UserTokenEntity UTE "
             + "WHERE UTE.userId = :userId ")
     void deleteAllTokensOfTheUser(long userId);
-
-    List<UserEntity> findAllByCreatedAtBetween(LocalDateTime from, LocalDateTime to);
-
-    List<UserEntity> findAllByDeletedAtBetween(LocalDateTime from, LocalDateTime to);
 }
