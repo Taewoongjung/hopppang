@@ -3,6 +3,7 @@ package kr.hoppang.adapter.inbound.user.admin.readmodel;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import jakarta.validation.Valid;
+import kr.hoppang.adapter.inbound.chassis.admin.webdto.GetCountAllUsersWebDtoV1;
 import kr.hoppang.adapter.inbound.user.admin.webdto.SearchAllAvailableUsersWebDtoV1;
 import kr.hoppang.adapter.inbound.user.admin.webdto.SearchUserStatisticsWebDtoV1;
 import kr.hoppang.application.readmodel.chassis.queries.EmptyQuery;
@@ -73,13 +74,18 @@ public class UserAdminQueryController {
     }
 
     @GetMapping(
-            value = "/all/counts"
+            value = "/all/count"
     )
-    public ResponseEntity<Object> getCountAllUsers() {
+    public ResponseEntity<GetCountAllUsersWebDtoV1.Res> getCountAllUsers() {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(
-                        findCountAllUsersQueryHandler.handle(EmptyQuery.builder().build())
-                );
+                        GetCountAllUsersWebDtoV1.Res.builder()
+                                .count(
+                                        findCountAllUsersQueryHandler.handle(
+                                                EmptyQuery.builder().build()
+                                        )
+                                )
+                                .build());
     }
 }

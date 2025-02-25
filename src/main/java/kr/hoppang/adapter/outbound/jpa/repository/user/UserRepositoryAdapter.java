@@ -282,8 +282,8 @@ public class UserRepositoryAdapter implements UserRepository {
     @Override
     public Long findCountOfAllUsers() {
 
-        Long count = queryFactory
-                .select(userEntity.email.count())
+        int count = queryFactory
+                .selectDistinct(userEntity.email, userEntity.tel)
                 .from(userEntity)
                 .where(
                         userEntity.role.eq(UserRole.ROLE_CUSTOMER)
@@ -291,10 +291,9 @@ public class UserRepositoryAdapter implements UserRepository {
                                         "01088257754", "01029143611"
                                 ))
                 )
-                .groupBy(userEntity.email, userEntity.tel)
-                .fetchOne();
+                .fetch().size();
 
-        return count != null ? count : 0;
+        return (long) count;
     }
 
     @Override
