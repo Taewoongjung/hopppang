@@ -140,7 +140,12 @@ public class GetStatisticsOfUserQueryHandler implements IQueryHandler<GetStatist
                 statisticsList.add(
                         StatisticsElement.builder()
                                 .sequence(i)
-                                .label(dayOfWeek + "(" + targetDate.getDayOfMonth() + ")")
+                                .label(
+                                        dayOfWeek + "(" +
+                                                targetDate.getMonth().getValue() + "-" +
+                                                targetDate.getDayOfMonth() +
+                                                ")"
+                                )
                                 .count(
                                         usersByDate.getOrDefault(
                                                 targetDate.toLocalDate(),

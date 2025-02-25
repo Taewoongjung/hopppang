@@ -51,7 +51,6 @@ public class UserAdminQueryController {
 
     @GetMapping(
             value = "/statistics",
-            consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE
     )
     public ResponseEntity<SearchUserStatisticsWebDtoV1.Response> searchUserStatistics(
