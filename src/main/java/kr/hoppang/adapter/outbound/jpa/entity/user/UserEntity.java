@@ -40,7 +40,7 @@ import org.hibernate.annotations.SQLRestriction;
 @ToString
 @Table(name = "user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLRestriction("deleted_at IS NULL")
+//@SQLRestriction("deleted_at IS NULL")
 public class UserEntity extends BaseEntity {
 
     @Id

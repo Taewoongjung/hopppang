@@ -268,4 +268,8 @@ public class User extends Throwable implements UserDetails {
 
         return null;
     }
+
+    public boolean isDeleted() {
+        return this.deletedAt != null;
+    }
 }

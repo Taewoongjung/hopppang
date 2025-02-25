@@ -37,12 +37,21 @@ public class GetStatisticsOfUserQueryHandler implements IQueryHandler<GetStatist
     @Transactional(readOnly = true)
     public Response handle(final Request query) {
 
-        List<User> allRegisteredUsersWithOutAnyFiltered = userRepository.findAllUsersBetween(query.getStartTimeForSearch(),
+        List<User> allRegisteredUsersWithOutAnyFiltered = userRepository.findAllRegisteredUsersBetween(query.getStartTimeForSearch(),
                 query.getEndTimeForSearch());
 
-        Map<LocalDate, List<User>> usersByDate = mapUsersToCreation(
+        Map<LocalDate, List<User>> registeredUsersByDate = mapUsersToCreation(
                 query.getStatisticsRangeList(),
                 allRegisteredUsersWithOutAnyFiltered,
+                query.searchPeriodType()
+        );
+
+        List<User> allDeletedUsersWithOutAnyFiltered = userRepository.findAllDeletedUsersBetween(query.getStartTimeForSearch(),
+                query.getEndTimeForSearch());
+
+        Map<LocalDate, List<User>> deletedUsersByDate = mapUsersToDeletion(
+                query.getStatisticsRangeList(),
+                allDeletedUsersWithOutAnyFiltered,
                 query.searchPeriodType()
         );
 
@@ -51,7 +60,13 @@ public class GetStatisticsOfUserQueryHandler implements IQueryHandler<GetStatist
                         query.searchPeriodType(),
                         query.searchPeriodValue(),
                         LocalDateTime.now(),
-                        usersByDate
+                        registeredUsersByDate
+                ),
+                getStatisticsList(
+                        query.searchPeriodType(),
+                        query.searchPeriodValue(),
+                        LocalDateTime.now(),
+                        deletedUsersByDate
                 )
         );
     }
@@ -100,6 +115,62 @@ public class GetStatisticsOfUserQueryHandler implements IQueryHandler<GetStatist
 
                     filteredUsers = userList.stream()
                             .filter(user -> isEqual(user.getCreatedAt(), targetDate))
+                            .toList();
+                }
+
+                // 기존 리스트에 추가 (중복 방지)
+                usersByDate.computeIfAbsent(key, k -> new ArrayList<>()).addAll(filteredUsers);
+            }
+        }
+
+        return usersByDate;
+    }
+
+    private Map<LocalDate, List<User>> mapUsersToDeletion(
+            final List<List<LocalDateTime>> statisticsLabelRangeList,
+            final List<User> userList,
+            final SearchPeriodType searchPeriodType
+    ) {
+
+        if (statisticsLabelRangeList.isEmpty()) {
+            return new HashMap<>();
+        }
+
+        Map<LocalDate, List<User>> usersByDate = new HashMap<>();
+
+        List<User> filteredUsers = new ArrayList<>();
+
+        // @TODO 주간, 월간은 차근차근 생각 해보면서 하기
+        for (List<LocalDateTime> dateRange : statisticsLabelRangeList) {
+//            if (searchPeriodType.equals(SearchPeriodType.WEEKLY)) {
+//                LocalDateTime from = dateRange.get(1);
+//                LocalDateTime to = dateRange.get(0);
+//                List<User> weeklyFilteredUsers = userList.stream()
+//                        .filter(user -> isBetween(from, user.getCreatedAt(), to))
+//                        .toList();
+//
+//                filteredUsers.addAll(weeklyFilteredUsers); // 기존 리스트에 추가
+//
+//                for (LocalDateTime targetDate : dateRange) {
+//                    LocalDate key = targetDate.toLocalDate();
+//                    usersByDate.computeIfAbsent(key, k -> new ArrayList<>()).addAll(weeklyFilteredUsers);
+//                }
+//                continue;
+//            }
+
+            for (LocalDateTime targetDate : dateRange) {
+                LocalDate key = targetDate.toLocalDate();
+
+//                // 특정 날짜에 해당하는 유저 리스트 가져오기
+//                if (searchPeriodType.equals(SearchPeriodType.MONTH)) {
+//
+//                }
+
+                if (searchPeriodType.equals(SearchPeriodType.DAILY)) {
+
+                    filteredUsers = userList.stream()
+                            .filter(User::isDeleted)
+                            .filter(user -> isEqual(user.getDeletedAt(), targetDate))
                             .toList();
                 }
 

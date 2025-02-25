@@ -17,10 +17,6 @@ public record SearchUserStatisticsWebDtoV1() {
             @NonNull
             @BindParam(value = "searchPeriodType")
             SearchPeriodType searchPeriodType,
-            // @TODO
-            //    DAILY : 오늘 기준 - 7 (디폴트)
-            //    WEEKLY : 이번주 기준 - 3 (디폴트)
-            //    MONTH : 이번달 기준 -5 (디폴트)
 
             @NonNull
             @Min(
@@ -34,12 +30,16 @@ public record SearchUserStatisticsWebDtoV1() {
 
     @Builder(access = AccessLevel.PRIVATE)
     public record Response(
-            List<StatisticsElement> statisticsElements
+            List<StatisticsElement> registeredUsersStatisticsElementList,
+            List<StatisticsElement> deletedUsersStatisticsElementList
     ) {
 
         public static Response of(final GetStatisticsOfUserQuery.Response responseFromHandler) {
             return Response.builder()
-                    .statisticsElements(responseFromHandler.statisticsElements())
+                    .registeredUsersStatisticsElementList(
+                            responseFromHandler.registeredUsersStatisticsElementList())
+                    .deletedUsersStatisticsElementList(
+                            responseFromHandler.deletedUsersStatisticsElementList())
                     .build();
         }
     }

@@ -191,7 +191,8 @@ public record GetStatisticsOfUserQuery() {
 
     @Builder(access = AccessLevel.PRIVATE)
     public record Response(
-            List<StatisticsElement> statisticsElements
+            List<StatisticsElement> registeredUsersStatisticsElementList,
+            List<StatisticsElement> deletedUsersStatisticsElementList
     ) {
 
         @Builder
@@ -201,8 +202,14 @@ public record GetStatisticsOfUserQuery() {
               int count
         ) { }
 
-        public static Response of(final List<StatisticsElement> statisticsElementList) {
-            return new Response(statisticsElementList);
+        public static Response of(
+                final List<StatisticsElement> registeredUsersStatisticsElementList,
+                final List<StatisticsElement> deletedUsersStatisticsElementList
+        ) {
+            return Response.builder()
+                    .registeredUsersStatisticsElementList(registeredUsersStatisticsElementList)
+                    .deletedUsersStatisticsElementList(deletedUsersStatisticsElementList)
+                    .build();
         }
     }
 }

@@ -48,7 +48,7 @@ public class UserRepositoryAdapter implements UserRepository {
     @Override
     @Transactional(readOnly = true)
     public User findById(final long userId) {
-        Optional<UserEntity> entity = userJpaRepository.findById(userId);
+        Optional<UserEntity> entity = userJpaRepository.findByIdAndDeletedAtIsNull(userId);
 
         check(entity.isEmpty(), NOT_EXIST_USER);
 
@@ -58,7 +58,7 @@ public class UserRepositoryAdapter implements UserRepository {
     @Override
     @Transactional(readOnly = true)
     public User findByEmail(final String email) {
-        UserEntity entity = userJpaRepository.findByEmail(email);
+        UserEntity entity = userJpaRepository.findByEmailAndDeletedAtIsNull(email);
 
         check(entity == null, NOT_EXIST_USER);
 
@@ -68,7 +68,7 @@ public class UserRepositoryAdapter implements UserRepository {
     @Override
     @Transactional(readOnly = true)
     public User findByEmailWithoutRelations(final String email) {
-        UserEntity entity = userJpaRepository.findByEmail(email);
+        UserEntity entity = userJpaRepository.findByEmailAndDeletedAtIsNull(email);
 
         check(entity == null, NOT_EXIST_USER);
 
@@ -79,7 +79,7 @@ public class UserRepositoryAdapter implements UserRepository {
     @Transactional(readOnly = true)
     public User findIfExistUserByEmail(final String email, final OauthType oauthType) {
 
-        UserEntity user = userJpaRepository.findByEmailAndOauthType(email, oauthType);
+        UserEntity user = userJpaRepository.findByEmailAndOauthTypeAndDeletedAtIsNull(email, oauthType);
 
         return user != null ? user.toPojoWithRelations() : null;
     }
@@ -113,7 +113,7 @@ public class UserRepositoryAdapter implements UserRepository {
     public void updateToken(final String email, final TokenType tokenType, final String token,
             final LocalDateTime expireTime) {
 
-        UserEntity entity = userJpaRepository.findByEmail(email);
+        UserEntity entity = userJpaRepository.findByEmailAndDeletedAtIsNull(email);
 
         check(entity == null, NOT_EXIST_USER);
 
@@ -138,7 +138,7 @@ public class UserRepositoryAdapter implements UserRepository {
             final UserAddress userAddress,
             final boolean isPushOn) {
 
-        UserEntity entity = userJpaRepository.findByEmail(userEmail);
+        UserEntity entity = userJpaRepository.findByEmailAndDeletedAtIsNull(userEmail);
 
         check(entity == null, NOT_EXIST_USER);
 
@@ -151,7 +151,7 @@ public class UserRepositoryAdapter implements UserRepository {
     @Transactional
     public User updateDeviceInfo(final String userEmail, final UserDevice userDevice) {
 
-        UserEntity entity = userJpaRepository.findByEmail(userEmail);
+        UserEntity entity = userJpaRepository.findByEmailAndDeletedAtIsNull(userEmail);
 
         check(entity == null, NOT_EXIST_USER);
 
@@ -164,7 +164,7 @@ public class UserRepositoryAdapter implements UserRepository {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updateRequiredReLogin(final String userEmail) {
 
-        UserEntity entity = userJpaRepository.findByEmail(userEmail);
+        UserEntity entity = userJpaRepository.findByEmailAndDeletedAtIsNull(userEmail);
 
         check(entity == null, NOT_EXIST_USER);
 
@@ -175,7 +175,7 @@ public class UserRepositoryAdapter implements UserRepository {
     @Transactional
     public User updateUserTokenInfo(final String userEmail, final List<UserToken> userTokens) {
 
-        UserEntity entity = userJpaRepository.findByEmail(userEmail);
+        UserEntity entity = userJpaRepository.findByEmailAndDeletedAtIsNull(userEmail);
 
         check(entity == null, NOT_EXIST_USER);
 
@@ -279,9 +279,19 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
-    public List<User> findAllUsersBetween(final LocalDateTime start, final LocalDateTime end) {
+    public List<User> findAllRegisteredUsersBetween(final LocalDateTime start,
+            final LocalDateTime end) {
 
         return userJpaRepository.findAllByCreatedAtBetween(start, end).stream()
+                .map(UserEntity::toPojo)
+                .toList();
+    }
+
+    @Override
+    public List<User> findAllDeletedUsersBetween(final LocalDateTime start,
+            final LocalDateTime end) {
+
+        return userJpaRepository.findAllByDeletedAtBetween(start, end).stream()
                 .map(UserEntity::toPojo)
                 .toList();
     }

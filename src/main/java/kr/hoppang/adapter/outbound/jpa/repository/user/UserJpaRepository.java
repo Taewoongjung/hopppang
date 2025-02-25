@@ -2,6 +2,7 @@ package kr.hoppang.adapter.outbound.jpa.repository.user;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import kr.hoppang.adapter.outbound.jpa.entity.user.UserEntity;
 import kr.hoppang.domain.user.OauthType;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,9 +12,11 @@ import org.springframework.data.repository.query.Param;
 
 public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
 
-    UserEntity findByEmail(String email);
+    Optional<UserEntity> findByIdAndDeletedAtIsNull(long id);
 
-    UserEntity findByEmailAndOauthType(String email, OauthType oauthType);
+    UserEntity findByEmailAndDeletedAtIsNull(String email);
+
+    UserEntity findByEmailAndOauthTypeAndDeletedAtIsNull(String email, OauthType oauthType);
 
     void deleteByEmail(String email);
 
@@ -29,4 +32,6 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
     void deleteAllTokensOfTheUser(long userId);
 
     List<UserEntity> findAllByCreatedAtBetween(LocalDateTime from, LocalDateTime to);
+
+    List<UserEntity> findAllByDeletedAtBetween(LocalDateTime from, LocalDateTime to);
 }
