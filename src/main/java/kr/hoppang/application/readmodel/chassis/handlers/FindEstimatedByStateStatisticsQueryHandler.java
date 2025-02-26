@@ -35,8 +35,9 @@ public class FindEstimatedByStateStatisticsQueryHandler implements IQueryHandler
 
         chassisEstimationInfoList.forEach(
                 chassisEstimationInfo -> {
-                    String targetState = chassisEstimationInfo.getChassisEstimationAddress()
-                            .getState();
+                    String targetState = getStateForMap(
+                            chassisEstimationInfo.getChassisEstimationAddress().getState()
+                    );
 
                     countOfEstimatedByState.put(
                             targetState,
@@ -51,10 +52,22 @@ public class FindEstimatedByStateStatisticsQueryHandler implements IQueryHandler
                 .build();
     }
 
+    private String getStateForMap(final String targetState) {
+        if (targetState == null) {
+            return "알수없음";
+        }
+
+        if ("서울".equals(targetState) || "경기".equals(targetState)) {
+            return "서울/경기";
+        }
+
+        return targetState;
+    }
+
     private Map<String, Integer> initCountOfEstimatedByState() {
         Map<String, Integer> countOfEstimatedByState = new HashMap<>();
 
-        countOfEstimatedByState.put("서울", 0);
+        countOfEstimatedByState.put("서울/경기", 0);
         countOfEstimatedByState.put("부산", 0);
         countOfEstimatedByState.put("대구", 0);
         countOfEstimatedByState.put("인천", 0);
@@ -62,7 +75,6 @@ public class FindEstimatedByStateStatisticsQueryHandler implements IQueryHandler
         countOfEstimatedByState.put("대전", 0);
         countOfEstimatedByState.put("울산", 0);
         countOfEstimatedByState.put("세종특별자치시", 0);
-        countOfEstimatedByState.put("경기", 0);
         countOfEstimatedByState.put("충북", 0);
         countOfEstimatedByState.put("충남", 0);
         countOfEstimatedByState.put("전남", 0);
