@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 import kr.hoppang.adapter.inbound.chassis.admin.webdto.GetAllEstimationsProvidedToCustomersWebDtoV1;
+import kr.hoppang.adapter.inbound.chassis.admin.webdto.GetEstimatedByStateStatisticsWebDtoV1;
 import kr.hoppang.adapter.inbound.chassis.admin.webdto.GetEstimatedStatisticsWebDtoV1;
 import kr.hoppang.adapter.inbound.chassis.webdto.GetChassisEstimationInformationWebDtoV1;
 import kr.hoppang.adapter.inbound.chassis.webdto.GetChassisPriceAdditionalCriteriaWebDtoV1;
@@ -17,11 +18,13 @@ import kr.hoppang.application.readmodel.chassis.handlers.FindAllEstimationsProvi
 import kr.hoppang.application.readmodel.chassis.handlers.FindChassisEstimationInformationQueryHandler;
 import kr.hoppang.application.readmodel.chassis.handlers.FindChassisPriceAdditionalCriteriaQueryHandler;
 import kr.hoppang.application.readmodel.chassis.handlers.FindChassisPriceInfoByTypeAndCompanyTypeQueryHandler;
+import kr.hoppang.application.readmodel.chassis.handlers.FindEstimatedByStateStatisticsQueryHandler;
 import kr.hoppang.application.readmodel.chassis.handlers.FindEstimatedStatisticsQueryHandler;
 import kr.hoppang.application.readmodel.chassis.queries.EmptyQuery;
 import kr.hoppang.application.readmodel.chassis.queries.FindChassisEstimationInformationQuery;
 import kr.hoppang.application.readmodel.chassis.queries.FindChassisPriceAdditionalCriteriaQuery;
 import kr.hoppang.application.readmodel.chassis.queries.FindChassisPriceInfoByCompanyTypeQuery;
+import kr.hoppang.application.readmodel.chassis.queries.FindEstimatedByStateStatisticsQuery;
 import kr.hoppang.application.readmodel.chassis.queries.FindEstimatedStatisticsQuery;
 import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
@@ -42,6 +45,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ChassisAdminQueryController {
 
     private final FindEstimatedStatisticsQueryHandler findEstimatedStatisticsQueryHandler;
+    private final FindEstimatedByStateStatisticsQueryHandler findEstimatedByStateStatisticsQueryHandler;
     private final FindChassisEstimationInformationQueryHandler findChassisEstimationInformationQueryHandler;
     private final FindChassisPriceAdditionalCriteriaQueryHandler findChassisPriceAdditionalCriteriaQueryHandler;
     private final FindChassisPriceInfoByTypeAndCompanyTypeQueryHandler findChassisPriceInfoByCompanyTypeQueryHandler;
@@ -157,7 +161,7 @@ public class ChassisAdminQueryController {
     }
 
     @GetMapping(
-            value = "/estimations/statistics",
+            value = "/statistics/estimations",
             produces = APPLICATION_JSON_VALUE
     )
     public ResponseEntity<GetEstimatedStatisticsWebDtoV1.Res> getEstimatedStatistics(
@@ -173,6 +177,24 @@ public class ChassisAdminQueryController {
                                                 .searchPeriodValue(req.searchPeriodValue())
                                                 .build()
                                 )
+                        )
+                );
+    }
+
+    @GetMapping(
+            value = "/statistics/estimations/states",
+            produces = APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<GetEstimatedByStateStatisticsWebDtoV1.Res> getEstimatedByStateStatistics() {
+
+        FindEstimatedByStateStatisticsQuery.Res responseFromHandler = findEstimatedByStateStatisticsQueryHandler.handle(
+                EmptyQuery.of());
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(
+                        GetEstimatedByStateStatisticsWebDtoV1.Res.of(
+                                responseFromHandler.countOfEstimatedByState(),
+                                responseFromHandler.totalEstimationCount()
                         )
                 );
     }

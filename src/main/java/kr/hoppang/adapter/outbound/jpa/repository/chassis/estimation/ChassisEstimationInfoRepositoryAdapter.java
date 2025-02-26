@@ -1,5 +1,6 @@
 package kr.hoppang.adapter.outbound.jpa.repository.chassis.estimation;
 
+import static com.querydsl.core.types.ExpressionUtils.allOf;
 import static com.querydsl.core.types.Projections.constructor;
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_ESTIMATION;
 import static kr.hoppang.adapter.common.util.CheckUtil.check;
@@ -208,11 +209,13 @@ public class ChassisEstimationInfoRepositoryAdapter implements ChassisEstimation
                 .innerJoin(userEntity)
                 .on(chassisEstimationInfoEntity.userId.eq(userEntity.id))
                 .where(
-                        userEntity.role.eq(UserRole.ROLE_CUSTOMER)
-                                .and(userEntity.tel.notIn(
-                                                "01088257754", "01029143611"
-                                        )
-                                )
+                        allOf(
+                                userEntity.role.eq(UserRole.ROLE_CUSTOMER),
+                                userEntity.tel.notIn(
+                                        "01088257754", "01029143611"
+                                ),
+                                chassisEstimationInfoEntity.chassisEstimationAddress.state.ne("테스트 기간")
+                        )
                 )
                 .fetchOne();
 
@@ -223,7 +226,50 @@ public class ChassisEstimationInfoRepositoryAdapter implements ChassisEstimation
     public List<ChassisEstimationInfo> findAllRegisteredChassisEstimationsBetween(
             final LocalDateTime start, final LocalDateTime end) {
 
-        return chassisEstimationJpaRepository.findAllByCreatedAtBetween(start, end).stream()
+        List<ChassisEstimationInfoEntity> chassisEstimationInfoEntityList =
+                queryFactory.select(chassisEstimationInfoEntity)
+                        .from(chassisEstimationInfoEntity)
+                        .innerJoin(userEntity)
+                        .on(chassisEstimationInfoEntity.userId.eq(userEntity.id))
+                        .where(
+                                allOf(
+                                        userEntity.role.eq(UserRole.ROLE_CUSTOMER),
+                                        userEntity.tel.notIn(
+                                                "01088257754", "01029143611"
+                                        ),
+                                        chassisEstimationInfoEntity.chassisEstimationAddress.state.ne(
+                                                "테스트 기간"),
+                                        chassisEstimationInfoEntity.createdAt.between(start, end)
+                                )
+                        )
+                        .fetch();
+
+        return chassisEstimationInfoEntityList.stream()
+                .map(ChassisEstimationInfoEntity::toPojo)
+                .toList();
+    }
+
+    @Override
+    public List<ChassisEstimationInfo> findAll() {
+
+        List<ChassisEstimationInfoEntity> chassisEstimationInfoEntityList =
+                queryFactory.select(chassisEstimationInfoEntity)
+                        .from(chassisEstimationInfoEntity)
+                        .innerJoin(userEntity)
+                        .on(chassisEstimationInfoEntity.userId.eq(userEntity.id))
+                        .where(
+                                allOf(
+                                        userEntity.role.eq(UserRole.ROLE_CUSTOMER),
+                                        userEntity.tel.notIn(
+                                                "01088257754", "01029143611"
+                                        ),
+                                        chassisEstimationInfoEntity.chassisEstimationAddress.state.ne(
+                                                "테스트 기간")
+                                )
+                        )
+                        .fetch();
+
+        return chassisEstimationInfoEntityList.stream()
                 .map(ChassisEstimationInfoEntity::toPojo)
                 .toList();
     }

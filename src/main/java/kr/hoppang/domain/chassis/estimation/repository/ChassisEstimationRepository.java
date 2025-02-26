@@ -35,4 +35,6 @@ public interface ChassisEstimationRepository {
 
     List<ChassisEstimationInfo> findAllRegisteredChassisEstimationsBetween(final LocalDateTime start,
             final LocalDateTime end);
+
+    List<ChassisEstimationInfo> findAll();
 }

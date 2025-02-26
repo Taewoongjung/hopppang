@@ -6,4 +6,7 @@ import lombok.Builder;
 @Builder
 public record EmptyQuery() implements IQuery {
 
+    public static EmptyQuery of() {
+        return new EmptyQuery();
+    }
 }
