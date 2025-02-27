@@ -58,6 +58,9 @@ public class CalculateChassisPriceCommandHandler implements
 
         log.info("[핸들러 - 샤시 내기] CalculateChassisPriceCommand = {}", event);
 
+        AdditionalChassisPriceCriteria additionalChassisPriceCriteria = additionalChassisPriceCriteriaRepository.findByType(
+                IncrementRate);
+
         List<CalculateChassisPrice> chassisReqList = event.calculateChassisPriceList();
 
         if (chassisReqList.isEmpty()) {
@@ -104,7 +107,12 @@ public class CalculateChassisPriceCommandHandler implements
                     chassis.width(), chassis.height()
             );
 
-            calculatedPriceResultList.add(chassisPrice);
+            calculatedPriceResultList.add(
+                    calculateChassisPriceWithIncrement(
+                            chassisPrice,
+                            additionalChassisPriceCriteria.getPrice()
+                    )
+            );
 
             chassisPriceResultList.add(new ChassisPriceResult(
                     chassis.chassisType().name(), chassis.width(), chassis.height(), chassisPrice)
@@ -166,10 +174,7 @@ public class CalculateChassisPriceCommandHandler implements
         int freightTransportFee = event.floorCustomerLiving() <= 1 ? ladderCarFee
                 : 0; // freightTransportFee : 1층 이하면 사다리차 비용이 도수 운반비로 치환 된다
         int floor = event.floorCustomerLiving();
-        AdditionalChassisPriceCriteria additionalChassisPriceCriteria = additionalChassisPriceCriteriaRepository.findByType(
-                IncrementRate);
-        int totalPrice = calculateFinalPrice(additionalChassisPriceCriteria.getPrice(),
-                calculatedPriceResultList);
+        int totalPrice = calculatedPriceResultList.stream().mapToInt(Integer::intValue).sum();
 
         long registeredEstimationId = registerChassisEstimation(
                 chassisPriceResultList,
@@ -211,6 +216,20 @@ public class CalculateChassisPriceCommandHandler implements
                 totalPrice
         );
     }
+
+    private int calculateChassisPriceWithIncrement(
+            final int incrementRateOfConvertingToCustomerPrice,
+            final Integer calculatedPriceResultList
+    ) {
+
+        BigDecimal rate = BigDecimal.valueOf(incrementRateOfConvertingToCustomerPrice)
+                .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+        BigDecimal updatedTotalPrice = BigDecimal.valueOf(calculatedPriceResultList)
+                .multiply(rate.add(BigDecimal.ONE));
+
+        return updatedTotalPrice.intValue();
+    }
+
 
     private long registerChassisEstimation(
             final List<ChassisPriceResult> chassisPriceResultList,
@@ -272,18 +291,5 @@ public class CalculateChassisPriceCommandHandler implements
                         user
                 )
         ));
-    }
-
-    private int calculateFinalPrice(final int incrementRateOfConvertingToCustomerPrice,
-            final List<Integer> calculatedPriceResultList) {
-
-        int totalPrice = calculatedPriceResultList.stream().mapToInt(Integer::intValue).sum();
-
-        BigDecimal rate = BigDecimal.valueOf(incrementRateOfConvertingToCustomerPrice)
-                .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
-        BigDecimal updatedTotalPrice = BigDecimal.valueOf(totalPrice)
-                .multiply(rate.add(BigDecimal.ONE));
-
-        return updatedTotalPrice.intValue();
     }
 }
