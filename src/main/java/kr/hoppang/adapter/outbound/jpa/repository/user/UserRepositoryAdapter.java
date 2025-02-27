@@ -5,6 +5,7 @@ import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_TOKEN;
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_USER;
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_USER_CONFIGURATION;
 import static kr.hoppang.adapter.common.util.CheckUtil.check;
+import static kr.hoppang.adapter.outbound.jpa.entity.user.QUserDeviceEntity.userDeviceEntity;
 import static kr.hoppang.adapter.outbound.jpa.entity.user.QUserEntity.userEntity;
 import static kr.hoppang.util.common.BoolType.convertBooleanToType;
 import static kr.hoppang.util.converter.user.UserEntityConverter.userLoginHistoryToEntity;
@@ -333,6 +334,26 @@ public class UserRepositoryAdapter implements UserRepository {
                                 userEntity.deletedAt.between(start, end)
                         )
                 ).fetch();
+
+        return userEntityList.stream()
+                .map(UserEntity::toPojo)
+                .toList();
+    }
+
+    @Override
+    public List<User> findAllUsersByDeviceType(final String deviceType) {
+
+        List<UserEntity> userEntityList = queryFactory
+                .selectFrom(userEntity)
+                .innerJoin(userDeviceEntity).on(userEntity.id.eq(userDeviceEntity.id)).fetchJoin()
+                .where(
+                        userDeviceEntity.deviceType.eq(deviceType)
+                )
+                .fetch();
+
+        if (userEntityList.isEmpty()) {
+            return List.of();
+        }
 
         return userEntityList.stream()
                 .map(UserEntity::toPojo)

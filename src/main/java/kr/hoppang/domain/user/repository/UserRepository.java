@@ -54,4 +54,6 @@ public interface UserRepository {
     List<User> findAllRegisteredUsersBetween(final LocalDateTime start, final LocalDateTime end);
 
     List<User> findAllDeletedUsersBetween(final LocalDateTime start, final LocalDateTime end);
+
+    List<User> findAllUsersByDeviceType(final String deviceType);
 }

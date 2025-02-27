@@ -4,12 +4,14 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import jakarta.validation.Valid;
 import kr.hoppang.adapter.inbound.chassis.admin.webdto.GetCountAllUsersWebDtoV1;
+import kr.hoppang.adapter.inbound.user.admin.webdto.GetUserInboundStatistics;
 import kr.hoppang.adapter.inbound.user.admin.webdto.SearchAllAvailableUsersWebDtoV1;
 import kr.hoppang.adapter.inbound.user.admin.webdto.SearchUserStatisticsWebDtoV1;
 import kr.hoppang.application.readmodel.chassis.queries.EmptyQuery;
 import kr.hoppang.application.readmodel.user.handlers.FindAllUsersQueryHandler;
 import kr.hoppang.application.readmodel.user.handlers.FindCountAllUsersQueryHandler;
 import kr.hoppang.application.readmodel.user.handlers.FindStatisticsOfUserQueryHandler;
+import kr.hoppang.application.readmodel.user.handlers.FindUserInboundStatisticsQueryHandler;
 import kr.hoppang.application.readmodel.user.queries.FindAllUsersQuery;
 import kr.hoppang.application.readmodel.user.queries.FindStatisticsOfUserQuery;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,7 @@ public class UserAdminQueryController {
     private final FindAllUsersQueryHandler findAllUsersQueryHandler;
     private final FindCountAllUsersQueryHandler findCountAllUsersQueryHandler;
     private final FindStatisticsOfUserQueryHandler findStatisticsOfUserQueryHandler;
+    private final FindUserInboundStatisticsQueryHandler findUserInboundStatisticsQueryHandler;
 
     @GetMapping(
             value = "",
@@ -54,10 +57,26 @@ public class UserAdminQueryController {
     }
 
     @GetMapping(
+            value = "/all/count"
+    )
+    public ResponseEntity<GetCountAllUsersWebDtoV1.Res> getCountAllUsers() {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(
+                        GetCountAllUsersWebDtoV1.Res.builder()
+                                .count(
+                                        findCountAllUsersQueryHandler.handle(
+                                                EmptyQuery.builder().build()
+                                        )
+                                )
+                                .build());
+    }
+
+    @GetMapping(
             value = "/statistics",
             produces = APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<SearchUserStatisticsWebDtoV1.Response> searchUserStatistics(
+    public ResponseEntity<SearchUserStatisticsWebDtoV1.Response> getUserStatistics(
             @Valid SearchUserStatisticsWebDtoV1.Request request
     ) {
 
@@ -74,18 +93,17 @@ public class UserAdminQueryController {
     }
 
     @GetMapping(
-            value = "/all/count"
+            value = "/statistics/inbounds",
+            produces = APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<GetCountAllUsersWebDtoV1.Res> getCountAllUsers() {
+    public ResponseEntity<GetUserInboundStatistics.Res> getUserInboundStatistics() {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(
-                        GetCountAllUsersWebDtoV1.Res.builder()
-                                .count(
-                                        findCountAllUsersQueryHandler.handle(
-                                                EmptyQuery.builder().build()
-                                        )
-                                )
-                                .build());
+                        GetUserInboundStatistics.Res.of(
+                                findUserInboundStatisticsQueryHandler.handle(
+                                        EmptyQuery.builder().build())
+                        )
+                );
     }
 }
