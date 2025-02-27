@@ -347,7 +347,13 @@ public class UserRepositoryAdapter implements UserRepository {
                 .selectFrom(userEntity)
                 .innerJoin(userDeviceEntity).on(userEntity.id.eq(userDeviceEntity.id)).fetchJoin()
                 .where(
-                        userDeviceEntity.deviceType.eq(deviceType)
+                        allOf(
+                                userEntity.role.eq(UserRole.ROLE_CUSTOMER),
+                                userEntity.tel.notIn(
+                                        "01088257754", "01029143611"
+                                ),
+                                userDeviceEntity.deviceType.eq(deviceType)
+                        )
                 )
                 .fetch();
 
