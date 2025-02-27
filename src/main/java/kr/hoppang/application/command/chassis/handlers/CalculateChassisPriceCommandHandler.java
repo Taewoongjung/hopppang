@@ -108,8 +108,8 @@ public class CalculateChassisPriceCommandHandler implements
             );
 
             int chassisFinalPrice = calculateChassisPriceWithIncrement(
-                    chassisPrice,
-                    additionalChassisPriceCriteria.getPrice()
+                    additionalChassisPriceCriteria.getPrice(),
+                    chassisPrice
             );
 
             calculatedPriceResultList.add(chassisFinalPrice);
@@ -224,7 +224,7 @@ public class CalculateChassisPriceCommandHandler implements
 
     private int calculateChassisPriceWithIncrement(
             final int incrementRateOfConvertingToCustomerPrice,
-            final Integer calculatedPriceResultList
+            final int calculatedPriceResultList
     ) {
 
         BigDecimal rate = BigDecimal.valueOf(incrementRateOfConvertingToCustomerPrice)
