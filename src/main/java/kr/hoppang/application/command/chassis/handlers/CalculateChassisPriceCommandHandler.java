@@ -107,15 +107,20 @@ public class CalculateChassisPriceCommandHandler implements
                     chassis.width(), chassis.height()
             );
 
-            calculatedPriceResultList.add(
-                    calculateChassisPriceWithIncrement(
-                            chassisPrice,
-                            additionalChassisPriceCriteria.getPrice()
-                    )
+            int chassisFinalPrice = calculateChassisPriceWithIncrement(
+                    chassisPrice,
+                    additionalChassisPriceCriteria.getPrice()
             );
 
-            chassisPriceResultList.add(new ChassisPriceResult(
-                    chassis.chassisType().name(), chassis.width(), chassis.height(), chassisPrice)
+            calculatedPriceResultList.add(chassisFinalPrice);
+
+            chassisPriceResultList.add(
+                    new ChassisPriceResult(
+                            chassis.chassisType().name(),
+                            chassis.width(),
+                            chassis.height(),
+                            chassisFinalPrice
+                    )
             );
         });
 
