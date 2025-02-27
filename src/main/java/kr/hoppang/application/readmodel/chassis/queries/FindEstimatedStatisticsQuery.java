@@ -5,6 +5,7 @@ import static kr.hoppang.adapter.common.util.CheckUtil.check;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import kr.hoppang.abstraction.domain.IQuery;
@@ -20,7 +21,7 @@ public record FindEstimatedStatisticsQuery() {
             Integer searchPeriodValue
     ) implements IQuery {
 
-        private static final LocalDateTime now = LocalDateTime.now();
+        private static final LocalDateTime now = LocalDateTime.now((ZoneId.of("Asia/Seoul")));
 
 
         public LocalDateTime getStartTimeForSearch() {
