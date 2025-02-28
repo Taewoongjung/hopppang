@@ -153,12 +153,19 @@ public class ChassisEstimationInfoRepositoryAdapter implements ChassisEstimation
 
     @Override
     @Transactional(readOnly = true)
-    public ChassisEstimationInfo findChassisEstimationInfoById(final long estimationId) {
+    public ChassisEstimationInfo findChassisEstimationInfoById(
+            final long estimationId,
+            final boolean isWithRelations
+    ) {
 
         ChassisEstimationInfoEntity entity = chassisEstimationJpaRepository.findById(estimationId)
                 .orElse(null);
 
         check(entity == null, NOT_EXIST_ESTIMATION);
+
+        if (isWithRelations) {
+            return entity.toPojoWithAllRelations();
+        }
 
         return entity.toPojo();
     }

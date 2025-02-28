@@ -187,4 +187,29 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
                 getLastModified()
         );
     }
+
+    public ChassisEstimationInfo toPojoWithAllRelations() {
+        return ChassisEstimationInfo.of(
+                getId(),
+                getUserId(),
+                getChassisEstimationAddress() != null ?
+                        getChassisEstimationAddress().toPojo() : null,
+                getCompanyType(),
+                getLaborFee(),
+                getLadderCarFee(),
+                getDemolitionFee(),
+                getMaintenanceFee(),
+                getFreightTransportFee(),
+                getDeliveryFee(),
+                getAppliedIncrementRate(),
+                getTotalPrice(),
+                getCustomerLivingFloor(),
+                getChassisEstimationSizeInfoList() != null ?
+                        getChassisEstimationSizeInfoList().stream()
+                                        .map(ChassisEstimationSizeInfoEntity::toPojo)
+                                                .toList() : null,
+                getCreatedAt(),
+                getLastModified()
+        );
+    }
 }

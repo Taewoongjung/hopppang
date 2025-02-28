@@ -34,7 +34,7 @@ public class InquiryChassisEstimationCommandHandler implements
         log.info("executed InquiryChassisEstimationCommand = {}", query);
 
         ChassisEstimationInfo chassisEstimationInfo = chassisEstimationRepository.findChassisEstimationInfoById(
-                query.estimationId());
+                query.estimationId(), false);
 
         chassisEstimationInquiryRepository.create(query.userId(), query.estimationId());
 

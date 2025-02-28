@@ -3,6 +3,7 @@ package kr.hoppang.adapter.inbound.chassis.customer.readmodel;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import kr.hoppang.adapter.inbound.chassis.webdto.GetAllChassisInformationOfSingleUserWebDtoV1;
+import kr.hoppang.adapter.inbound.chassis.webdto.GetEstimatedChassisByIdWebDtoV1;
 import kr.hoppang.adapter.inbound.user.AuthenticationUserId;
 import kr.hoppang.application.readmodel.chassis.handlers.FindAllChassisInformationOfSingleUserQueryHandler;
 import kr.hoppang.application.command.chassis.handlers.InquiryChassisEstimationCommandHandler;
@@ -11,7 +12,6 @@ import kr.hoppang.application.readmodel.chassis.queries.FindAllChassisInformatio
 import kr.hoppang.application.command.chassis.commands.InquiryChassisEstimationCommand;
 import kr.hoppang.application.readmodel.chassis.queries.FindEstimatedChassisByIdQuery;
 import kr.hoppang.application.readmodel.chassis.queryresults.FindAllChassisInformationOfSingleUserQueryResult;
-import kr.hoppang.domain.chassis.estimation.ChassisEstimationInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -70,19 +70,21 @@ public class ChassisCustomerQueryController {
             path = "/{estimationId}",
             produces = APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<ChassisEstimationInfo> getEstimatedChassisById(
+    public ResponseEntity<GetEstimatedChassisByIdWebDtoV1.Res> getEstimatedChassisById(
             @PathVariable(value = "estimationId") final long estimationId,
             @AuthenticationUserId final Long userId
     ) {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(
-                        findEstimatedChassisByIdQueryHandler.handle(
-                                FindEstimatedChassisByIdQuery.Req.builder()
-                                        .estimatedId(estimationId)
-                                        .queriedUserId(userId)
-                                        .build()
-                        ).estimationInfo()
+                        GetEstimatedChassisByIdWebDtoV1.Res.of(
+                                findEstimatedChassisByIdQueryHandler.handle(
+                                        FindEstimatedChassisByIdQuery.Req.builder()
+                                                .estimatedId(estimationId)
+                                                .queriedUserId(userId)
+                                                .build()
+                                ).estimationInfo()
+                        )
                 );
     }
 }

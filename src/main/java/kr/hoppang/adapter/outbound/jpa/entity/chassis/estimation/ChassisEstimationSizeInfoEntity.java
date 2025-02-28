@@ -16,6 +16,7 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import kr.hoppang.adapter.outbound.jpa.entity.BaseEntity;
 import kr.hoppang.domain.chassis.ChassisType;
+import kr.hoppang.domain.chassis.estimation.ChassisEstimationSizeInfo;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -82,5 +83,19 @@ public class ChassisEstimationSizeInfoEntity extends BaseEntity {
 
     public void setChassisEstimationInfo(final ChassisEstimationInfoEntity chassisEstimationInfo) {
         this.chassisEstimationInfo = chassisEstimationInfo;
+    }
+
+    public ChassisEstimationSizeInfo toPojo() {
+
+        return ChassisEstimationSizeInfo.of(
+                this.id,
+                this.chassisEstimationInfoId,
+                this.chassisType,
+                this.width,
+                this.height,
+                this.price,
+                this.getCreatedAt(),
+                this.getLastModified()
+        );
     }
 }

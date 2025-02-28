@@ -24,7 +24,7 @@ public interface ChassisEstimationRepository {
     long registerChassisEstimation(final ChassisEstimationInfo ChassisEstimationInfo,
             final List<ChassisEstimationSizeInfo> chassisEstimationSizeInfoList);
 
-    ChassisEstimationInfo findChassisEstimationInfoById(final long estimationId);
+    ChassisEstimationInfo findChassisEstimationInfoById(final long estimationId, final boolean isWithRelations);
 
     FindChassisEstimationInfoByUserIdRepositoryDto.Response findChassisEstimationInfoByUserId(
             final long userId,

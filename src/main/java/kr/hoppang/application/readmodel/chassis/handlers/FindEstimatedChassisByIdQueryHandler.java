@@ -31,7 +31,7 @@ public class FindEstimatedChassisByIdQueryHandler implements IQueryHandler<
     public Res handle(final Req query) {
 
         ChassisEstimationInfo chassisEstimationInfo = chassisEstimationRepository.findChassisEstimationInfoById(
-                query.estimatedId());
+                query.estimatedId(), true);
 
         check(!chassisEstimationInfo.getUserId().equals(query.queriedUserId()),
                 INVALID_REQUEST);
