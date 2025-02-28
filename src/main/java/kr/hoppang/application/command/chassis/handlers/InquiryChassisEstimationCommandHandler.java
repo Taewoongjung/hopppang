@@ -1,9 +1,10 @@
-package kr.hoppang.application.readmodel.chassis.handlers;
+package kr.hoppang.application.command.chassis.handlers;
 
-import kr.hoppang.abstraction.domain.IQueryHandler;
+import kr.hoppang.abstraction.domain.ICommandHandler;
 import kr.hoppang.adapter.outbound.alarm.dto.RequestEstimationInquiry;
-import kr.hoppang.application.readmodel.chassis.queries.InquiryChassisEstimationCommand;
+import kr.hoppang.application.command.chassis.commands.InquiryChassisEstimationCommand;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationInfo;
+import kr.hoppang.domain.chassis.estimation.repository.ChassisEstimationInquiryRepository;
 import kr.hoppang.domain.chassis.estimation.repository.ChassisEstimationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,26 +15,32 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class InquiryChassisEstimation implements IQueryHandler<InquiryChassisEstimationCommand, Boolean> {
+public class InquiryChassisEstimationCommandHandler implements
+        ICommandHandler<InquiryChassisEstimationCommand, Boolean> {
 
     private final ApplicationEventPublisher eventPublisher;
     private final ChassisEstimationRepository chassisEstimationRepository;
+    private final ChassisEstimationInquiryRepository chassisEstimationInquiryRepository;
+
 
     @Override
-    public boolean isQueryHandler() {
+    public boolean isCommandHandler() {
         return true;
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class, readOnly = true)
+    @Transactional(rollbackFor = Exception.class)
     public Boolean handle(final InquiryChassisEstimationCommand query) {
         log.info("executed InquiryChassisEstimationCommand = {}", query);
 
         ChassisEstimationInfo chassisEstimationInfo = chassisEstimationRepository.findChassisEstimationInfoById(
                 query.estimationId());
 
+        chassisEstimationInquiryRepository.create(query.userId(), query.estimationId());
+
         eventPublisher.publishEvent(new RequestEstimationInquiry(chassisEstimationInfo));
 
+        log.info("executed InquiryChassisEstimationCommand successfully");
         return true;
     }
 }

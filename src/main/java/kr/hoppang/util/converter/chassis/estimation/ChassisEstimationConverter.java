@@ -7,6 +7,7 @@ import kr.hoppang.adapter.outbound.jpa.entity.chassis.estimation.ChassisEstimati
 import kr.hoppang.adapter.outbound.jpa.entity.chassis.estimation.ChassisEstimationSizeInfoEntity;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationAddress;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationInfo;
+import kr.hoppang.domain.chassis.estimation.ChassisEstimationInquiry;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationSizeInfo;
 
 public class ChassisEstimationConverter {
@@ -58,6 +59,18 @@ public class ChassisEstimationConverter {
                 pojo.getBuildingNumber(),
                 pojo.getIsApartment(),
                 pojo.getIsExpanded()
+        );
+    }
+
+    public static ChassisEstimationInquiry chassisEstimationInquiryToEntity(
+            final ChassisEstimationInquiry pojo
+    ) {
+
+        return ChassisEstimationInquiry.of(
+                pojo.getId(),
+                pojo.getUserId(),
+                pojo.getChassisEstimationInfoId(),
+                pojo.getCreatedAt()
         );
     }
 }

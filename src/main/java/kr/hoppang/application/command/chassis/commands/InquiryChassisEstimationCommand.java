@@ -1,0 +1,7 @@
+package kr.hoppang.application.command.chassis.commands;
+
+import kr.hoppang.abstraction.domain.ICommand;
+
+public record InquiryChassisEstimationCommand(long estimationId, long userId) implements ICommand {
+
+}
