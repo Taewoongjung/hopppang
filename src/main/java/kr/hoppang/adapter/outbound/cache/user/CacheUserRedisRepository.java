@@ -58,6 +58,11 @@ public class CacheUserRedisRepository {
         return null;
     }
 
+    public void deleteBucketByKey(final String email) {
+        String key = "users::" + email;
+        redisTemplate.delete(key);
+    }
+
     public <T> boolean saveData(String key, T data) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();

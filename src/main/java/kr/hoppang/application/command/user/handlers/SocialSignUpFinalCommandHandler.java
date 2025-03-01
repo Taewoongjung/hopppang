@@ -8,6 +8,7 @@ import kr.hoppang.abstraction.domain.ICommandHandler;
 import kr.hoppang.adapter.common.exception.custom.HoppangLoginException;
 import kr.hoppang.adapter.outbound.cache.dto.TearDownBucketByKey;
 import kr.hoppang.adapter.outbound.cache.sms.CacheSmsValidationRedisRepository;
+import kr.hoppang.adapter.outbound.cache.user.CacheUserRedisRepository;
 import kr.hoppang.application.command.user.commands.SocialSignUpFinalCommand;
 import kr.hoppang.domain.user.User;
 import kr.hoppang.domain.user.UserAddress;
@@ -25,6 +26,7 @@ public class SocialSignUpFinalCommandHandler implements ICommandHandler<SocialSi
 
     private final UserRepository userRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final CacheUserRedisRepository cacheUserRedisRepository; // @TODO 해당 핸들러가 성공 하기 전에 리프레시 명목으로 해당 email 유저의 캐시를 제거한다.
     private final CacheSmsValidationRedisRepository cacheSmsValidationRedisRepository;
 
 
@@ -50,6 +52,9 @@ public class SocialSignUpFinalCommandHandler implements ICommandHandler<SocialSi
 
             // 검증 후 해당 버킷 삭제
             eventPublisher.publishEvent(new TearDownBucketByKey(updatedUser.getTel()));
+
+            // 마지막 회원가입 프로세스 완료 후 새로고침 하기 위한 기존 버킷 삭제
+            cacheUserRedisRepository.deleteBucketByKey(updatedUser.getEmail());
 
             return updatedUser.getName();
         }
