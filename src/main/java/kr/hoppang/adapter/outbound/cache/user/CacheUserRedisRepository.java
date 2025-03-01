@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.time.Duration;
 import java.util.Optional;
 import kr.hoppang.domain.user.User;
 import lombok.RequiredArgsConstructor;
@@ -26,12 +27,16 @@ public class CacheUserRedisRepository {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());
             objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
             String key = "users::" + user.getEmail();
             String userJson = objectMapper.writeValueAsString(user);
-            redisTemplate.opsForValue().set(key, userJson);
+
+            redisTemplate.opsForValue().set(key, userJson, Duration.ofHours(1));
+
         } catch (JsonProcessingException e) {
             // 예외 처리
-            e.printStackTrace();
+            log.error("Exception [Err_location] : {}", e.getStackTrace()[0]);
+            log.error("Exception [Err_msg] : {}", e.toString());
         }
     }
 
@@ -46,7 +51,8 @@ public class CacheUserRedisRepository {
                 return objectMapper.readValue(userJson, User.class);
             } catch (JsonProcessingException e) {
                 // 예외 처리
-                e.printStackTrace();
+                log.error("Exception [Err_location] : {}", e.getStackTrace()[0]);
+                log.error("Exception [Err_msg] : {}", e.toString());
             }
         }
         return null;
