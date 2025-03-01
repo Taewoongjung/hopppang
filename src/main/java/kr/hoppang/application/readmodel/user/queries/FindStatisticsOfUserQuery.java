@@ -28,6 +28,7 @@ public record FindStatisticsOfUserQuery() {
 
         // 실제 그래프의 x축 라벨링을 위함
         public LocalDateTime getStartTimeForSearch() {
+            System.out.println("?@@@ = " + now);
             check((searchPeriodValue == null || searchPeriodValue <= 0), INVALID_REQUEST);
 
             if (searchPeriodType.equals(SearchPeriodType.DAILY)) {
