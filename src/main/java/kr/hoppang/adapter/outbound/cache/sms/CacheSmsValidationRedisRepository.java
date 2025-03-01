@@ -1,5 +1,6 @@
 package kr.hoppang.adapter.outbound.cache.sms;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +32,9 @@ public class CacheSmsValidationRedisRepository {
         map.put("isVerified", "false");
 
         stringStringValueOperations.set(key, map);
+
+        // 해당 버킷 ttl 을 3분 20초로 설정
+        redisTemplate.expire(key, Duration.ofSeconds(200));
     }
 
     public Map<String, String> getBucketByKey(final String key) {
