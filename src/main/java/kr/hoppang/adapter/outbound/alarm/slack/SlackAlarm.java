@@ -136,11 +136,6 @@ public class SlackAlarm implements AlarmService {
                 blocks.add(section(section -> section.text(markdownText(
                         "*:bust_in_silhouette: 고객명:* " + newEstimationEvent.userName()))));
 
-                if (newEstimationEvent.userAddress() != null) {
-                    blocks.add(section(section -> section.text(markdownText(
-                            "*:house_with_garden: 고객 주소:* " + newEstimationEvent.userAddress()))));
-                }
-
                 blocks.add(divider()); // Add a divider after 유저 section
             } else {
                 blocks.add(section(section -> section.text(markdownText(
@@ -148,7 +143,9 @@ public class SlackAlarm implements AlarmService {
                 blocks.add(divider()); // Add a divider after 비로그인 유저 section
             }
 
-            // Estimation details
+            blocks.add(section(section -> section.text(markdownText(
+                    "*:house_with_garden: 샷시 시공 주소:* "
+                            + newEstimationEvent.chassisInstallationAddress()))));
             blocks.add(section(section -> section.text(markdownText("*:office: 회사:* " + newEstimationEvent.company().getCompanyName()))));
             blocks.add(section(section -> section.text(markdownText("*:package: 견적 리스트:*"))));
             newEstimationEvent.estimationList().forEach(e -> {

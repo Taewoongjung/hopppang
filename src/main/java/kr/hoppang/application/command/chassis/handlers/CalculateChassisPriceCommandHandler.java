@@ -158,12 +158,17 @@ public class CalculateChassisPriceCommandHandler implements
         User user = userRepository.findById(event.userId());
 
         // 슬랙 알림 발송
-        eventPublisher.publishEvent(NewEstimation.of(
-                user.getName(),
-                user.getUserAddress(),
-                chassisReqList.get(0).companyType(),
-                event.calculateChassisPriceList()
-        ));
+        eventPublisher.publishEvent(
+                NewEstimation.of(
+                        user.getName(),
+                        event.zipCode(),
+                        event.state(),
+                        event.city(),
+                        event.town(),
+                        event.remainAddress(),
+                        chassisReqList.get(0).companyType(),
+                        event.calculateChassisPriceList()
+                ));
 
         // 인건비를 견적 받은 샤시의 개수만큼 나눠서 각각 금액에 더한다.
         if (laborFee != 0) {

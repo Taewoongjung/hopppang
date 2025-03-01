@@ -8,13 +8,17 @@ import kr.hoppang.domain.chassis.CompanyType;
 import kr.hoppang.domain.user.UserAddress;
 
 public record NewEstimation(String userName,
-                            String userAddress,
+                            String chassisInstallationAddress,
                             CompanyType company,
                             List<Estimation> estimationList) {
 
     public static NewEstimation of(
             final String userName,
-            final UserAddress userAddress,
+            final String zipCode,
+            final String state,
+            final String city,
+            final String town,
+            final String remainAddress,
             final CompanyType company,
             final List<CalculateChassisPrice> calculateChassisList) {
 
@@ -26,12 +30,10 @@ public record NewEstimation(String userName,
                         e.width(), e.height()
                 )));
 
-        String userAddressStr = "미기입";
-        if (userAddress != null) {
-            userAddressStr = userAddress.getAddress() + " " + userAddress.getSubAddress();
-        }
+        String chassisInstallationAddress =
+                "[" + zipCode + "] " + state + " " + city + " " + town + " " + remainAddress;
 
-        return new NewEstimation(userName, userAddressStr, company, estimationList);
+        return new NewEstimation(userName, chassisInstallationAddress, company, estimationList);
     }
 
     public record Estimation(ChassisType chassisType,

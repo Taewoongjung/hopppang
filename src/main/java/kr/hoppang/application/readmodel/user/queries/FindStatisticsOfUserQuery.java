@@ -14,9 +14,7 @@ import kr.hoppang.abstraction.domain.IQuery;
 import kr.hoppang.domain.statistics.SearchPeriodType;
 import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public record FindStatisticsOfUserQuery() {
 
     @Builder
@@ -30,7 +28,7 @@ public record FindStatisticsOfUserQuery() {
 
         // 실제 그래프의 x축 라벨링을 위함
         public LocalDateTime getStartTimeForSearch() {
-            log.info("?@@@ = {}", now);
+
             check((searchPeriodValue == null || searchPeriodValue <= 0), INVALID_REQUEST);
 
             if (searchPeriodType.equals(SearchPeriodType.DAILY)) {
