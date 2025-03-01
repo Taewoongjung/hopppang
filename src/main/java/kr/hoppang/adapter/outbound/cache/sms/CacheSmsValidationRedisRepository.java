@@ -70,6 +70,12 @@ public class CacheSmsValidationRedisRepository {
         if (valueMap != null) {
             valueMap.put("isVerified", "true");
             valueOps.set(key, valueMap);
+
+            // 기존 TTL 유지 (현재 TTL을 가져와서 다시 설정)
+            Long currentTtl = redisTemplate.getExpire(key);
+            if (currentTtl != null && currentTtl > 0) {
+                redisTemplate.expire(key, Duration.ofSeconds(currentTtl));
+            }
         } else {
             log.error("[Redis] No value found for key: " + key);
         }
