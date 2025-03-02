@@ -70,6 +70,7 @@ public class ChassisEstimationConverter {
                 pojo.getId(),
                 pojo.getUserId(),
                 pojo.getChassisEstimationInfoId(),
+                pojo.getStrategy(),
                 pojo.getCreatedAt()
         );
     }

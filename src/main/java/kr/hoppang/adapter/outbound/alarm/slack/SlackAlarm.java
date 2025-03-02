@@ -222,6 +222,20 @@ public class SlackAlarm implements AlarmService {
 
             // Header block for title
             blocks.add(header(header -> header.text(plainText("📋 견적 문의"))));
+
+            String inquiryStrategy;
+            if ("TEL".equals(requestEstimationInquiry.strategy())) {
+                inquiryStrategy = "*문의 방법:* 전화";
+            } else if ("KAKAO".equals(requestEstimationInquiry.strategy())) {
+                inquiryStrategy = "*문의 방법:* 카카오톡";
+            } else {
+                inquiryStrategy = null;
+            }
+
+            if (inquiryStrategy != null) {
+                blocks.add(section(section -> section.text(markdownText(
+                        inquiryStrategy))));
+            }
             blocks.add(divider());
 
             // User details

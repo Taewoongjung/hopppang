@@ -58,12 +58,13 @@ public class ChassisCustomerQueryController {
     @GetMapping(path = "/estimations/{estimationId}/inquiries")
     public ResponseEntity<Boolean> inquiryChassisEstimation(
             @PathVariable(value = "estimationId") final long estimationId,
+            @RequestParam(value = "strategy") final String strategy,
             @AuthenticationUserId final Long userId
     ) {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(inquiryChassisEstimation.handle(
-                        new InquiryChassisEstimationCommand(estimationId, userId)));
+                        new InquiryChassisEstimationCommand(estimationId, userId, strategy)));
     }
 
     @GetMapping(

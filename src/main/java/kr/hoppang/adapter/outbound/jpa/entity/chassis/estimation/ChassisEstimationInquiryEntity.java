@@ -30,6 +30,8 @@ public class ChassisEstimationInquiryEntity {
     @Column(name = "chassis_estimation_info_id", nullable = false, columnDefinition = "bigint")
     private Long chassisEstimationInfoId;
 
+    private String strategy;
+
     @CreatedDate
     @Column(nullable = false, updatable = false, name = "created_at")
     private LocalDateTime createdAt;
@@ -38,22 +40,26 @@ public class ChassisEstimationInquiryEntity {
             final Long id,
             final Long userId,
             final Long chassisEstimationInfoId,
+            final String strategy,
             final LocalDateTime createdAt
     ) {
         this.id = id;
         this.userId = userId;
         this.chassisEstimationInfoId = chassisEstimationInfoId;
+        this.strategy = strategy;
         this.createdAt = createdAt;
     }
 
     public static ChassisEstimationInquiryEntity of(
             final Long userId,
-            final Long chassisEstimationInfoId
+            final Long chassisEstimationInfoId,
+            final String strategy
     ) {
         return new ChassisEstimationInquiryEntity(
                 null,
                 userId,
                 chassisEstimationInfoId,
+                strategy,
                 LocalDateTime.now()
         );
     }
@@ -63,6 +69,7 @@ public class ChassisEstimationInquiryEntity {
                 getId(),
                 getUserId(),
                 getChassisEstimationInfoId(),
+                getStrategy(),
                 getCreatedAt()
         );
     }

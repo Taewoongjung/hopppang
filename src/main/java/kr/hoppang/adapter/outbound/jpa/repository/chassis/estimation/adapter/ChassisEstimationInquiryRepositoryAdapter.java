@@ -16,12 +16,13 @@ public class ChassisEstimationInquiryRepositoryAdapter implements
 
 
     @Override
-    public void create(final long userId, final long estimationId) {
+    public void create(final long userId, final long estimationId, final String strategy) {
 
         chassisEstimationInquiryJpaRepository.save(
                 ChassisEstimationInquiryEntity.of(
                         userId,
-                        estimationId
+                        estimationId,
+                        strategy
                 )
         );
     }
