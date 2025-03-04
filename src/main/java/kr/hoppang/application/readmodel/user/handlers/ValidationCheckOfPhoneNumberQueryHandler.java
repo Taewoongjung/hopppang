@@ -46,7 +46,7 @@ public class ValidationCheckOfPhoneNumberQueryHandler implements
 
         String dataCompNumber = data.get("number").trim();
 
-        check("".equals(dataCompNumber), EMPTY_VERIFY_NUMBER); // 빈 값이면 에러
+        check(dataCompNumber.isEmpty(), EMPTY_VERIFY_NUMBER); // 빈 값이면 에러
         check(!dataCompNumber.matches("\\d{6}"), NOT_6DIGIT_VERIFY_NUMBER); // 여섯자리 숫자가 아니면 에러
 
         if (data.get("number").equals(query.compTargetNumber())) {

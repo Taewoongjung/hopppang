@@ -80,7 +80,7 @@ public class FindEstimatedByStateStatisticsQueryHandler implements IQueryHandler
         countOfEstimatedByState.put("전남", 0);
         countOfEstimatedByState.put("경북", 0);
         countOfEstimatedByState.put("경남", 0);
-        countOfEstimatedByState.put("강원특별자치시", 0);
+        countOfEstimatedByState.put("강원특별자치도", 0);
         countOfEstimatedByState.put("전북특별자치도", 0);
         countOfEstimatedByState.put("제주특별자치도", 0);
 
