@@ -5,6 +5,7 @@ import static kr.hoppang.util.common.DayUtil.getKorMonth;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,13 +60,13 @@ public class FindStatisticsOfUserQueryHandler implements IQueryHandler<FindStati
                 getStatisticsList(
                         query.searchPeriodType(),
                         query.searchPeriodValue(),
-                        LocalDateTime.now(),
+                        LocalDateTime.now(ZoneId.of("Asia/Seoul")),
                         registeredUsersByDate
                 ),
                 getStatisticsList(
                         query.searchPeriodType(),
                         query.searchPeriodValue(),
-                        LocalDateTime.now(),
+                        LocalDateTime.now(ZoneId.of("Asia/Seoul")),
                         deletedUsersByDate
                 )
         );
