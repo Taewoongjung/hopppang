@@ -5,6 +5,8 @@ import static kr.hoppang.application.readmodel.chassis.queryresults.FindChassisE
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import jakarta.validation.Valid;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 import kr.hoppang.adapter.inbound.chassis.admin.webdto.GetAllEstimationsProvidedToCustomersWebDtoV1;
@@ -175,6 +177,7 @@ public class ChassisAdminQueryController {
                                         FindEstimatedStatisticsQuery.Req.builder()
                                                 .searchPeriodType(req.searchPeriodType())
                                                 .searchPeriodValue(req.searchPeriodValue())
+                                                .now(LocalDateTime.now((ZoneId.of("Asia/Seoul"))))
                                                 .build()
                                 )
                         )

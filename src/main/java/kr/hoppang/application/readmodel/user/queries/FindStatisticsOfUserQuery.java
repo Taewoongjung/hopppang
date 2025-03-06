@@ -7,7 +7,6 @@ import static kr.hoppang.util.common.DayUtil.getKorMonth;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import kr.hoppang.abstraction.domain.IQuery;
@@ -20,11 +19,9 @@ public record FindStatisticsOfUserQuery() {
     @Builder
     public record Request(
             SearchPeriodType searchPeriodType,
-            Integer searchPeriodValue
+            Integer searchPeriodValue,
+            LocalDateTime now
     ) implements IQuery {
-
-        private static final LocalDateTime now = LocalDateTime.now((ZoneId.of("Asia/Seoul")));
-
 
         // 실제 그래프의 x축 라벨링을 위함
         public LocalDateTime getStartTimeForSearch() {
