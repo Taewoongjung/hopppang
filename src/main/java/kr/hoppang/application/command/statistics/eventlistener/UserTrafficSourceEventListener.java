@@ -26,8 +26,17 @@ public class UserTrafficSourceEventListener {
     @EventListener
     public void createUserTrafficSourceInfo(final UserTrafficSourceEvent event) {
 
-        AdvertisementContent advertisementContent = advertisementContentRepository.getAdvertisementContent(
-                event.advId());
+        AdvertisementContent advertisementContent = null;
+        try {
+            advertisementContent = advertisementContentRepository.getAdvertisementContent(
+                    event.advId());
+
+        } catch (Exception err) {
+            log.error("광고 문구를 찾기 못함 = {}", event.advId(), err);
+
+            advertisementContent = advertisementContentRepository.getAdvertisementContent(
+                    "contaminatedAdvId");
+        }
 
         trafficSourceRepository.createUserTrafficSourceInfo(
                 CreateUserTrafficSourceInfoRepositoryDto.builder()
