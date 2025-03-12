@@ -17,7 +17,7 @@ public class SmsRepositoryAdapter implements SmsRepository {
 
     @Override
     @Transactional
-    public void save(final SmsSendResult smsSendResult) {
+    public void createSmsResult(final SmsSendResult smsSendResult) {
         SmsSendResultEntity entity = smsSendResultToEntity(smsSendResult);
         smsJpaRepository.save(entity);
     }

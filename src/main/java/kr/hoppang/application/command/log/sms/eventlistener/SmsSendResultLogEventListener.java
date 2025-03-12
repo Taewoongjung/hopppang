@@ -1,4 +1,4 @@
-package kr.hoppang.application.command.log.sms;
+package kr.hoppang.application.command.log.sms.eventlistener;
 
 import kr.hoppang.application.command.log.sms.event.SmsSendResultLogEvent;
 import kr.hoppang.domain.sms.SmsSendResult;
@@ -17,11 +17,12 @@ public class SmsSendResultLogEventListener {
 
     private final SmsRepository smsRepository;
 
+
     @Async
     @Transactional
     @EventListener
     public void createSmsSendResultLog(final SmsSendResultLogEvent event) {
-        smsRepository.save(
+        smsRepository.createSmsResult(
                 SmsSendResult.of(
                         event.senderPhoneNumber(),
                         event.to(),
