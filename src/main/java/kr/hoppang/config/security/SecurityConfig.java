@@ -86,6 +86,7 @@ public class SecurityConfig {
                                 , "/api/kakao/signup"
                                 , "/api/apple/signup/{code}"
                                 , "/api/google/signup"
+                                , "/api/statistics/pages/landing/user-inbound"
                         ).permitAll()
                         .requestMatchers(HttpMethod.PUT,
                                 "/api/kakao/refresh"
