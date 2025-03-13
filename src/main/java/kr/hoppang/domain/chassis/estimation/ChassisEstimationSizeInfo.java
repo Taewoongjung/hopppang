@@ -17,6 +17,8 @@ public class ChassisEstimationSizeInfo {
     private final int width;
     private final int height;
     private final int price;
+    private final Long chassisDiscountEventId;
+    private final Integer discountedPrice;
     private final LocalDateTime createdAt;
     private final LocalDateTime lastModified;
 
@@ -27,6 +29,8 @@ public class ChassisEstimationSizeInfo {
             final int width,
             final int height,
             final int price,
+            final Long chassisDiscountEventId,
+            final Integer discountedPrice,
             final LocalDateTime createdAt,
             final LocalDateTime lastModified
     ) {
@@ -36,6 +40,8 @@ public class ChassisEstimationSizeInfo {
         this.width = width;
         this.height = height;
         this.price = price;
+        this.chassisDiscountEventId = chassisDiscountEventId;
+        this.discountedPrice = discountedPrice;
         this.createdAt = createdAt;
         this.lastModified = lastModified;
     }
@@ -45,7 +51,9 @@ public class ChassisEstimationSizeInfo {
             final ChassisType chassisType,
             final int width,
             final int height,
-            final int price
+            final int price,
+            final Long chassisDiscountEventId,
+            final Integer discountedPrice
     ) {
         return new ChassisEstimationSizeInfo(
                 null,
@@ -54,6 +62,8 @@ public class ChassisEstimationSizeInfo {
                 width,
                 height,
                 price,
+                chassisDiscountEventId,
+                discountedPrice,
                 null, null
         );
     }
@@ -66,6 +76,8 @@ public class ChassisEstimationSizeInfo {
             final int width,
             final int height,
             final int price,
+            final Long chassisDiscountEventId,
+            final int discountedPrice,
             final LocalDateTime createdAt,
             final LocalDateTime lastModified
     ) {
@@ -76,7 +88,26 @@ public class ChassisEstimationSizeInfo {
                 width,
                 height,
                 price,
+                chassisDiscountEventId,
+                discountedPrice,
                 createdAt, lastModified
+        );
+    }
+
+    public ChassisEstimationSizeInfo setDiscountInfo(
+            final ChassisEstimationSizeInfo chassisEstimationSizeInfo,
+            final Long chassisDiscountEventId
+    ) {
+        return new ChassisEstimationSizeInfo(
+                null,
+                null,
+                chassisEstimationSizeInfo.chassisType,
+                chassisEstimationSizeInfo.width,
+                chassisEstimationSizeInfo.height,
+                chassisEstimationSizeInfo.price,
+                chassisDiscountEventId,
+                chassisEstimationSizeInfo.discountedPrice,
+                null, null
         );
     }
 }

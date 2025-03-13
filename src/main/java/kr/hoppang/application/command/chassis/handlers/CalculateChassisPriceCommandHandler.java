@@ -19,6 +19,10 @@ import kr.hoppang.application.command.chassis.commands.AddChassisEstimationInfoC
 import kr.hoppang.application.command.chassis.commands.AddChassisEstimationInfoCommand.ChassisEstimationCommand.ChassisSize;
 import kr.hoppang.application.command.chassis.commands.CalculateChassisPriceCommand;
 import kr.hoppang.application.command.chassis.commands.CalculateChassisPriceCommand.CalculateChassisPrice;
+import kr.hoppang.domain.chassis.ChassisType;
+import kr.hoppang.domain.chassis.CompanyType;
+import kr.hoppang.domain.chassis.event.ChassisDiscountEvent;
+import kr.hoppang.domain.chassis.event.repository.ChassisDiscountEventRepository;
 import kr.hoppang.domain.chassis.price.ChassisPriceInfo;
 import kr.hoppang.domain.chassis.price.pricecriteria.AdditionalChassisPriceCriteria;
 import kr.hoppang.domain.chassis.price.repository.ChassisPriceInfoRepository;
@@ -43,8 +47,10 @@ public class CalculateChassisPriceCommandHandler implements
     private final ApplicationEventPublisher eventPublisher;
     private final ChassisPriceCalculator chassisPriceCalculator;
     private final ChassisPriceInfoRepository chassisPriceInfoRepository;
+    private final ChassisDiscountEventRepository chassisDiscountEventRepository;
     private final AddChassisEstimationInfoCommandHandler addChassisEstimationInfoCommandHandler;
     private final AdditionalChassisPriceCriteriaRepository additionalChassisPriceCriteriaRepository;
+
 
     @Override
     public boolean isCommandHandler() {
@@ -78,7 +84,7 @@ public class CalculateChassisPriceCommandHandler implements
         AtomicInteger widthForDoubleWindow = new AtomicInteger(0);
         AtomicInteger heightForDoubleWindow = new AtomicInteger(0);
 
-        // 자재비를 계산한다.
+        // 창호 자재비를 계산한다.
         chassisReqList.forEach(chassis -> {
             check(chassis.width() > 5000 || chassis.width() < 300, NOT_AVAILABLE_MANUFACTURE);
             check(chassis.height() > 2600 || chassis.height() < 300, NOT_AVAILABLE_MANUFACTURE);
@@ -107,7 +113,7 @@ public class CalculateChassisPriceCommandHandler implements
                     chassis.width(), chassis.height()
             );
 
-            int chassisFinalPrice = calculateChassisPriceWithIncrement(
+            int chassisFinalPrice = calculateChassisPriceWithIncrementRate(
                     additionalChassisPriceCriteria.getPrice(),
                     chassisPrice
             );
@@ -166,7 +172,7 @@ public class CalculateChassisPriceCommandHandler implements
                         event.city(),
                         event.town(),
                         event.remainAddress(),
-                        chassisReqList.get(0).companyType(),
+                        chassisReqList.getFirst().companyType(),
                         event.calculateChassisPriceList()
                 ));
 
@@ -176,6 +182,35 @@ public class CalculateChassisPriceCommandHandler implements
 
             chassisPriceResultList.forEach(
                     e -> e.addLaborFeeToChassisPrice(dividedLaborFeeByCountOfChassis));
+        }
+
+        // 할인 이벤트 적용
+        List<ChassisDiscountEvent> chassisDiscountEventInfo = getChassisDiscountEventInformation(
+                chassisReqList);
+
+        if (chassisDiscountEventInfo != null && !chassisDiscountEventInfo.isEmpty()) {
+
+            chassisPriceResultList.forEach(
+                    chassis -> {
+                        ChassisDiscountEvent chassisDiscountEvent = getDiscountEventByChassisType(
+                                chassisDiscountEventInfo,
+                                ChassisType.from(chassis.getChassisType())
+                        );
+
+                        Integer discountedPrice = null;
+                        if (chassisDiscountEvent != null) {
+                            discountedPrice = calculateChassisPriceWithDiscountRate(
+                                    chassisDiscountEvent.getDiscountRate(), chassis.getPrice()
+                            );
+                        }
+
+                        chassis.setDiscount(
+                                chassisDiscountEvent != null ? chassisDiscountEvent.getId() : null,
+                                discountedPrice
+                        );
+                    }
+            );
+
         }
 
         // 각 비용 최종 가격
@@ -197,7 +232,7 @@ public class CalculateChassisPriceCommandHandler implements
                 event.buildingNumber(),
                 event.isApartment(),
                 event.isExpanded(),
-                chassisReqList.get(0).companyType().name(),
+                chassisReqList.getFirst().companyType().name(),
                 deliveryFee,
                 demolitionFee,
                 maintenanceFee,
@@ -215,7 +250,7 @@ public class CalculateChassisPriceCommandHandler implements
 
         return new CalculateChassisPriceCommandHandlerCommandResult(
                 registeredEstimationId,
-                chassisReqList.get(0).companyType().name(),
+                chassisReqList.getFirst().companyType().name(),
                 chassisPriceResultList,
                 deliveryFee,
                 demolitionFee,
@@ -227,19 +262,56 @@ public class CalculateChassisPriceCommandHandler implements
         );
     }
 
-    private int calculateChassisPriceWithIncrement(
-            final int incrementRateOfConvertingToCustomerPrice,
-            final int calculatedPriceResultList
-    ) {
+    private List<ChassisDiscountEvent> getChassisDiscountEventInformation(final List<CalculateChassisPrice> chassisReqList) {
 
-        BigDecimal rate = BigDecimal.valueOf(incrementRateOfConvertingToCustomerPrice)
-                .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
-        BigDecimal updatedTotalPrice = BigDecimal.valueOf(calculatedPriceResultList)
-                .multiply(rate.add(BigDecimal.ONE));
+        CompanyType companyType = chassisReqList.getFirst().companyType();
 
-        return updatedTotalPrice.intValue();
+        List<ChassisType> chassisTypes = chassisReqList.stream()
+                .map(CalculateChassisPrice::chassisType)
+                .toList();
+
+        return chassisDiscountEventRepository.findAllChassisDiscountEventByCompanyAndChassisType(
+                companyType, chassisTypes
+        );
     }
 
+    private int calculateChassisPriceWithIncrementRate(
+            final int incrementRateForConvertingToCustomerPrice,
+            final int calculatedPriceResult
+    ) {
+
+        BigDecimal rate = BigDecimal.valueOf(incrementRateForConvertingToCustomerPrice)
+                .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+        BigDecimal convertedTotalPrice = BigDecimal.valueOf(calculatedPriceResult)
+                .multiply(rate.add(BigDecimal.ONE));
+
+        return convertedTotalPrice.intValue();
+    }
+
+    private ChassisDiscountEvent getDiscountEventByChassisType(
+            List<ChassisDiscountEvent> discountEventList,
+            final ChassisType chassisType
+    ) {
+        return discountEventList.stream()
+                .filter(f -> chassisType.equals(f.getChassisType()))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private int calculateChassisPriceWithDiscountRate(
+            final int discountRate,
+            final int calculatedPriceResult
+    ) {
+
+        BigDecimal dcRate = BigDecimal.valueOf(discountRate)
+                .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+
+        BigDecimal totalPrice = BigDecimal.valueOf(calculatedPriceResult);
+
+        BigDecimal discountedPrice = totalPrice.multiply(dcRate);
+
+        return totalPrice.subtract(discountedPrice).intValue();
+    }
 
     private long registerChassisEstimation(
             final List<ChassisPriceResult> chassisPriceResultList,
@@ -268,38 +340,45 @@ public class CalculateChassisPriceCommandHandler implements
         List<ChassisSize> chassisSizeList = new ArrayList<>();
 
         for (ChassisPriceResult chassisPriceResult : chassisPriceResultList) {
-            chassisSizeList.add(new ChassisSize(
-                    chassisPriceResult.getChassisType(),
-                    chassisPriceResult.getWidth(),
-                    chassisPriceResult.getHeight(),
-                    chassisPriceResult.getPrice()));
+            chassisSizeList.add(
+                    new ChassisSize(
+                            chassisPriceResult.getChassisType(),
+                            chassisPriceResult.getWidth(),
+                            chassisPriceResult.getHeight(),
+                            chassisPriceResult.getPrice(),
+                            chassisPriceResult.getChassisDiscountEventId(),
+                            chassisPriceResult.getDiscountedPrice()
+                    )
+            );
         }
 
-        return addChassisEstimationInfoCommandHandler.handle(new AddChassisEstimationInfoCommand(
-                new ChassisEstimationCommand(
-                        zipCode,
-                        state,
-                        city,
-                        town,
-                        bCode,
-                        remainAddress,
-                        buildingNumber,
-                        convertBooleanToType(isApartment),
-                        convertBooleanToType(isExpanded),
-                        companyName,
-                        deliveryFee,
-                        demolitionFee,
-                        maintenanceFee,
-                        laborFee,
-                        ladderFee,
-                        freightTransportFee,
-                        floor,
-                        appliedIncrementRate,
-                        totalPrice,
-                        floorCustomerLiving,
-                        chassisSizeList,
-                        user
+        return addChassisEstimationInfoCommandHandler.handle(
+                new AddChassisEstimationInfoCommand(
+                        new ChassisEstimationCommand(
+                                zipCode,
+                                state,
+                                city,
+                                town,
+                                bCode,
+                                remainAddress,
+                                buildingNumber,
+                                convertBooleanToType(isApartment),
+                                convertBooleanToType(isExpanded),
+                                companyName,
+                                deliveryFee,
+                                demolitionFee,
+                                maintenanceFee,
+                                laborFee,
+                                ladderFee,
+                                freightTransportFee,
+                                floor,
+                                appliedIncrementRate,
+                                totalPrice,
+                                floorCustomerLiving,
+                                chassisSizeList,
+                                user
+                        )
                 )
-        ));
+        );
     }
 }

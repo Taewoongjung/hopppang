@@ -34,13 +34,17 @@ public class ChassisEstimationConverter {
 
         List<ChassisEstimationSizeInfoEntity> entityList = new ArrayList<>();
 
-        pojoList.forEach(e -> entityList.add(ChassisEstimationSizeInfoEntity.of(
-                chassisEstimationInfoId,
-                e.getChassisType(),
-                e.getWidth(),
-                e.getHeight(),
-                e.getPrice()
-        )));
+        pojoList.forEach(e -> entityList.add(
+                ChassisEstimationSizeInfoEntity.of(
+                        chassisEstimationInfoId,
+                        e.getChassisType(),
+                        e.getWidth(),
+                        e.getHeight(),
+                        e.getPrice(),
+                        e.getChassisDiscountEventId(),
+                        e.getDiscountedPrice()
+                ))
+        );
 
         return entityList;
     }

@@ -46,6 +46,11 @@ public class ChassisEstimationSizeInfoEntity extends BaseEntity {
 
     private int price;
 
+    @Column(name = "chassis_discount_event_id", nullable = false, columnDefinition = "bigint")
+    private Long chassisDiscountEventId;
+
+    private Integer discountedPrice;
+
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "chassis_estimation_info_id", referencedColumnName = "id", insertable = false, updatable = false)
@@ -57,7 +62,9 @@ public class ChassisEstimationSizeInfoEntity extends BaseEntity {
             final ChassisType chassisType,
             final int width,
             final int height,
-            final int price
+            final int price,
+            final Long chassisDiscountEventId,
+            final Integer discountedPrice
     ) {
         super(LocalDateTime.now(), LocalDateTime.now());
 
@@ -67,6 +74,8 @@ public class ChassisEstimationSizeInfoEntity extends BaseEntity {
         this.width = width;
         this.height = height;
         this.price = price;
+        this.chassisDiscountEventId = chassisDiscountEventId;
+        this.discountedPrice = discountedPrice;
     }
 
     // 생성
@@ -75,18 +84,23 @@ public class ChassisEstimationSizeInfoEntity extends BaseEntity {
             final ChassisType chassisType,
             final int width,
             final int height,
-            final int price
+            final int price,
+            final Long chassisDiscountEventId,
+            final Integer discountedPrice
     ) {
-
-        return new ChassisEstimationSizeInfoEntity(null, chassisEstimationInfoId, chassisType, width, height, price);
-    }
-
-    public void setChassisEstimationInfo(final ChassisEstimationInfoEntity chassisEstimationInfo) {
-        this.chassisEstimationInfo = chassisEstimationInfo;
+        return new ChassisEstimationSizeInfoEntity(
+                null,
+                chassisEstimationInfoId,
+                chassisType,
+                width,
+                height,
+                price,
+                chassisDiscountEventId,
+                discountedPrice
+        );
     }
 
     public ChassisEstimationSizeInfo toPojo() {
-
         return ChassisEstimationSizeInfo.of(
                 this.id,
                 this.chassisEstimationInfoId,
@@ -94,8 +108,14 @@ public class ChassisEstimationSizeInfoEntity extends BaseEntity {
                 this.width,
                 this.height,
                 this.price,
+                this.chassisDiscountEventId,
+                this.discountedPrice,
                 this.getCreatedAt(),
                 this.getLastModified()
         );
+    }
+
+    public void setChassisEstimationInfo(final ChassisEstimationInfoEntity chassisEstimationInfo) {
+        this.chassisEstimationInfo = chassisEstimationInfo;
     }
 }

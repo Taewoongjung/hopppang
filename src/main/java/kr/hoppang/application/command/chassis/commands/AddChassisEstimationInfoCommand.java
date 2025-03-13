@@ -38,10 +38,14 @@ public record AddChassisEstimationInfoCommand(ChassisEstimationCommand chassisEs
 
     ) {
 
-        public record ChassisSize(String chassisType,
-                           int width,
-                           int height,
-                           int price) { }
+        public record ChassisSize(
+                String chassisType,
+                int width,
+                int height,
+                int price,
+                Long chassisDiscountEventId,
+                Integer discountedPrice
+        ) { }
     }
 
     public ChassisEstimationInfo makeChassisEstimationInfo() {
@@ -81,7 +85,13 @@ public record AddChassisEstimationInfoCommand(ChassisEstimationCommand chassisEs
         this.chassisEstimationCommand.chassisSizeList.forEach(e -> {
             chassisEstimationSizeInfoList.add(
                     ChassisEstimationSizeInfo.of(
-                            ChassisType.from(e.chassisType), e.width, e.height, e.price)
+                            ChassisType.from(e.chassisType),
+                            e.width,
+                            e.height,
+                            e.price,
+                            e.chassisDiscountEventId,
+                            e.discountedPrice
+                    )
             );
         });
 

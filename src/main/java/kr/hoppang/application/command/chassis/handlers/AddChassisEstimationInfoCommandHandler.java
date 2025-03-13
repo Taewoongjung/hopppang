@@ -16,6 +16,7 @@ public class AddChassisEstimationInfoCommandHandler implements ICommandHandler<A
 
     private final ChassisEstimationRepository chassisEstimationRepository;
 
+
     @Override
     public boolean isCommandHandler() {
         return true;
