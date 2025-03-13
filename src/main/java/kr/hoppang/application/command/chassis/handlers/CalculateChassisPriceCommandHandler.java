@@ -206,6 +206,8 @@ public class CalculateChassisPriceCommandHandler implements
 
                         chassis.setDiscount(
                                 chassisDiscountEvent != null ? chassisDiscountEvent.getId() : null,
+                                chassisDiscountEvent != null
+                                        ? chassisDiscountEvent.getDiscountRate() : null,
                                 discountedPrice
                         );
                     }

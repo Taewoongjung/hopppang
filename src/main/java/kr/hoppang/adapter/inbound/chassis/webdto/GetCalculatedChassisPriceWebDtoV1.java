@@ -5,6 +5,8 @@ import static kr.hoppang.adapter.common.exception.ErrorType.CHASSIS_TYPE_IS_MAND
 import static kr.hoppang.adapter.common.util.CheckUtil.check;
 import static kr.hoppang.util.calculator.ChassisPriceCalculator.calculateSurtax;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
@@ -111,7 +113,16 @@ public class GetCalculatedChassisPriceWebDtoV1 {
             int wholeCalculatedFee,
             int surtax
     ) {
-        private record ChassisPrice(String chassisType, int width, int height, int price) { }
+
+        @JsonInclude(Include.NON_NULL)
+        private record ChassisPrice(
+                String chassisType,
+                int width,
+                int height,
+                int price,
+                Integer discountedRate,
+                Integer discountedPrice
+        ) { }
 
         public static Res of(final CalculateChassisPriceCommandHandlerCommandResult commandResult) {
 
@@ -123,7 +134,9 @@ public class GetCalculatedChassisPriceWebDtoV1 {
                                     new ChassisPrice(
                                             e.getChassisType(),
                                             e.getWidth(), e.getHeight(),
-                                            e.getPrice()
+                                            e.getPrice(),
+                                            e.getDiscountedRate(),
+                                            e.getDiscountedPrice()
                                     )
                             ));
 

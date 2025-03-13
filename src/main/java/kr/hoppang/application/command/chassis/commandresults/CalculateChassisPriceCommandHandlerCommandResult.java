@@ -30,6 +30,8 @@ public record CalculateChassisPriceCommandHandlerCommandResult(
 
         private Long chassisDiscountEventId;
 
+        private Integer discountedRate;
+
         private Integer discountedPrice;
 
         public ChassisPriceResult(
@@ -48,8 +50,13 @@ public record CalculateChassisPriceCommandHandlerCommandResult(
             this.price += laborFee;
         }
 
-        public void setDiscount(final Long chassisDiscountEventId, final Integer discountedPrice) {
+        public void setDiscount(
+                final Long chassisDiscountEventId,
+                final Integer discountedRate,
+                final Integer discountedPrice
+        ) {
             this.chassisDiscountEventId = chassisDiscountEventId;
+            this.discountedRate = discountedRate;
             this.discountedPrice = discountedPrice;
         }
     }
