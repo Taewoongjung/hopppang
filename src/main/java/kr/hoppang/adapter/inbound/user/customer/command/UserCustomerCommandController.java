@@ -84,14 +84,13 @@ public class UserCustomerCommandController {
     public ResponseEntity<SocialSignUpFinalWebDtoV1.Res> socialSignUpFinal(
             final @RequestBody SocialSignUpFinalWebDtoV1.Req req) {
 
-        String email = socialSignUpFinalCommandHandler.handle(new SocialSignUpFinalCommand(
-                req.userEmail(),
-                req.userPhoneNumber(),
-                req.address(),
-                req.subAddress(),
-                req.buildingNumber(),
-                req.isPushOn()
-        ));
+        String email = socialSignUpFinalCommandHandler.handle(
+                new SocialSignUpFinalCommand(
+                        req.userEmail(),
+                        req.userPhoneNumber(),
+                        req.isPushOn()
+                )
+        );
 
         return ResponseEntity.status(HttpStatus.OK).body(new SocialSignUpFinalWebDtoV1.Res(email));
     }

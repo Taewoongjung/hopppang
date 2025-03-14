@@ -213,17 +213,12 @@ public class UserEntity extends BaseEntity {
         this.userAddress = userAddressToEntity(id, userAddress);
     }
 
-    public void updatePhoneNumberAndAddressAndConfig(final String phoneNumber,
-            final UserAddress userAddress, final boolean isPushOn) {
+    public void updatePhoneNumberAndAddressAndConfig(
+            final String phoneNumber,
+            final boolean isPushOn
+    ) {
 
         this.tel = phoneNumber;
-
-        this.userAddress = UserAddressEntity.of(
-                this.id,
-                userAddress.getAddress(),
-                userAddress.getSubAddress(),
-                userAddress.getBuildingNumber()
-        );
 
         this.userConfigInfo = UserConfigInfoEntity.of(
                 this.id,

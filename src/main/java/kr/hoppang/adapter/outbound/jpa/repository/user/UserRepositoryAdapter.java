@@ -135,17 +135,16 @@ public class UserRepositoryAdapter implements UserRepository {
 
     @Override
     @Transactional
-    public User updatePhoneNumberAndAddressAndPush(
+    public User updatePhoneNumberAndPush(
             final String userEmail,
             final String phoneNumber,
-            final UserAddress userAddress,
             final boolean isPushOn) {
 
         UserEntity entity = userJpaRepository.findByEmailAndDeletedAtIsNull(userEmail);
 
         check(entity == null, NOT_EXIST_USER);
 
-        entity.updatePhoneNumberAndAddressAndConfig(phoneNumber, userAddress, isPushOn);
+        entity.updatePhoneNumberAndAddressAndConfig(phoneNumber, isPushOn);
 
         return entity.toPojoWithRelations();
     }

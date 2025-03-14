@@ -39,11 +39,8 @@ public class SocialSignUpFinalCommandHandler implements ICommandHandler<SocialSi
     @Transactional(rollbackFor = Exception.class)
     public String handle(final SocialSignUpFinalCommand command) {
 
-        UserAddress userAddress = UserAddress.of(command.address(), command.subAddress(),
-                command.buildingNumber());
-
-        User updatedUser = userRepository.updatePhoneNumberAndAddressAndPush(command.userEmail(),
-                command.userPhoneNumber(), userAddress, command.isPushOn());
+        User updatedUser = userRepository.updatePhoneNumberAndPush(command.userEmail(),
+                command.userPhoneNumber(), command.isPushOn());
 
         if (updatedUser != null) {
             // 휴대폰 검증이 되었는지 확인
