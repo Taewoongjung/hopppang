@@ -93,6 +93,7 @@ public class SecurityConfig {
                                 , "/api/apple/refresh"
                                 , "/api/google/refresh"
                         ).permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JWTFilter(jwtUtil, loadUserByUsernameQueryHandler),

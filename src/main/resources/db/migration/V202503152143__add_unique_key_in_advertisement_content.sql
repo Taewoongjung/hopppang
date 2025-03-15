@@ -1,0 +1,1 @@
+ALTER TABLE advertisement_content ADD CONSTRAINT adv_id UNIQUE (adv_id);

@@ -5,4 +5,6 @@ import kr.hoppang.domain.advertisement.AdvertisementContent;
 public interface AdvertisementContentRepository {
 
     AdvertisementContent getAdvertisementContent(final String advId);
+
+    void createAdvertisementContent(final AdvertisementContent advertisementContent);
 }
