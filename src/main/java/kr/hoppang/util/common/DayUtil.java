@@ -4,13 +4,13 @@ public class DayUtil {
 
     public static String getKorDayOfWeek(final int dayOfWeek) {
         return switch (dayOfWeek) {
-            case 1 -> "일";
-            case 2 -> "월";
-            case 3 -> "화";
-            case 4 -> "수";
-            case 5 -> "목";
-            case 6 -> "금";
-            case 7 -> "토";
+            case 1 -> "월";
+            case 2 -> "화";
+            case 3 -> "수";
+            case 4 -> "목";
+            case 5 -> "금";
+            case 6 -> "토";
+            case 7 -> "일";
             default -> "잘못된요일";
         };
     }
