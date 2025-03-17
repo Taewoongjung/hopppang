@@ -185,6 +185,13 @@ management:
     web:
       exposure:
         include: prometheus
+  metrics:
+    enable:
+      jvm: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
