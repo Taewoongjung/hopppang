@@ -146,6 +146,10 @@ services:
       - --web.console.templates=/usr/share/proemtheus/consoles
       - --web.enable-admin-api
     restart: always
+    depends_on:
+      - back-end-app
+      - database-master
+      - database-slave
     networks:
       - server-connection
 
@@ -155,7 +159,8 @@ services:
     user: "$UID:$GID"
     volumes:
       - /home/twj/hopppang/grafana/alerting:/var/lib/grafana/alerting:rw
-      - ./grafana:/var/lib/grafana
+      - grafana-data:/var/lib/grafana
+      - ./grafana/plugins:/var/lib/grafana-plugins
     ports:
       - "3000:3000"
     restart: always
@@ -190,4 +195,4 @@ volumes:
     external: true
   my-db-master:
   my-db-slave:
-  grafana-storage:
+  grafana-data:
