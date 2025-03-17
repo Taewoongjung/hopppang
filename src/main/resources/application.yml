@@ -184,7 +184,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: prometheus
+        include: "health,info,prometheus"
   metrics:
     enable:
       jvm: true
