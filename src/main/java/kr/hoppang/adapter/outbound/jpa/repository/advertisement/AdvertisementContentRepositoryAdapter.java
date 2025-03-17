@@ -55,6 +55,7 @@ public class AdvertisementContentRepositoryAdapter implements AdvertisementConte
                         constructor(
                                 GetAdvertisementContentListRepositoryDto.Res.class,
                                 advertisementContentEntity.id,
+                                advertisementContentEntity.advId,
                                 advertisementContentEntity.advChannel,
                                 advertisementContentEntity.startAt,
                                 advertisementContentEntity.endAt,
@@ -67,9 +68,7 @@ public class AdvertisementContentRepositoryAdapter implements AdvertisementConte
                 .innerJoin(userEntity)
                 .on(userEntity.id.eq(advertisementContentEntity.publisherId))
                 .where(
-                        resolveIsOnAir(repositoryReq.isOnAir()).and(
-                                advertisementContentEntity.startAt.isNotNull()
-                        ),
+                        resolveIsOnAir(repositoryReq.isOnAir()),
                         resolveAdvChannel(repositoryReq.advChannel()),
                         resolveAdvIdList(repositoryReq.advIdList())
                 )
@@ -79,10 +78,17 @@ public class AdvertisementContentRepositoryAdapter implements AdvertisementConte
     }
 
     private BooleanExpression resolveIsOnAir(final Boolean isOnAir) {
-        if (isOnAir == null || !isOnAir) {
-            return advertisementContentEntity.endAt.isNotNull();
+        if (isOnAir == null) {
+            return null;
         }
-        return advertisementContentEntity.endAt.isNull();
+
+        if (!isOnAir) {
+            return advertisementContentEntity.endAt.isNotNull()
+                    .and(advertisementContentEntity.startAt.isNotNull());
+        }
+
+        return advertisementContentEntity.endAt.isNull()
+                .and(advertisementContentEntity.startAt.isNotNull());
     }
 
     private BooleanExpression resolveAdvChannel(final String advChannel) {
@@ -122,9 +128,7 @@ public class AdvertisementContentRepositoryAdapter implements AdvertisementConte
                 .on(userTrafficSourceEntity.advertisementContentId.eq(
                         advertisementContentEntity.id))
                 .where(
-                        resolveIsOnAir(repositoryReq.isOnAir()).and(
-                                advertisementContentEntity.startAt.isNotNull()
-                        ),
+                        resolveIsOnAir(repositoryReq.isOnAir()),
                         resolveAdvChannel(repositoryReq.advChannel()),
                         resolveAdvIdList(repositoryReq.advIdList())
                 )

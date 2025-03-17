@@ -12,7 +12,7 @@ public record FindAdvertisementUrlsForStatisticsQuery() {
             List<String> advIdList,
             int limit,
             int offset,
-            boolean isOnAir,
+            Boolean isOnAir,
             String advChannel
     ) implements IQuery {
 
@@ -27,7 +27,7 @@ public record FindAdvertisementUrlsForStatisticsQuery() {
                     .advIdList(advIdList)
                     .limit(limit)
                     .offset(offset)
-                    .isOnAir(isOnAir != null ? isOnAir : false)
+                    .isOnAir(isOnAir)
                     .advChannel(advChannel)
                     .build();
         }

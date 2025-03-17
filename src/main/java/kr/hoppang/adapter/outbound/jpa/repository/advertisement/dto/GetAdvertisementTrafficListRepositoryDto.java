@@ -12,7 +12,7 @@ public record GetAdvertisementTrafficListRepositoryDto() {
     public record Req(
             Set<Long> advertisementIdList,
             List<String> advIdList,
-            boolean isOnAir,
+            Boolean isOnAir,
             String advChannel
     ) { }
 

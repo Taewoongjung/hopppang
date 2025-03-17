@@ -9,7 +9,7 @@ public record GetAdvertisementContentListRepositoryDto() {
     @Builder
     public record Req(
             List<String> advIdList,
-            boolean isOnAir,
+            Boolean isOnAir,
             String advChannel,
             int limit,
             int offset

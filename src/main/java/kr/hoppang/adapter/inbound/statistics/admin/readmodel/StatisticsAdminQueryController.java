@@ -29,17 +29,16 @@ public class StatisticsAdminQueryController {
             @Valid FindAdvertisementUrlsForStatisticsWebDtoV1.Req req
     ) {
 
-        return
-                FindAdvertisementUrlsForStatisticsWebDtoV1.Res.of(
-                        findAdvertisementUrlsForStatisticsQueryHandler.handle(
-                                FindAdvertisementUrlsForStatisticsQuery.Req.of(
-                                        req.advIdList(),
-                                        req.limit(),
-                                        req.offset(),
-                                        req.isOnAir(),
-                                        req.advChannel()
-                                )
+        return FindAdvertisementUrlsForStatisticsWebDtoV1.Res.of(
+                findAdvertisementUrlsForStatisticsQueryHandler.handle(
+                        FindAdvertisementUrlsForStatisticsQuery.Req.of(
+                                req.advIdList(),
+                                req.limit(),
+                                req.offset(),
+                                req.isOnAir(),
+                                req.advChannel()
                         )
-                );
+                )
+        );
     }
 }

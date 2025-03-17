@@ -1,5 +1,6 @@
 package kr.hoppang.adapter.inbound.statistics.admin.webdto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Min;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,20 +14,20 @@ public record FindAdvertisementUrlsForStatisticsWebDtoV1() {
 
     public record Req(
 
-            @Min(
-                    value = 0,
-                    message = "offset는 {value} 미만일 수 없습니다."
-            )
-            @BindParam(value = "limit")
-            int limit,
-
             @Range(
                     min = 1,
                     max = 1000,
                     message = "limit는 최소 {min}개 최대 {max}개를 초과할 수 없습니다."
             )
+            @BindParam(value = "limit")
+            Integer limit,
+
+            @Min(
+                    value = 0,
+                    message = "offset는 {value} 미만일 수 없습니다."
+            )
             @BindParam(value = "offset")
-            int offset,
+            Integer offset,
 
             @BindParam(value = "advIdList")
             List<String> advIdList,
@@ -42,13 +43,23 @@ public record FindAdvertisementUrlsForStatisticsWebDtoV1() {
 
         @Builder(access = AccessLevel.PRIVATE)
         private record AdvContentWithClickCount(
+
                 String advId,
+
                 String advChannel,
+
+                @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
                 LocalDateTime startAt,
+
+                @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
                 LocalDateTime endAt,
+
                 Long publisherId,
+
                 String publisherName,
+
                 String memo,
+
                 int clickCount
         ) { }
 
