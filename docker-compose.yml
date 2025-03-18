@@ -190,9 +190,54 @@ services:
     networks:
       - server-connection
 
+  debezium:
+    image: debezium/connect:3.0.0.Final
+    container_name: debezium
+    restart: always
+    depends_on:
+      - kafka
+      - database-master
+    environment:
+      - BOOTSTRAP_SERVERS=kafka:9092
+      - GROUP_ID=1
+      - CONFIG_STORAGE_TOPIC=debezium_connect_configs
+      - OFFSET_STORAGE_TOPIC=debezium_connect_offsets
+      - STATUS_STORAGE_TOPIC=debezium_connect_status
+      - ENABLE_DEBEZIUM_SCRIPTING=true
+    networks:
+      - server-connection
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    restart: always
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=2181
+    networks:
+      - server-connection
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    restart: always
+    depends_on:
+      - zookeeper
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+    ports:
+      - "9092:9092"
+    networks:
+      - server-connection
+
 volumes:
   dev-log:
     external: true
   my-db-master:
   my-db-slave:
   grafana-data:
+  kafka-data:
