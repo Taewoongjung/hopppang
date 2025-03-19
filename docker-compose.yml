@@ -198,7 +198,7 @@ services:
       - kafka
       - database-master
     environment:
-      - BOOTSTRAP_SERVERS=kafka:9092
+      - BOOTSTRAP_SERVERS=kafka:9102
       - GROUP_ID=1
       - CONFIG_STORAGE_TOPIC=debezium_connect_configs
       - OFFSET_STORAGE_TOPIC=debezium_connect_offsets
@@ -225,12 +225,12 @@ services:
     environment:
       - KAFKA_BROKER_ID=1
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9101
       - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
     volumes:
       - kafka-data:/var/lib/kafka/data
     ports:
-      - "9092:9092"
+      - "9101:9102"
     networks:
       - server-connection
 
