@@ -118,8 +118,6 @@ public class CalculateChassisPriceCommandHandler implements
                     chassisPrice
             );
 
-            calculatedPriceResultList.add(chassisFinalPrice);
-
             chassisPriceResultList.add(
                     new ChassisPriceResult(
                             chassis.chassisType().name(),
