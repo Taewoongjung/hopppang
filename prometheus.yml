@@ -11,6 +11,5 @@ scrape_configs:
       - targets: [
         'back-end-app:9090',
         'back-end-app:9091',
-        'back-end-app:9092',
         'back-end-app:9093'
       ]
