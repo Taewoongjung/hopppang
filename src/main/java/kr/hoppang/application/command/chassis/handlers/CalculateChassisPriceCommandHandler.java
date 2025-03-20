@@ -119,8 +119,6 @@ public class CalculateChassisPriceCommandHandler implements
                     chassisPrice
             );
 
-            calculatedPriceResultList.add(chassisFinalPrice);
-
             chassisPriceResultList.add(
                     new ChassisPriceResult(
                             chassis.chassisType().name(),
@@ -185,10 +183,11 @@ public class CalculateChassisPriceCommandHandler implements
                     e -> e.addLaborFeeToChassisPrice(dividedLaborFeeByCountOfChassis));
         }
 
-        // 할인 이벤트 적용
+        // 각 샤시 최종 비용 산정
         List<ChassisDiscountEvent> chassisDiscountEventInfo = getChassisDiscountEventInformation(
                 chassisReqList);
 
+        // 할인 이벤트 적용
         if (chassisDiscountEventInfo != null && !chassisDiscountEventInfo.isEmpty()) {
 
             chassisPriceResultList.forEach(
@@ -203,6 +202,8 @@ public class CalculateChassisPriceCommandHandler implements
                             discountedPrice = calculateChassisPriceWithDiscountRate(
                                     chassisDiscountEvent.getDiscountRate(), chassis.getPrice()
                             );
+
+                            calculatedPriceResultList.add(discountedPrice);
                         }
 
                         chassis.setDiscount(
@@ -213,7 +214,9 @@ public class CalculateChassisPriceCommandHandler implements
                         );
                     }
             );
-
+        } else {
+            int allChassisPrice = chassisPriceResultList.stream().mapToInt(ChassisPriceResult::getPrice).sum();
+            calculatedPriceResultList.add(allChassisPrice);
         }
 
         // 각 비용 최종 가격
