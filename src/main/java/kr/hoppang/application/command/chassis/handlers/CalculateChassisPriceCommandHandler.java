@@ -202,8 +202,6 @@ public class CalculateChassisPriceCommandHandler implements
                             discountedPrice = calculateChassisPriceWithDiscountRate(
                                     chassisDiscountEvent.getDiscountRate(), chassis.getPrice()
                             );
-
-                            calculatedPriceResultList.add(discountedPrice);
                         }
 
                         chassis.setDiscount(
