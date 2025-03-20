@@ -187,7 +187,7 @@ public class CalculateChassisPriceCommandHandler implements
         List<ChassisDiscountEvent> chassisDiscountEventInfo = getChassisDiscountEventInformation(
                 chassisReqList);
 
-        // 할인 이벤트 적용
+        // 할인 이벤트 적용 혹은 샤시 가격 적용
         if (chassisDiscountEventInfo != null && !chassisDiscountEventInfo.isEmpty()) {
 
             chassisPriceResultList.forEach(
@@ -197,24 +197,24 @@ public class CalculateChassisPriceCommandHandler implements
                                 ChassisType.from(chassis.getChassisType())
                         );
 
-                        Integer discountedPrice = null;
                         if (chassisDiscountEvent != null) {
-                            discountedPrice = calculateChassisPriceWithDiscountRate(
+                            Integer discountedPrice = calculateChassisPriceWithDiscountRate(
                                     chassisDiscountEvent.getDiscountRate(), chassis.getPrice()
                             );
+
+                            chassis.setDiscount(
+                                    chassisDiscountEvent.getId(),
+                                    chassisDiscountEvent.getDiscountRate(),
+                                    discountedPrice
+                            );
+
+                            calculatedPriceResultList.add(discountedPrice);
+                        } else {
+                            calculatedPriceResultList.add(chassis.getPrice());
                         }
 
-                        chassis.setDiscount(
-                                chassisDiscountEvent != null ? chassisDiscountEvent.getId() : null,
-                                chassisDiscountEvent != null
-                                        ? chassisDiscountEvent.getDiscountRate() : null,
-                                discountedPrice
-                        );
                     }
             );
-        } else {
-            int allChassisPrice = chassisPriceResultList.stream().mapToInt(ChassisPriceResult::getPrice).sum();
-            calculatedPriceResultList.add(allChassisPrice);
         }
 
         // 각 비용 최종 가격
