@@ -113,10 +113,13 @@ public class CalculateChassisPriceCommandHandler implements
                     chassis.width(), chassis.height()
             );
 
+            // 마진율 대비 계산
             int chassisFinalPrice = calculateChassisPriceWithIncrementRate(
                     additionalChassisPriceCriteria.getPrice(),
                     chassisPrice
             );
+
+//            calculatedPriceResultList.add(chassisFinalPrice);
 
             chassisPriceResultList.add(
                     new ChassisPriceResult(
@@ -131,14 +134,6 @@ public class CalculateChassisPriceCommandHandler implements
         // 층수에 따른 사다리차 비용을 계산한다
         int ladderCarFee = chassisPriceCalculator.calculateLadderFee(event.floorCustomerLiving());
         calculatedPriceResultList.add(ladderCarFee);
-
-        // 인건비를 계산한다.
-        int laborFee = chassisPriceCalculator.calculateLaborFee(
-                widthForSingleWindow.get(),
-                heightForSingleWindow.get(),
-                widthForDoubleWindow.get(),
-                heightForDoubleWindow.get());
-        calculatedPriceResultList.add(laborFee);
 
         // 철거시, 철거비를 계산한다.
         int demolitionFee = 0;
@@ -173,6 +168,14 @@ public class CalculateChassisPriceCommandHandler implements
                         chassisReqList.getFirst().companyType(),
                         event.calculateChassisPriceList()
                 ));
+
+        // 인건비를 계산한다.
+        int laborFee = chassisPriceCalculator.calculateLaborFee(
+                widthForSingleWindow.get(),
+                heightForSingleWindow.get(),
+                widthForDoubleWindow.get(),
+                heightForDoubleWindow.get()
+        );
 
         // 인건비를 견적 받은 샤시의 개수만큼 나눠서 각각 금액에 더한다.
         if (laborFee != 0) {
