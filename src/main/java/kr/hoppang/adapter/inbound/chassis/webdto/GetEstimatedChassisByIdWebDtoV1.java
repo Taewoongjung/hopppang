@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationInfo;
+import kr.hoppang.domain.chassis.event.ChassisDiscountEvent;
 import lombok.AccessLevel;
 import lombok.Builder;
 
@@ -38,9 +39,7 @@ public record GetEstimatedChassisByIdWebDtoV1() {
 
             Integer discountedAmount,
 
-            Integer discountedWholeCalculatedFee,
-
-            Integer surtaxOfDiscountedWholeCalculatedFee,
+            Integer discountedWholeCalculatedFeeWithSurtax,
 
             @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
             LocalDateTime createdAt
@@ -50,7 +49,9 @@ public record GetEstimatedChassisByIdWebDtoV1() {
         private record ChassisPrice(String chassisType, int width, int height, int price) { }
 
         public static Res of(
-                final ChassisEstimationInfo estimationInfo) {
+                final ChassisEstimationInfo estimationInfo,
+                final ChassisDiscountEvent chassisDiscountEvent
+        ) {
 
             List<ChassisPrice> chassisPriceResultList = new ArrayList<>();
 
@@ -65,6 +66,17 @@ public record GetEstimatedChassisByIdWebDtoV1() {
                                             .build()
                             ));
 
+            int surtax = calculateSurtax(estimationInfo.getTotalPrice());
+
+            Integer discountedWholeCalculatedFeeWithSurtax = null;
+            Integer discountedAmount = null;
+            if (chassisDiscountEvent != null) {
+                discountedAmount = chassisDiscountEvent.getDiscountRate();
+
+                discountedWholeCalculatedFeeWithSurtax = (surtax + estimationInfo.getTotalPrice())
+                        - discountedAmount;
+            }
+
             return Res.builder()
                     .estimationId(estimationInfo.getId())
                     .company(estimationInfo.getCompanyType().getCompanyName())
@@ -76,13 +88,9 @@ public record GetEstimatedChassisByIdWebDtoV1() {
                     .freightTransportFee(estimationInfo.getFreightTransportFee())
                     .customerFloor(estimationInfo.getCustomerLivingFloor())
                     .wholeCalculatedFee(estimationInfo.getTotalPrice())
-                    .surtax(calculateSurtax(estimationInfo.getTotalPrice()))
-                    .discountedAmount(estimationInfo.getTotalPrice())
-                    .discountedWholeCalculatedFee(estimationInfo.getDiscountedTotalPrice())
-                    .surtaxOfDiscountedWholeCalculatedFee(
-                            estimationInfo.getDiscountedTotalPrice() != null ?
-                                    calculateSurtax(estimationInfo.getDiscountedTotalPrice()) : null
-                    )
+                    .surtax(surtax)
+                    .discountedAmount(discountedAmount)
+                    .discountedWholeCalculatedFeeWithSurtax(discountedWholeCalculatedFeeWithSurtax)
                     .createdAt(estimationInfo.getCreatedAt())
                     .build();
         }

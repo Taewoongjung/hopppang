@@ -64,15 +64,18 @@ public class ChassisCustomerQueryController {
             @AuthenticationUserId final Long userId
     ) {
 
+        FindEstimatedChassisByIdQuery.Res resFromHandler = findEstimatedChassisByIdQueryHandler.handle(
+                FindEstimatedChassisByIdQuery.Req.builder()
+                        .estimatedId(estimationId)
+                        .queriedUserId(userId)
+                        .build()
+        );
+
         return ResponseEntity.status(HttpStatus.OK)
                 .body(
                         GetEstimatedChassisByIdWebDtoV1.Res.of(
-                                findEstimatedChassisByIdQueryHandler.handle(
-                                        FindEstimatedChassisByIdQuery.Req.builder()
-                                                .estimatedId(estimationId)
-                                                .queriedUserId(userId)
-                                                .build()
-                                ).estimationInfo()
+                                resFromHandler.estimationInfo(),
+                                resFromHandler.chassisDiscountEvent()
                         )
                 );
     }

@@ -13,4 +13,6 @@ public interface ChassisDiscountEventRepository {
             List<ChassisType> chassisTypeList,
             DiscountType discountType
     );
+
+    ChassisDiscountEvent findChassisDiscountEventById(long id);
 }

@@ -9,6 +9,8 @@ import kr.hoppang.application.readmodel.chassis.queries.FindEstimatedChassisById
 import kr.hoppang.application.readmodel.chassis.queries.FindEstimatedChassisByIdQuery.Res;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationInfo;
 import kr.hoppang.domain.chassis.estimation.repository.ChassisEstimationRepository;
+import kr.hoppang.domain.chassis.event.ChassisDiscountEvent;
+import kr.hoppang.domain.chassis.event.repository.ChassisDiscountEventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +21,7 @@ public class FindEstimatedChassisByIdQueryHandler implements IQueryHandler<
         FindEstimatedChassisByIdQuery.Req, FindEstimatedChassisByIdQuery.Res> {
 
     private final ChassisEstimationRepository chassisEstimationRepository;
+    private final ChassisDiscountEventRepository chassisDiscountEventRepository;
 
 
     @Override
@@ -36,8 +39,15 @@ public class FindEstimatedChassisByIdQueryHandler implements IQueryHandler<
         check(!chassisEstimationInfo.getUserId().equals(query.queriedUserId()),
                 INVALID_REQUEST);
 
+        ChassisDiscountEvent chassisDiscountEvent = null;
+        if (chassisEstimationInfo.getChassisDiscountEventId() != null) {
+            chassisDiscountEvent = chassisDiscountEventRepository.findChassisDiscountEventById(
+                    chassisEstimationInfo.getChassisDiscountEventId());
+        }
+
         return Res.builder()
                 .estimationInfo(chassisEstimationInfo)
+                .chassisDiscountEvent(chassisDiscountEvent)
                 .build();
     }
 }
