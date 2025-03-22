@@ -3,6 +3,7 @@ package kr.hoppang.application.command.chassis.handlers;
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_AVAILABLE_MANUFACTURE;
 import static kr.hoppang.adapter.common.util.CheckUtil.check;
 import static kr.hoppang.adapter.outbound.jpa.entity.chassis.price.pricecriteria.AdditionalChassisPriceCriteriaType.*;
+import static kr.hoppang.util.calculator.ChassisPriceCalculator.calculateSurtax;
 import static kr.hoppang.util.common.BoolType.convertBooleanToType;
 
 import java.math.BigDecimal;
@@ -22,6 +23,8 @@ import kr.hoppang.application.command.chassis.commands.CalculateChassisPriceComm
 import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
 import kr.hoppang.domain.chassis.event.ChassisDiscountEvent;
+import kr.hoppang.domain.chassis.event.DiscountType;
+import kr.hoppang.domain.chassis.event.EventChassisType;
 import kr.hoppang.domain.chassis.event.repository.ChassisDiscountEventRepository;
 import kr.hoppang.domain.chassis.price.ChassisPriceInfo;
 import kr.hoppang.domain.chassis.price.pricecriteria.AdditionalChassisPriceCriteria;
@@ -183,17 +186,17 @@ public class CalculateChassisPriceCommandHandler implements
                     e -> e.addLaborFeeToChassisPrice(dividedLaborFeeByCountOfChassis));
         }
 
-        // 각 샤시 최종 비용 산정
-        List<ChassisDiscountEvent> chassisDiscountEventInfo = getChassisDiscountEventInformation(
-                chassisReqList);
+        // 각 샤시 "퍼센트 할인" 정보 조회
+        List<ChassisDiscountEvent> chassisRateDiscountEvent = getChassisDiscountEventInformation(
+                chassisReqList, DiscountType.PERCENTAGE);
 
-        // 할인 이벤트 적용 혹은 샤시 가격 적용
-        if (chassisDiscountEventInfo != null && !chassisDiscountEventInfo.isEmpty()) {
+        // "퍼센트" 할인 이벤트 적용 혹은 샤시 가격 적용
+        if (chassisRateDiscountEvent != null && !chassisRateDiscountEvent.isEmpty()) {
                 chassisPriceResultList.forEach(
                         chassis -> {
                             ChassisDiscountEvent chassisDiscountEvent = getDiscountEventByChassisType(
-                                    chassisDiscountEventInfo,
-                                    ChassisType.from(chassis.getChassisType())
+                                    chassisRateDiscountEvent,
+                                    EventChassisType.from(chassis.getChassisType())
                             );
 
                             if (chassisDiscountEvent != null) {
@@ -211,7 +214,8 @@ public class CalculateChassisPriceCommandHandler implements
                             } else {
                                 calculatedPriceResultList.add(chassis.getPrice());
                             }
-                        });
+                        }
+                );
         } else {
             int allChassisPrice = chassisPriceResultList.stream().mapToInt(ChassisPriceResult::getPrice).sum();
             calculatedPriceResultList.add(allChassisPrice);
@@ -223,7 +227,33 @@ public class CalculateChassisPriceCommandHandler implements
         int freightTransportFee = event.floorCustomerLiving() <= 1 ? ladderCarFee
                 : 0; // freightTransportFee : 1층 이하면 사다리차 비용이 도수 운반비로 치환 된다
         int floor = event.floorCustomerLiving();
+
+        /* 총 가격 계산 start */
+
+        // 각 샤시 "고정 금액 할인" 정보 조회
         int totalPrice = calculatedPriceResultList.stream().mapToInt(Integer::intValue).sum();
+
+        List<ChassisDiscountEvent> chassisFixedAmountDiscountEvents = getChassisDiscountEventInformation(
+                chassisReqList, DiscountType.FIXED_AMOUNT);
+
+        Long chassisDiscountEventId = null;
+        Integer discountedTotalPrice = null;
+        ChassisDiscountEvent appliedChassisFixedAmountDiscountEvent = null;
+        if (chassisFixedAmountDiscountEvents != null &&
+                !chassisFixedAmountDiscountEvents.isEmpty()
+        ) {
+            FixedAmountDiscount fixedAmountDiscount = calculateFixedAmountDiscount(
+                    totalPrice,
+                    chassisFixedAmountDiscountEvents
+            );
+
+            if (fixedAmountDiscount != null) {
+                appliedChassisFixedAmountDiscountEvent = fixedAmountDiscount.appliedChassisDiscountEvent;
+                discountedTotalPrice = fixedAmountDiscount.discountedTotalPrice;
+                chassisDiscountEventId = fixedAmountDiscount.chassisDiscountEventId;
+            }
+        }
+        /* 총 가격 계산 end */
 
         long registeredEstimationId = registerChassisEstimation(
                 chassisPriceResultList,
@@ -246,6 +276,8 @@ public class CalculateChassisPriceCommandHandler implements
                 floor,
                 additionalChassisPriceCriteria.getPrice(),
                 totalPrice,
+                chassisDiscountEventId,
+                discountedTotalPrice,
                 event.floorCustomerLiving(),
                 user
         );
@@ -262,11 +294,17 @@ public class CalculateChassisPriceCommandHandler implements
                 ladderFee,
                 freightTransportFee,
                 floor,
-                totalPrice
+                totalPrice,
+                appliedChassisFixedAmountDiscountEvent != null ?
+                        appliedChassisFixedAmountDiscountEvent.getDiscountRate() : null,
+                discountedTotalPrice
         );
     }
 
-    private List<ChassisDiscountEvent> getChassisDiscountEventInformation(final List<CalculateChassisPrice> chassisReqList) {
+    private List<ChassisDiscountEvent> getChassisDiscountEventInformation(
+            final List<CalculateChassisPrice> chassisReqList,
+            final DiscountType discountType
+    ) {
 
         CompanyType companyType = chassisReqList.getFirst().companyType();
 
@@ -275,7 +313,7 @@ public class CalculateChassisPriceCommandHandler implements
                 .toList();
 
         return chassisDiscountEventRepository.findAllChassisDiscountEventByCompanyAndChassisType(
-                companyType, chassisTypes
+                companyType, chassisTypes, discountType
         );
     }
 
@@ -294,13 +332,95 @@ public class CalculateChassisPriceCommandHandler implements
 
     private ChassisDiscountEvent getDiscountEventByChassisType(
             List<ChassisDiscountEvent> discountEventList,
-            final ChassisType chassisType
+            final EventChassisType eventChassisType
     ) {
         return discountEventList.stream()
-                .filter(f -> chassisType.equals(f.getChassisType()))
+                .filter(f -> eventChassisType.equals(f.getChassisType()))
                 .findFirst()
                 .orElse(null);
     }
+
+    private FixedAmountDiscount calculateFixedAmountDiscount(
+            final int totalPrice,
+            final List<ChassisDiscountEvent> chassisFixedAmountDiscountEvents
+    ) {
+        Long chassisDiscountEventId = null;
+        Integer discountedTotalPrice = null;
+
+        int totalPriceWithSurtax = totalPrice + calculateSurtax(totalPrice);
+
+        if (totalPrice >= 8000000 && totalPrice < 10000000) {
+
+            ChassisDiscountEvent chassisDiscountEvent = chassisFixedAmountDiscountEvents.stream()
+                    .filter(f -> EventChassisType.TotalPriceOver_800.equals(f.getChassisType()))
+                    .findFirst()
+                    .orElse(null);
+
+            if (chassisDiscountEvent == null) {
+                return null;
+            }
+
+            chassisDiscountEventId = chassisDiscountEvent.getId();
+            discountedTotalPrice = totalPriceWithSurtax - chassisDiscountEvent.getDiscountRate();
+
+            return new FixedAmountDiscount(
+                    chassisDiscountEvent,
+                    chassisDiscountEventId,
+                    discountedTotalPrice
+            );
+        }
+
+        if (totalPrice >= 10000000 && totalPrice < 13000000) {
+
+            ChassisDiscountEvent chassisDiscountEvent = chassisFixedAmountDiscountEvents.stream()
+                    .filter(f -> EventChassisType.TotalPriceOver_1000.equals(f.getChassisType()))
+                    .findFirst()
+                    .orElse(null);
+
+            if (chassisDiscountEvent == null) {
+                return null;
+            }
+
+            chassisDiscountEventId = chassisDiscountEvent.getId();
+            discountedTotalPrice = totalPriceWithSurtax - chassisDiscountEvent.getDiscountRate();
+
+            return new FixedAmountDiscount(
+                    chassisDiscountEvent,
+                    chassisDiscountEventId,
+                    discountedTotalPrice
+            );
+        }
+
+        if (totalPrice >= 13000000) {
+
+            ChassisDiscountEvent chassisDiscountEvent = chassisFixedAmountDiscountEvents.stream()
+                    .filter(f -> EventChassisType.TotalPriceOver_1300.equals(f.getChassisType()))
+                    .findFirst()
+                    .orElse(null);
+
+            if (chassisDiscountEvent == null) {
+                return null;
+            }
+
+            chassisDiscountEventId = chassisDiscountEvent.getId();
+            discountedTotalPrice = totalPriceWithSurtax - chassisDiscountEvent.getDiscountRate();
+
+            return new FixedAmountDiscount(
+                    chassisDiscountEvent,
+                    chassisDiscountEventId,
+                    discountedTotalPrice
+            );
+        }
+
+        return new FixedAmountDiscount(null, null, totalPrice);
+    }
+
+    private record FixedAmountDiscount(
+            ChassisDiscountEvent appliedChassisDiscountEvent,
+            Long chassisDiscountEventId,
+            Integer discountedTotalPrice
+    ) { }
+
 
     private int calculateChassisPriceWithDiscountRate(
             final int discountRate,
@@ -338,6 +458,8 @@ public class CalculateChassisPriceCommandHandler implements
             final int floor,
             final int appliedIncrementRate,
             final int totalPrice,
+            final Long discountEventId,
+            final Integer discountedTotalPrice,
             final int floorCustomerLiving,
             final User user) {
 
@@ -378,6 +500,8 @@ public class CalculateChassisPriceCommandHandler implements
                                 floor,
                                 appliedIncrementRate,
                                 totalPrice,
+                                discountEventId,
+                                discountedTotalPrice,
                                 floorCustomerLiving,
                                 chassisSizeList,
                                 user

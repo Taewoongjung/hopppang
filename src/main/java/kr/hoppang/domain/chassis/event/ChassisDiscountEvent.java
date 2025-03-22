@@ -1,7 +1,6 @@
 package kr.hoppang.domain.chassis.event;
 
 import java.time.LocalDateTime;
-import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
 import kr.hoppang.util.common.BoolType;
 import lombok.Getter;
@@ -11,10 +10,11 @@ public class ChassisDiscountEvent {
 
     private final Long id;
     private final CompanyType companyType;
-    private final ChassisType chassisType;
+    private final EventChassisType chassisType;
     private final LocalDateTime startedAt;
     private final LocalDateTime endedAt;
     private final int discountRate;
+    private final DiscountType discountType;
     private final BoolType isStillOnDiscount;
     private final Long publisherId;
 
@@ -25,10 +25,11 @@ public class ChassisDiscountEvent {
     private ChassisDiscountEvent(
             final Long id,
             final CompanyType companyType,
-            final ChassisType chassisType,
+            final EventChassisType eventChassisType,
             final LocalDateTime startedAt,
             final LocalDateTime endedAt,
             final int discountRate,
+            final DiscountType discountType,
             final BoolType isStillOnDiscount,
             final Long publisherId,
             final LocalDateTime createdAt,
@@ -37,10 +38,11 @@ public class ChassisDiscountEvent {
 
         this.id = id;
         this.companyType = companyType;
-        this.chassisType = chassisType;
+        this.chassisType = eventChassisType;
         this.startedAt = startedAt;
         this.endedAt = endedAt;
         this.discountRate = discountRate;
+        this.discountType = discountType;
         this.isStillOnDiscount = isStillOnDiscount;
         this.publisherId = publisherId;
         this.createdAt = createdAt;
@@ -51,20 +53,22 @@ public class ChassisDiscountEvent {
     // 생성
     public static ChassisDiscountEvent of(
             final CompanyType companyType,
-            final ChassisType chassisType,
+            final EventChassisType eventChassisType,
             final LocalDateTime startedAt,
             final LocalDateTime endedAt,
             final int discountRate,
+            final DiscountType discountType,
             final BoolType isStillOnDiscount,
             final Long publisherId
     ) {
         return new ChassisDiscountEvent(
                 null,
                 companyType,
-                chassisType,
+                eventChassisType,
                 startedAt,
                 endedAt,
                 discountRate,
+                discountType,
                 isStillOnDiscount,
                 publisherId,
                 null, null
@@ -75,10 +79,11 @@ public class ChassisDiscountEvent {
     public static ChassisDiscountEvent of(
             final Long id,
             final CompanyType companyType,
-            final ChassisType chassisType,
+            final EventChassisType eventChassisType,
             final LocalDateTime startedAt,
             final LocalDateTime endedAt,
             final int discountRate,
+            final DiscountType discountType,
             final BoolType isStillOnDiscount,
             final Long publisherId,
             final LocalDateTime createdAt,
@@ -87,10 +92,11 @@ public class ChassisDiscountEvent {
         return new ChassisDiscountEvent(
                 id,
                 companyType,
-                chassisType,
+                eventChassisType,
                 startedAt,
                 endedAt,
                 discountRate,
+                discountType,
                 isStillOnDiscount,
                 publisherId,
                 createdAt,

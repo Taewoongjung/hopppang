@@ -19,6 +19,7 @@ import kr.hoppang.adapter.outbound.jpa.entity.BaseEntity;
 import kr.hoppang.domain.chassis.CompanyType;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationInfo;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -59,14 +60,18 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
 
     private int customerLivingFloor;
 
+    private Long chassisDiscountEventId;
+
+    private Integer discountedTotalPrice;
+
     @Setter
-    @OneToOne(mappedBy = "chassisEstimationInfo",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "chassisEstimationInfo", cascade = CascadeType.ALL)
     private ChassisEstimationAddressEntity chassisEstimationAddress;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "chassisEstimationInfo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChassisEstimationSizeInfoEntity> chassisEstimationSizeInfoList = new ArrayList<>();
 
-
+    @Builder
     private ChassisEstimationInfoEntity(
             final Long id,
             final Long userId,
@@ -80,6 +85,8 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
             final int appliedIncrementRate,
             final int totalPrice,
             final int customerLivingFloor,
+            final Long chassisDiscountEventId,
+            final Integer discountedTotalPrice,
             final ChassisEstimationAddressEntity chassisEstimationAddress,
             final List<ChassisEstimationSizeInfoEntity> chassisEstimationSizeInfoList
         ) {
@@ -98,6 +105,8 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
         this.appliedIncrementRate = appliedIncrementRate;
         this.totalPrice = totalPrice;
         this.customerLivingFloor = customerLivingFloor;
+        this.chassisDiscountEventId = chassisDiscountEventId;
+        this.discountedTotalPrice = discountedTotalPrice;
         this.chassisEstimationAddress = chassisEstimationAddress;
         this.chassisEstimationSizeInfoList = chassisEstimationSizeInfoList;
     }
@@ -115,6 +124,8 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
             final int appliedIncrementRate,
             final int price,
             final int customerLivingFloor,
+            final Long chassisDiscountEventId,
+            final Integer discountedTotalPrice,
             final ChassisEstimationAddressEntity chassisEstimationAddress,
             final List<ChassisEstimationSizeInfoEntity> chassisEstimationSizeInfoList
     ) {
@@ -132,6 +143,8 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
                 appliedIncrementRate,
                 price,
                 customerLivingFloor,
+                chassisDiscountEventId,
+                discountedTotalPrice,
                 chassisEstimationAddress,
                 chassisEstimationSizeInfoList
         );
@@ -146,8 +159,10 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
             final int freightTransportFee,
             final int deliveryFee,
             final int appliedIncrementRate,
-            final int price,
-            final int customerLivingFloor
+            final int totalPrice,
+            final int customerLivingFloor,
+            final Long chassisDiscountEventId,
+            final Integer discountedTotalPrice
     ) {
 
         return new ChassisEstimationInfoEntity(
@@ -161,8 +176,10 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
                 freightTransportFee,
                 deliveryFee,
                 appliedIncrementRate,
-                price,
+                totalPrice,
                 customerLivingFloor,
+                chassisDiscountEventId,
+                discountedTotalPrice,
                 null, null
         );
     }
@@ -183,6 +200,8 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
                 getAppliedIncrementRate(),
                 getTotalPrice(),
                 getCustomerLivingFloor(),
+                getChassisDiscountEventId(),
+                getDiscountedTotalPrice(),
                 getCreatedAt(),
                 getLastModified()
         );
@@ -204,6 +223,8 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
                 getAppliedIncrementRate(),
                 getTotalPrice(),
                 getCustomerLivingFloor(),
+                getChassisDiscountEventId(),
+                getDiscountedTotalPrice(),
                 getChassisEstimationSizeInfoList() != null ?
                         getChassisEstimationSizeInfoList().stream()
                                         .map(ChassisEstimationSizeInfoEntity::toPojo)

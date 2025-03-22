@@ -15,7 +15,6 @@ import kr.hoppang.application.command.chassis.commands.CalculateChassisPriceComm
 import kr.hoppang.application.command.chassis.commands.CalculateChassisPriceCommand.CalculateChassisPrice;
 import kr.hoppang.domain.chassis.ChassisType;
 import kr.hoppang.domain.chassis.CompanyType;
-import kr.hoppang.domain.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -111,7 +110,9 @@ public class GetCalculatedChassisPriceWebDtoV1 {
             int freightTransportFee,
             int customerFloor,
             int wholeCalculatedFee,
-            int surtax
+            int surtax,
+            Integer discountedWholeCalculatedFeeAmount, // 할인 된 비용
+            Integer discountedWholeCalculatedFeeWithSurtax // 할인 된 총 비용 discountedWholeCalculatedFee -> discountedWholeCalculatedFeeWithSurtax
     ) {
 
         @JsonInclude(Include.NON_NULL)
@@ -151,7 +152,9 @@ public class GetCalculatedChassisPriceWebDtoV1 {
                     commandResult.freightTransportFee(),
                     commandResult.customerFloor(),
                     commandResult.wholeCalculatedFee(),
-                    calculateSurtax(commandResult.wholeCalculatedFee())
+                    calculateSurtax(commandResult.wholeCalculatedFee()),
+                    commandResult.discountedWholeCalculatedFeeAmount(),
+                    commandResult.discountedWholeCalculatedFeeWithSurtax()
             );
         }
     }

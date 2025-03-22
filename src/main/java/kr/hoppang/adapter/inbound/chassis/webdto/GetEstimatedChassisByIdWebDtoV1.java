@@ -36,6 +36,12 @@ public record GetEstimatedChassisByIdWebDtoV1() {
 
             int surtax,
 
+            Integer discountedAmount,
+
+            Integer discountedWholeCalculatedFee,
+
+            Integer surtaxOfDiscountedWholeCalculatedFee,
+
             @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
             LocalDateTime createdAt
     ) {
@@ -71,6 +77,12 @@ public record GetEstimatedChassisByIdWebDtoV1() {
                     .customerFloor(estimationInfo.getCustomerLivingFloor())
                     .wholeCalculatedFee(estimationInfo.getTotalPrice())
                     .surtax(calculateSurtax(estimationInfo.getTotalPrice()))
+                    .discountedAmount(estimationInfo.getTotalPrice())
+                    .discountedWholeCalculatedFee(estimationInfo.getDiscountedTotalPrice())
+                    .surtaxOfDiscountedWholeCalculatedFee(
+                            estimationInfo.getDiscountedTotalPrice() != null ?
+                                    calculateSurtax(estimationInfo.getDiscountedTotalPrice()) : null
+                    )
                     .createdAt(estimationInfo.getCreatedAt())
                     .build();
         }

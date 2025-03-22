@@ -31,7 +31,9 @@ public record AddChassisEstimationInfoCommand(ChassisEstimationCommand chassisEs
                                            int freightTransportFee,
                                            int customerLivingFloor,
                                            int appliedIncrementRate,
-                                           int wholeCalculatedFee,
+                                           int totalPrice,
+                                           Long discountEventId,
+                                           Integer discountedTotalPrice,
                                            int floorCustomerLiving,
                                            List<ChassisSize> chassisSizeList,
                                            User user
@@ -73,8 +75,10 @@ public record AddChassisEstimationInfoCommand(ChassisEstimationCommand chassisEs
                 command.freightTransportFee,
                 command.deliveryFee,
                 command.appliedIncrementRate,
-                command.wholeCalculatedFee,
-                command.customerLivingFloor
+                command.totalPrice,
+                command.customerLivingFloor,
+                command.discountEventId,
+                command.discountedTotalPrice
         );
     }
 

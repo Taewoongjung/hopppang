@@ -23,6 +23,8 @@ public class ChassisEstimationInfo {
     private final int deliveryFee;
     private final int appliedIncrementRate;
     private final int totalPrice;
+    private final Long chassisDiscountEventId;
+    private final Integer discountedTotalPrice;
     private final int customerLivingFloor;
     private final LocalDateTime createdAt;
     private final LocalDateTime lastModified;
@@ -44,6 +46,8 @@ public class ChassisEstimationInfo {
             final int appliedIncrementRate,
             final int totalPrice,
             final int customerLivingFloor,
+            final Long chassisDiscountEventId,
+            final Integer discountedTotalPrice,
             final List<ChassisEstimationSizeInfo> chassisEstimationSizeInfoList,
             final LocalDateTime createdAt,
             final LocalDateTime lastModified
@@ -61,6 +65,8 @@ public class ChassisEstimationInfo {
         this.appliedIncrementRate = appliedIncrementRate;
         this.totalPrice = totalPrice;
         this.customerLivingFloor = customerLivingFloor;
+        this.chassisDiscountEventId = chassisDiscountEventId;
+        this.discountedTotalPrice = discountedTotalPrice;
         this.chassisEstimationSizeInfoList = chassisEstimationSizeInfoList;
         this.createdAt = createdAt;
         this.lastModified = lastModified;
@@ -79,7 +85,9 @@ public class ChassisEstimationInfo {
             final int deliveryFee,
             final int appliedIncrementRate,
             final int totalPrice,
-            final int customerLivingFloor
+            final int customerLivingFloor,
+            final Long chassisDiscountEventId,
+            final Integer discountedTotalPrice
     ) {
         return new ChassisEstimationInfo(
                 null,
@@ -95,6 +103,8 @@ public class ChassisEstimationInfo {
                 appliedIncrementRate,
                 totalPrice,
                 customerLivingFloor,
+                chassisDiscountEventId,
+                discountedTotalPrice,
                 null,
                 null, null
         );
@@ -115,6 +125,8 @@ public class ChassisEstimationInfo {
             final int appliedIncrementRate,
             final int totalPrice,
             final int customerLivingFloor,
+            final Long chassisDiscountEventId,
+            final Integer discountedTotalPrice,
             final LocalDateTime createdAt,
             final LocalDateTime lastModified
     ) {
@@ -132,6 +144,8 @@ public class ChassisEstimationInfo {
                 appliedIncrementRate,
                 totalPrice,
                 customerLivingFloor,
+                chassisDiscountEventId,
+                discountedTotalPrice,
                 null,
                 createdAt, lastModified
         );
@@ -150,6 +164,8 @@ public class ChassisEstimationInfo {
             final int appliedIncrementRate,
             final int totalPrice,
             final int customerLivingFloor,
+            final Long chassisDiscountEventId,
+            final Integer discountedTotalPrice,
             final List<ChassisEstimationSizeInfo> chassisEstimationSizeInfoList,
             final LocalDateTime createdAt,
             final LocalDateTime lastModified
@@ -168,6 +184,8 @@ public class ChassisEstimationInfo {
                 appliedIncrementRate,
                 totalPrice,
                 customerLivingFloor,
+                chassisDiscountEventId,
+                discountedTotalPrice,
                 chassisEstimationSizeInfoList,
                 createdAt, lastModified
         );
