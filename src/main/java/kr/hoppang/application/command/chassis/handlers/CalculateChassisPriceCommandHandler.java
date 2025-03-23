@@ -97,12 +97,14 @@ public class CalculateChassisPriceCommandHandler implements
             int approxWidth = ApproximateCalculator.getApproximateWidth(chassis.width());
             int approxHeight = ApproximateCalculator.getApproximateHeight(chassis.height());
 
-            if ("단창".equals(chassis.chassisType().getType())) {
-                widthForSingleWindow.addAndGet(approxWidth);
-                heightForSingleWindow.addAndGet(approxHeight);
-            } else {
-                widthForDoubleWindow.addAndGet(approxWidth);
-                heightForDoubleWindow.addAndGet(approxHeight);
+            if (!"고정값창".equals(chassis.chassisType().getType())) {
+                if ("단창".equals(chassis.chassisType().getType())) {
+                    widthForSingleWindow.addAndGet(approxWidth);
+                    heightForSingleWindow.addAndGet(approxHeight);
+                } else {
+                    widthForDoubleWindow.addAndGet(approxWidth);
+                    heightForDoubleWindow.addAndGet(approxHeight);
+                }
             }
 
             ChassisPriceInfo chassisPriceInfo =
@@ -124,7 +126,7 @@ public class CalculateChassisPriceCommandHandler implements
 
             chassisPriceResultList.add(
                     new ChassisPriceResult(
-                            chassis.chassisType().name(),
+                            chassis.chassisType(),
                             chassis.width(),
                             chassis.height(),
                             chassisFinalPrice
@@ -182,8 +184,9 @@ public class CalculateChassisPriceCommandHandler implements
         if (laborFee != 0) {
             int dividedLaborFeeByCountOfChassis = laborFee / chassisPriceResultList.size();
 
-            chassisPriceResultList.forEach(
-                    e -> e.addLaborFeeToChassisPrice(dividedLaborFeeByCountOfChassis));
+            chassisPriceResultList.stream()
+                    .filter(f -> !"고정값창".equals(f.getChassisType().getType()))
+                    .forEach(e -> e.addLaborFeeToChassisPrice(dividedLaborFeeByCountOfChassis));
         }
 
         // 각 샤시 "퍼센트 할인" 정보 조회
@@ -196,7 +199,7 @@ public class CalculateChassisPriceCommandHandler implements
                         chassis -> {
                             ChassisDiscountEvent chassisDiscountEvent = getDiscountEventByChassisType(
                                     chassisRateDiscountEvent,
-                                    EventChassisType.from(chassis.getChassisType())
+                                    EventChassisType.from(chassis.getChassisType().name())
                             );
 
                             if (chassisDiscountEvent != null) {
@@ -468,7 +471,7 @@ public class CalculateChassisPriceCommandHandler implements
         for (ChassisPriceResult chassisPriceResult : chassisPriceResultList) {
             chassisSizeList.add(
                     new ChassisSize(
-                            chassisPriceResult.getChassisType(),
+                            chassisPriceResult.getChassisType().name(),
                             chassisPriceResult.getWidth(),
                             chassisPriceResult.getHeight(),
                             chassisPriceResult.getPrice(),

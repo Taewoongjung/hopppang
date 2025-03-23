@@ -12,7 +12,9 @@ public enum ChassisType {
     InteriorSingle("단창", "내창단창"),
     LivingRoomSliding("단창", "거실분합창"),
     BalconyDouble("이중창", "발코니이중창"),
-    InteriorDouble("이중창", "내창이중창");
+    InteriorDouble("이중창", "내창이중창"),
+    Fixed("고정값창", "픽스창"),
+    Turning("고정값창", "터닝도어");
 
     private final String type;
     private final String chassisName;

@@ -1,6 +1,7 @@
 package kr.hoppang.application.command.chassis.commandresults;
 
 import java.util.List;
+import kr.hoppang.domain.chassis.ChassisType;
 import lombok.Getter;
 
 public record CalculateChassisPriceCommandHandlerCommandResult(
@@ -22,7 +23,7 @@ public record CalculateChassisPriceCommandHandlerCommandResult(
     @Getter
     public static class ChassisPriceResult {
 
-        private final String chassisType;
+        private final ChassisType chassisType;
 
         private final int width;
 
@@ -37,7 +38,7 @@ public record CalculateChassisPriceCommandHandlerCommandResult(
         private Integer discountedPrice;
 
         public ChassisPriceResult(
-                final String chassisType,
+                final ChassisType chassisType,
                 final int width,
                 final int height,
                 final int price
