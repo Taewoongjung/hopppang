@@ -133,7 +133,7 @@ public class GetCalculatedChassisPriceWebDtoV1 {
                     .forEach(e ->
                             chassisPriceResultList.add(
                                     new ChassisPrice(
-                                            e.getChassisType(),
+                                            e.getChassisType().name(),
                                             e.getWidth(), e.getHeight(),
                                             e.getPrice(),
                                             e.getDiscountedRate(),
