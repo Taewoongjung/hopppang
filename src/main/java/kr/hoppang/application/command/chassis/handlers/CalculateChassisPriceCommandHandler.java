@@ -92,6 +92,8 @@ public class CalculateChassisPriceCommandHandler implements
             check(chassis.width() > 5000 || chassis.width() < 300, NOT_AVAILABLE_MANUFACTURE);
             check(chassis.height() > 2600 || chassis.height() < 300, NOT_AVAILABLE_MANUFACTURE);
 
+            int chassisFinalPrice = 0;
+
             int chassisPrice = 0;
 
             int approxWidth = ApproximateCalculator.getApproximateWidth(chassis.width());
@@ -105,24 +107,31 @@ public class CalculateChassisPriceCommandHandler implements
                     widthForDoubleWindow.addAndGet(approxWidth);
                     heightForDoubleWindow.addAndGet(approxHeight);
                 }
+
+                ChassisPriceInfo chassisPriceInfo =
+                        chassisPriceInfoRepository.findByTypeAndCompanyTypeAndWidthAndHeight(
+                                chassis.chassisType(), chassis.companyType(), approxWidth,
+                                approxHeight);
+
+                chassisPrice = chassisPriceCalculator.calculateMaterialPrice(
+                        chassisPriceInfo.getPrice(),
+                        approxWidth, approxHeight,
+                        chassis.width(), chassis.height()
+                );
+
+                // 마진율 대비 계산
+                chassisFinalPrice = calculateChassisPriceWithIncrementRate(
+                        additionalChassisPriceCriteria.getPrice(),
+                        chassisPrice
+                );
+            } else {
+                ChassisPriceInfo chassisPriceInfo =
+                        chassisPriceInfoRepository.findByTypeAndCompanyTypeAndWidthAndHeight(
+                                chassis.chassisType(), chassis.companyType(), approxWidth,
+                                approxHeight);
+                // "고정값창"은 가격 데이터베이스에 있는 값 그대로.
+                chassisFinalPrice = chassisPriceInfo.getPrice();
             }
-
-            ChassisPriceInfo chassisPriceInfo =
-                    chassisPriceInfoRepository.findByTypeAndCompanyTypeAndWidthAndHeight(
-                            chassis.chassisType(), chassis.companyType(), approxWidth,
-                            approxHeight);
-
-            chassisPrice = chassisPriceCalculator.calculateMaterialPrice(
-                    chassisPriceInfo.getPrice(),
-                    approxWidth, approxHeight,
-                    chassis.width(), chassis.height()
-            );
-
-            // 마진율 대비 계산
-            int chassisFinalPrice = calculateChassisPriceWithIncrementRate(
-                    additionalChassisPriceCriteria.getPrice(),
-                    chassisPrice
-            );
 
             chassisPriceResultList.add(
                     new ChassisPriceResult(
@@ -181,12 +190,15 @@ public class CalculateChassisPriceCommandHandler implements
         );
 
         // 인건비를 견적 받은 샤시의 개수만큼 나눠서 각각 금액에 더한다.
-        if (laborFee != 0) {
+        if (laborFee != 0 && !chassisPriceResultList.isEmpty()) {
             int dividedLaborFeeByCountOfChassis = laborFee / chassisPriceResultList.size();
 
-            chassisPriceResultList.stream()
-                    .filter(f -> !"고정값창".equals(f.getChassisType().getType()))
-                    .forEach(e -> e.addLaborFeeToChassisPrice(dividedLaborFeeByCountOfChassis));
+            chassisPriceResultList
+                    .forEach(e -> {
+                        if (!"고정값창".equals(e.getChassisType().getType())) {
+                            e.addLaborFeeToChassisPrice(dividedLaborFeeByCountOfChassis);
+                        }
+                    });
         }
 
         // 각 샤시 "퍼센트 할인" 정보 조회
