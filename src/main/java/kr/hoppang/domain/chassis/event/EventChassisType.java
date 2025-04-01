@@ -9,6 +9,8 @@ public enum EventChassisType {
     LivingRoomSliding,
     BalconyDouble,
     InteriorDouble,
+    Turning,
+    Fixed,
     TotalPriceOver_800,
     TotalPriceOver_1000,
     TotalPriceOver_1300
