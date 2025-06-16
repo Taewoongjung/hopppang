@@ -13,8 +13,8 @@ public record CalculateChassisPriceCommandHandlerCommandResult(
         int maintenanceFee,
         int ladderFee,
         int freightTransportFee,
-        // int etcFee, // 기타 비용 (배송비, 도수운반비)
         int customerFloor,
+        int laborFee,
         int wholeCalculatedFee, // 총 비용
         Integer discountedWholeCalculatedFeeAmount, // 할인 된 비용
         Integer discountedWholeCalculatedFeeWithSurtax // 할인 된 총 비용

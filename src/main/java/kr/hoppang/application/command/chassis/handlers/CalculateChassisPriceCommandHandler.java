@@ -309,6 +309,7 @@ public class CalculateChassisPriceCommandHandler implements
                 ladderFee,
                 freightTransportFee,
                 floor,
+                laborFee,
                 totalPrice,
                 appliedChassisFixedAmountDiscountEvent != null ?
                         appliedChassisFixedAmountDiscountEvent.getDiscountRate() : null,
