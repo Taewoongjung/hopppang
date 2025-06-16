@@ -14,7 +14,6 @@ public record CalculateChassisPriceCommandHandlerCommandResult(
         int ladderFee,
         int freightTransportFee,
         int customerFloor,
-        int laborFee,
         int wholeCalculatedFee, // 총 비용
         Integer discountedWholeCalculatedFeeAmount, // 할인 된 비용
         Integer discountedWholeCalculatedFeeWithSurtax // 할인 된 총 비용
@@ -31,11 +30,14 @@ public record CalculateChassisPriceCommandHandlerCommandResult(
 
         private int price;
 
+        private int addedLaborFee;
+
         private Long chassisDiscountEventId;
 
         private Integer discountedRate;
 
         private Integer discountedPrice;
+
 
         public ChassisPriceResult(
                 final ChassisType chassisType,
@@ -50,6 +52,7 @@ public record CalculateChassisPriceCommandHandlerCommandResult(
         }
 
         public void addLaborFeeToChassisPrice(final int laborFee) {
+            this.addedLaborFee = laborFee;
             this.price += laborFee;
         }
 

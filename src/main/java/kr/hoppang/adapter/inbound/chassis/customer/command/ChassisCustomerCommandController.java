@@ -65,7 +65,12 @@ public class ChassisCustomerCommandController {
                                 .ladderFee(commandResult.ladderFee())
                                 .freightTransportFee(commandResult.freightTransportFee())
                                 .customerFloor(commandResult.customerFloor())
-                                .laborFee(commandResult.laborFee())
+                                .laborFee(
+                                        commandResult.chassisPriceResultList().stream()
+                                                .mapToInt(
+                                                        CalculateChassisPriceCommandHandlerCommandResult.ChassisPriceResult::getAddedLaborFee
+                                                ).sum()
+                                )
                                 .wholeCalculatedFee(commandResult.wholeCalculatedFee())
                                 .surtax(calculateSurtax(commandResult.wholeCalculatedFee()))
                                 .discountedWholeCalculatedFeeAmount(
