@@ -81,14 +81,14 @@ public class GetCalculatedChassisPriceWebDtoV1 {
     }
 
     private static String forTestPeriodAddressZipCode(final String target) {
-        if (target == null || target.isEmpty()) {
+        if (target == null || target.isBlank()) {
             return "00000";
         }
         return target;
     }
 
     private static String forTestPeriodAddressInput(final String target) {
-        if (target == null || target.isEmpty()) {
+        if (target == null || target.isBlank()) {
             return "테스트 기간";
         }
         return target;

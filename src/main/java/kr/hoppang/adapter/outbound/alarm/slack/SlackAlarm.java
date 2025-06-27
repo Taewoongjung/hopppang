@@ -226,6 +226,8 @@ public class SlackAlarm implements AlarmService {
             String inquiryStrategy;
             if ("TEL".equals(requestEstimationInquiry.strategy())) {
                 inquiryStrategy = "*문의 방법:* 전화";
+            } else if ("TEL_CONSULT".equals(requestEstimationInquiry.strategy())) {
+                inquiryStrategy = "*문의 방법:* 상담사 전화 요청";
             } else if ("KAKAO".equals(requestEstimationInquiry.strategy())) {
                 inquiryStrategy = "*문의 방법:* 카카오톡";
             } else {
