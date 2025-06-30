@@ -86,4 +86,9 @@ public class UserConfigInfoEntity extends BaseEntity {
         this.isPushOn = isPushOn;
         updateLastModifiedAsNow();
     }
+
+    public void setIsAlimTalkOn(final BoolType isAlimTalkOn) {
+        this.isAlimTalkOn = isAlimTalkOn;
+        updateLastModifiedAsNow();
+    }
 }

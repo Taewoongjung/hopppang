@@ -278,6 +278,17 @@ public class UserEntity extends BaseEntity {
         this.userConfigInfo.setIsPushOn(isPushOnTarget ? BoolType.T : BoolType.F);
     }
 
+    public void updateIsAlimTalkOn(final boolean isAlimTalkOnTarget) {
+
+        boolean originIsAlimTalkOn = this.userConfigInfo.getIsAlimTalkOn().equals(BoolType.T);
+
+        if (originIsAlimTalkOn == isAlimTalkOnTarget) {
+            return;
+        }
+
+        this.userConfigInfo.setIsAlimTalkOn(isAlimTalkOnTarget ? BoolType.T : BoolType.F);
+    }
+
     public void setUserConfigInfo(final UserConfigInfoEntity userConfigInfo) {
         this.userConfigInfo = userConfigInfo;
     }

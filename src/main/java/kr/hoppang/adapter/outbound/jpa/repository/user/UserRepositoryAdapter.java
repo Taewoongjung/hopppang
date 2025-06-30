@@ -239,6 +239,7 @@ public class UserRepositoryAdapter implements UserRepository {
         }
 
         user.updateIsPushOn(isPushOn);
+        user.updateIsAlimTalkOn(isAlimTalkOn);
     }
 
     @Override
