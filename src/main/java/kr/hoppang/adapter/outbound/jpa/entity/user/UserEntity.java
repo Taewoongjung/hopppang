@@ -215,14 +215,16 @@ public class UserEntity extends BaseEntity {
 
     public void updatePhoneNumberAndAddressAndConfig(
             final String phoneNumber,
-            final boolean isPushOn
+            final boolean isPushOn,
+            final boolean isAlimTalkOn
     ) {
 
         this.tel = phoneNumber;
 
         this.userConfigInfo = UserConfigInfoEntity.of(
                 this.id,
-                isPushOn ? BoolType.T : BoolType.F
+                isPushOn ? BoolType.T : BoolType.F,
+                isAlimTalkOn ? BoolType.T : BoolType.F
         );
     }
 
@@ -252,7 +254,8 @@ public class UserEntity extends BaseEntity {
     public void setUserConfigInfo(final UserConfigInfo userConfigInfo) {
         this.userConfigInfo = UserConfigInfoEntity.of(
                 userConfigInfo.getUserId(),
-                userConfigInfo.getIsPushOn()
+                userConfigInfo.getIsPushOn(),
+                userConfigInfo.getIsAlimTalkOn()
         );
     }
 

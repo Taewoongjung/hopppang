@@ -25,7 +25,11 @@ public class ReviseUserConfigurationCommandHandler implements ICommandHandler<Re
     @Transactional
     public Boolean handle(final ReviseUserConfigurationCommand command) {
 
-        userRepository.updateUserConfiguration(command.userId(), command.isPushOn());
+        userRepository.updateUserConfiguration(
+                command.userId(),
+                command.isPushOn(),
+                command.isAlimTalkOn()
+        );
 
         return true;
     }

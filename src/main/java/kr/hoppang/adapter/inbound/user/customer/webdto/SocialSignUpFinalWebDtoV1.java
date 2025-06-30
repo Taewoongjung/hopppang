@@ -4,10 +4,8 @@ public class SocialSignUpFinalWebDtoV1 {
 
     public record Req(String userEmail,
                       String userPhoneNumber,
-                      String address,
-                      String subAddress,
-                      String buildingNumber,
-                      Boolean isPushOn) {
+                      Boolean isPushOn,
+                      Boolean isAlimTalkOn) {
 
     }
 

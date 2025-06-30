@@ -88,7 +88,8 @@ public class UserCustomerCommandController {
                 new SocialSignUpFinalCommand(
                         req.userEmail(),
                         req.userPhoneNumber(),
-                        req.isPushOn()
+                        req.isPushOn(),
+                        req.isAlimTalkOn()
                 )
         );
 
@@ -234,7 +235,11 @@ public class UserCustomerCommandController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(reviseUserConfigurationCommandHandler.handle(
-                        new ReviseUserConfigurationCommand(userId, req.isPushOn())));
+                        new ReviseUserConfigurationCommand(
+                                userId,
+                                req.isPushOn(),
+                                req.isAlimTalkOn() != null && req.isAlimTalkOn() // @TODO 임시방편으로 해놓음. 추후 req.isAlimTalkOn() 으로 변경 필요함.
+                        )));
     }
 
     @DeleteMapping(value = "/api/users/{userId}")

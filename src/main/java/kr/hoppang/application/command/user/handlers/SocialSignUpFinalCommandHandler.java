@@ -11,7 +11,6 @@ import kr.hoppang.adapter.outbound.cache.sms.CacheSmsValidationRedisRepository;
 import kr.hoppang.adapter.outbound.cache.user.CacheUserRedisRepository;
 import kr.hoppang.application.command.user.commands.SocialSignUpFinalCommand;
 import kr.hoppang.domain.user.User;
-import kr.hoppang.domain.user.UserAddress;
 import kr.hoppang.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,8 +38,12 @@ public class SocialSignUpFinalCommandHandler implements ICommandHandler<SocialSi
     @Transactional(rollbackFor = Exception.class)
     public String handle(final SocialSignUpFinalCommand command) {
 
-        User updatedUser = userRepository.updatePhoneNumberAndPush(command.userEmail(),
-                command.userPhoneNumber(), command.isPushOn());
+        User updatedUser = userRepository.userConfiguration(command.userEmail(),
+                command.userPhoneNumber(), command.isPushOn(),
+
+                // @TODO 임시로 해놓고 프론트 완전히 v2 로 변경 되면 command.isAlimTalkOn() 로 다시 수정
+                command.isAlimTalkOn() != null && command.isAlimTalkOn()
+        );
 
         if (updatedUser != null) {
             // 휴대폰 검증이 되었는지 확인

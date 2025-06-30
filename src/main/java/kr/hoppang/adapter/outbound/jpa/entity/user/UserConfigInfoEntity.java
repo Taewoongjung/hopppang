@@ -40,6 +40,10 @@ public class UserConfigInfoEntity extends BaseEntity {
     @Column(name = "is_push_on", nullable = false, columnDefinition = "char(1)")
     private BoolType isPushOn;
 
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "is_alim_talk_on", nullable = false, columnDefinition = "char(1)")
+    private BoolType isAlimTalkOn;
+
     @JsonBackReference
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
@@ -49,20 +53,23 @@ public class UserConfigInfoEntity extends BaseEntity {
     private UserConfigInfoEntity(
             final Long id,
             final Long userId,
-            final BoolType isPushOn
+            final BoolType isPushOn,
+            final BoolType isAlimTalkOn
     ) {
         super(LocalDateTime.now(), LocalDateTime.now());
 
         this.id = id;
         this.userId = userId;
         this.isPushOn = isPushOn;
+        this.isAlimTalkOn = isAlimTalkOn;
     }
 
     public static UserConfigInfoEntity of(
             final Long userId,
-            final BoolType isPushOn
+            final BoolType isPushOn,
+            final BoolType isAlimTalkOn
     ) {
-        return new UserConfigInfoEntity(null, userId, isPushOn);
+        return new UserConfigInfoEntity(null, userId, isPushOn, isAlimTalkOn);
     }
 
     public UserConfigInfo toPojo() {
@@ -70,6 +77,7 @@ public class UserConfigInfoEntity extends BaseEntity {
                 id,
                 userId,
                 isPushOn,
+                isAlimTalkOn,
                 getCreatedAt(),
                 getLastModified());
     }

@@ -135,16 +135,17 @@ public class UserRepositoryAdapter implements UserRepository {
 
     @Override
     @Transactional
-    public User updatePhoneNumberAndPush(
+    public User userConfiguration(
             final String userEmail,
             final String phoneNumber,
-            final boolean isPushOn) {
+            final boolean isPushOn,
+            final boolean isAlimTalkOn) {
 
         UserEntity entity = userJpaRepository.findByEmailAndDeletedAtIsNull(userEmail);
 
         check(entity == null, NOT_EXIST_USER);
 
-        entity.updatePhoneNumberAndAddressAndConfig(phoneNumber, isPushOn);
+        entity.updatePhoneNumberAndAddressAndConfig(phoneNumber, isPushOn, isAlimTalkOn);
 
         return entity.toPojoWithRelations();
     }
@@ -217,7 +218,11 @@ public class UserRepositoryAdapter implements UserRepository {
 
     @Override
     @Transactional
-    public void updateUserConfiguration(final long id, final boolean isPushOn) {
+    public void updateUserConfiguration(
+            final long id,
+            final boolean isPushOn,
+            final boolean isAlimTalkOn
+    ) {
         Optional<UserEntity> entity = userJpaRepository.findById(id);
 
         UserEntity user = entity.orElse(null);
@@ -226,7 +231,11 @@ public class UserRepositoryAdapter implements UserRepository {
 
         if (user.getUserConfigInfo() == null) {
             user.setUserConfigInfo(
-                    UserConfigInfoEntity.of(user.getId(), convertBooleanToType(isPushOn)));
+                    UserConfigInfoEntity.of(
+                            user.getId(),
+                            convertBooleanToType(isPushOn),
+                            convertBooleanToType(isAlimTalkOn)
+                    ));
         }
 
         user.updateIsPushOn(isPushOn);

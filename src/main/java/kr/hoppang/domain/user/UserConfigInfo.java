@@ -10,6 +10,7 @@ public class UserConfigInfo {
     private Long id;
     private Long userId;
     private BoolType isPushOn;
+    private BoolType isAlimTalkOn;
     private LocalDateTime createdAt;
     private LocalDateTime lastModified;
 
@@ -17,12 +18,14 @@ public class UserConfigInfo {
             final Long id,
             final Long userId,
             final BoolType isPushOn,
+            final BoolType isAlimTalkOn,
             final LocalDateTime createdAt,
             final LocalDateTime lastModified
     ) {
         this.id = id;
         this.userId = userId;
         this.isPushOn = isPushOn;
+        this.isAlimTalkOn = isAlimTalkOn;
         this.createdAt = createdAt;
         this.lastModified = lastModified;
     }
@@ -30,9 +33,10 @@ public class UserConfigInfo {
     // 생성
     public static UserConfigInfo of(
             final Long userId,
-            final BoolType isPushOn
+            final BoolType isPushOn,
+            final BoolType isAlimTalkOn
     ) {
-        return new UserConfigInfo(null, userId, isPushOn, null, null);
+        return new UserConfigInfo(null, userId, isPushOn, isAlimTalkOn, null, null);
     }
 
     // 조회
@@ -40,10 +44,11 @@ public class UserConfigInfo {
             final Long id,
             final Long userId,
             final BoolType isPushOn,
+            final BoolType isAlimTalkOn,
             final LocalDateTime createdAt,
             final LocalDateTime lastModified
     ) {
-        return new UserConfigInfo(id, userId, isPushOn, createdAt, lastModified);
+        return new UserConfigInfo(id, userId, isPushOn, isAlimTalkOn, createdAt, lastModified);
     }
 
     public boolean getIsPushOnAsBoolean() {

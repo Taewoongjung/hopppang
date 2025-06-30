@@ -26,8 +26,8 @@ public interface UserRepository {
     void updateToken(final String email, final TokenType tokenType, final String token,
             final LocalDateTime expireTime);
 
-    User updatePhoneNumberAndPush(final String userEmail, final String phoneNumber,
-            final boolean isPushOn);
+    User userConfiguration(final String userEmail, final String phoneNumber,
+            final boolean isPushOn, final boolean isAlimTalkOn);
 
     User updateDeviceInfo(final String userEmail, final UserDevice userDevice);
 
@@ -39,7 +39,7 @@ public interface UserRepository {
 
     String softDeleteUser(final long id);
 
-    void updateUserConfiguration(final long id, final boolean isPushOn);
+    void updateUserConfiguration(final long id, final boolean isPushOn, final boolean isAlimTalkOn);
 
     UserConfigInfo findUserConfigByUserId(final long userId);
 
