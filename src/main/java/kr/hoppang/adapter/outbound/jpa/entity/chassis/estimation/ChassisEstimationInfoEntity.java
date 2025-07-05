@@ -111,44 +111,6 @@ public class ChassisEstimationInfoEntity extends BaseEntity {
         this.chassisEstimationSizeInfoList = chassisEstimationSizeInfoList;
     }
 
-    // 생성
-    public static ChassisEstimationInfoEntity of(
-            final Long userId,
-            final CompanyType companyType,
-            final int laborFee,
-            final int ladderCarFee,
-            final int demolitionFee,
-            final int maintenanceFee,
-            final int freightTransportFee,
-            final int deliveryFee,
-            final int appliedIncrementRate,
-            final int price,
-            final int customerLivingFloor,
-            final Long chassisDiscountEventId,
-            final Integer discountedTotalPrice,
-            final ChassisEstimationAddressEntity chassisEstimationAddress,
-            final List<ChassisEstimationSizeInfoEntity> chassisEstimationSizeInfoList
-    ) {
-
-        return new ChassisEstimationInfoEntity(
-                null,
-                userId,
-                companyType,
-                laborFee,
-                ladderCarFee,
-                demolitionFee,
-                maintenanceFee,
-                freightTransportFee,
-                deliveryFee,
-                appliedIncrementRate,
-                price,
-                customerLivingFloor,
-                chassisDiscountEventId,
-                discountedTotalPrice,
-                chassisEstimationAddress,
-                chassisEstimationSizeInfoList
-        );
-    }
     public static ChassisEstimationInfoEntity of(
             final Long userId,
             final CompanyType companyType,
