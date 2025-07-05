@@ -2,6 +2,7 @@ CREATE TABLE boards
 (
     id              BIGINT UNSIGNED            NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name            VARCHAR(20)                NOT NULL COMMENT '종류 명',
+    is_available    CHAR(1)                    NOT NULL COMMENT '카테고리 활성화 여부',
     created_at      DATETIME(6) DEFAULT CURRENT_TIMESTAMP(6) NOT NULL,
     last_modified   DATETIME(6) DEFAULT CURRENT_TIMESTAMP(6) NOT NULL ON UPDATE CURRENT_TIMESTAMP(6)
 ) ENGINE = InnoDB
