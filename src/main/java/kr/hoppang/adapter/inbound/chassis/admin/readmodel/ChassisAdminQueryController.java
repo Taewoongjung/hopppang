@@ -22,7 +22,7 @@ import kr.hoppang.application.readmodel.chassis.handlers.FindChassisPriceAdditio
 import kr.hoppang.application.readmodel.chassis.handlers.FindChassisPriceInfoByTypeAndCompanyTypeQueryHandler;
 import kr.hoppang.application.readmodel.chassis.handlers.FindEstimatedByStateStatisticsQueryHandler;
 import kr.hoppang.application.readmodel.chassis.handlers.FindEstimatedStatisticsQueryHandler;
-import kr.hoppang.application.readmodel.chassis.queries.EmptyQuery;
+import kr.hoppang.application.util.EmptyQuery;
 import kr.hoppang.application.readmodel.chassis.queries.FindChassisEstimationInformationQuery;
 import kr.hoppang.application.readmodel.chassis.queries.FindChassisPriceAdditionalCriteriaQuery;
 import kr.hoppang.application.readmodel.chassis.queries.FindChassisPriceInfoByCompanyTypeQuery;

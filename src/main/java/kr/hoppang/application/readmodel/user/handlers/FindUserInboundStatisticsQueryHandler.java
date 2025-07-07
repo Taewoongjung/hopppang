@@ -2,7 +2,7 @@ package kr.hoppang.application.readmodel.user.handlers;
 
 import java.util.List;
 import kr.hoppang.abstraction.domain.IQueryHandler;
-import kr.hoppang.application.readmodel.chassis.queries.EmptyQuery;
+import kr.hoppang.application.util.EmptyQuery;
 import kr.hoppang.application.readmodel.user.queries.FindUserInboundStatisticsQuery;
 import kr.hoppang.application.readmodel.user.queries.FindUserInboundStatisticsQuery.Res;
 import kr.hoppang.domain.user.User;

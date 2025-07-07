@@ -31,10 +31,8 @@ public class CacheSmsValidationRedisRepository {
         map.put("createdAt", LocalDateTime.now().toString());
         map.put("isVerified", "false");
 
-        stringStringValueOperations.set(key, map);
-
         // 해당 버킷 ttl 을 3분 20초로 설정
-        redisTemplate.expire(key, Duration.ofSeconds(200));
+        stringStringValueOperations.set(key, map, Duration.ofSeconds(200));
     }
 
     public Map<String, String> getBucketByKey(final String key) {
@@ -69,13 +67,11 @@ public class CacheSmsValidationRedisRepository {
 
         if (valueMap != null) {
             valueMap.put("isVerified", "true");
-            valueOps.set(key, valueMap);
 
             // 기존 TTL 유지 (현재 TTL을 가져와서 다시 설정)
             Long currentTtl = redisTemplate.getExpire(key);
-            if (currentTtl != null && currentTtl > 0) {
-                redisTemplate.expire(key, Duration.ofSeconds(currentTtl));
-            }
+
+            valueOps.set(key, valueMap, Duration.ofSeconds(currentTtl));
         } else {
             log.error("[Redis] No value found for key: " + key);
         }

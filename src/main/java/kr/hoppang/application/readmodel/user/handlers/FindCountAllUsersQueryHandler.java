@@ -1,7 +1,7 @@
 package kr.hoppang.application.readmodel.user.handlers;
 
 import kr.hoppang.abstraction.domain.IQueryHandler;
-import kr.hoppang.application.readmodel.chassis.queries.EmptyQuery;
+import kr.hoppang.application.util.EmptyQuery;
 import kr.hoppang.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

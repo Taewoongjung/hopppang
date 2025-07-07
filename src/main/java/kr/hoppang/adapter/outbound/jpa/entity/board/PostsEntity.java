@@ -12,14 +12,16 @@ import java.time.LocalDateTime;
 import kr.hoppang.adapter.outbound.jpa.entity.BaseEntity;
 import kr.hoppang.util.common.BoolType;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Builder
 @Table(name = "posts")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Posts extends BaseEntity {
+public class PostsEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,7 +44,7 @@ public class Posts extends BaseEntity {
     private BoolType isAnonymous;
 
 
-    private Posts(
+    private PostsEntity(
             final Long id,
             final Long boardId,
             final Long registerId,
@@ -61,14 +63,14 @@ public class Posts extends BaseEntity {
         this.isAnonymous = isAnonymous;
     }
 
-    public static Posts create(
+    public static PostsEntity create(
             final Long boardId,
             final Long registerId,
             final String title,
             final String contents,
             final BoolType isAnonymous
     ) {
-        return new Posts(
+        return new PostsEntity(
                 null,
                 boardId,
                 registerId,

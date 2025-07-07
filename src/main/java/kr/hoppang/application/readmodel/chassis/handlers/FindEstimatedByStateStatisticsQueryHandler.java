@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import kr.hoppang.abstraction.domain.IQueryHandler;
-import kr.hoppang.application.readmodel.chassis.queries.EmptyQuery;
+import kr.hoppang.application.util.EmptyQuery;
 import kr.hoppang.application.readmodel.chassis.queries.FindEstimatedByStateStatisticsQuery;
 import kr.hoppang.application.readmodel.chassis.queries.FindEstimatedByStateStatisticsQuery.Res;
 import kr.hoppang.domain.chassis.estimation.ChassisEstimationInfo;

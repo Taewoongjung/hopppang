@@ -1,4 +1,4 @@
-package kr.hoppang.application.readmodel.chassis.queries;
+package kr.hoppang.application.util;
 
 import kr.hoppang.abstraction.domain.IQuery;
 import lombok.Builder;

@@ -1,6 +1,5 @@
 package kr.hoppang.config.security;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.Collections;
 import kr.hoppang.application.readmodel.user.handlers.LoadUserByUsernameQueryHandler;
@@ -8,7 +7,6 @@ import kr.hoppang.config.security.jwt.JWTFilter;
 import kr.hoppang.config.security.jwt.JWTUtil;
 import kr.hoppang.config.security.jwt.LoginFilter;
 import lombok.RequiredArgsConstructor;
-import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +21,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -46,22 +43,18 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors((corsCustomizer -> corsCustomizer.configurationSource(
-                        new CorsConfigurationSource() {
-                            @Override
-                            public CorsConfiguration getCorsConfiguration(
-                                    @NotNull HttpServletRequest request) {
+                        request -> {
 
-                                CorsConfiguration configuration = new CorsConfiguration();
+                            CorsConfiguration configuration = new CorsConfiguration();
 
-                                configuration.setAllowedOrigins(Arrays
-                                        .asList(adminPageOriginUrl, webPageOriginUrl));
-                                configuration.setAllowedMethods(Collections.singletonList("*"));
-                                configuration.setAllowCredentials(true);
-                                configuration.setAllowedHeaders(Collections.singletonList("*"));
-                                configuration.setMaxAge(3600L);
+                            configuration.setAllowedOrigins(Arrays
+                                    .asList(adminPageOriginUrl, webPageOriginUrl));
+                            configuration.setAllowedMethods(Collections.singletonList("*"));
+                            configuration.setAllowCredentials(true);
+                            configuration.setAllowedHeaders(Collections.singletonList("*"));
+                            configuration.setMaxAge(3600L);
 
-                                return configuration;
-                            }
+                            return configuration;
                         })));
 
         http.httpBasic(AbstractHttpConfigurer::disable);
@@ -71,6 +64,7 @@ public class SecurityConfig {
                         // all permitted
                         .requestMatchers(HttpMethod.GET,
                                 "/actuator/prometheus"
+                                , "/api/boards"
                                 , "/api/emails/validations"
                                 , "/api/phones/validations"
                                 , "/api/users/emails"

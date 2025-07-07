@@ -9,7 +9,7 @@ import kr.hoppang.adapter.inbound.chassis.admin.webdto.GetCountAllUsersWebDtoV1;
 import kr.hoppang.adapter.inbound.user.admin.webdto.GetUserInboundStatistics;
 import kr.hoppang.adapter.inbound.user.admin.webdto.SearchAllAvailableUsersWebDtoV1;
 import kr.hoppang.adapter.inbound.user.admin.webdto.SearchUserStatisticsWebDtoV1;
-import kr.hoppang.application.readmodel.chassis.queries.EmptyQuery;
+import kr.hoppang.application.util.EmptyQuery;
 import kr.hoppang.application.readmodel.user.handlers.FindAllUsersQueryHandler;
 import kr.hoppang.application.readmodel.user.handlers.FindCountAllUsersQueryHandler;
 import kr.hoppang.application.readmodel.user.handlers.FindStatisticsOfUserQueryHandler;
