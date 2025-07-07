@@ -43,6 +43,10 @@ public class PostsEntity extends BaseEntity {
     @Column(name = "is_anonymous", nullable = false, columnDefinition = "char(1)")
     private BoolType isAnonymous;
 
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "is_deleted", nullable = false, columnDefinition = "char(1)")
+    private BoolType isDeleted;
+
 
     private PostsEntity(
             final Long id,
@@ -50,7 +54,8 @@ public class PostsEntity extends BaseEntity {
             final Long registerId,
             final String title,
             final String contents,
-            final BoolType isAnonymous
+            final BoolType isAnonymous,
+            final BoolType isDeleted
     ) {
 
         super(LocalDateTime.now(), LocalDateTime.now());
@@ -61,6 +66,7 @@ public class PostsEntity extends BaseEntity {
         this.title = title;
         this.contents = contents;
         this.isAnonymous = isAnonymous;
+        this.isDeleted = isDeleted;
     }
 
     public static PostsEntity create(
@@ -68,7 +74,8 @@ public class PostsEntity extends BaseEntity {
             final Long registerId,
             final String title,
             final String contents,
-            final BoolType isAnonymous
+            final BoolType isAnonymous,
+            final BoolType isDeleted
     ) {
         return new PostsEntity(
                 null,
@@ -76,7 +83,8 @@ public class PostsEntity extends BaseEntity {
                 registerId,
                 title,
                 contents,
-                isAnonymous
+                isAnonymous,
+                isDeleted
         );
     }
 }

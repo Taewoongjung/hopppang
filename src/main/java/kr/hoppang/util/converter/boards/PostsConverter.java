@@ -14,6 +14,7 @@ public class PostsConverter {
                 .title(posts.getTitle())
                 .contents(posts.getContents())
                 .isAnonymous(posts.getIsAnonymous())
+                .isDeleted(posts.getIsDeleted())
                 .build();
     }
 }

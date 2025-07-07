@@ -35,6 +35,7 @@ public class AddPostsCommandHandler implements ICommandHandler<AddPostsCommand, 
                         .isAnonymous(
                                 BoolType.convertBooleanToType(command.isAnonymous())
                         )
+                        .isDeleted(BoolType.F)
                         .registerId(command.registerId())
                         .build()
         );

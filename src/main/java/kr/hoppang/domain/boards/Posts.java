@@ -15,6 +15,7 @@ public class Posts {
     private final String title;
     private final String contents;
     private final BoolType isAnonymous;
+    private final BoolType isDeleted;
     private final LocalDateTime createdAt;
     private final LocalDateTime lastModified;
 }
