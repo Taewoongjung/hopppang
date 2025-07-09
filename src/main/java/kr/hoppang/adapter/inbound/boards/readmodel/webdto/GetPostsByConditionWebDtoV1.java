@@ -1,8 +1,8 @@
 package kr.hoppang.adapter.inbound.boards.readmodel.webdto;
 
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.List;
-import kr.hoppang.domain.boards.Posts;
 import lombok.Builder;
 import org.springframework.web.bind.annotation.BindParam;
 
@@ -23,7 +23,20 @@ public record GetPostsByConditionWebDtoV1() {
 
     @Builder
     public record Res(
-            List<Posts> postsList,
-            long count
-    ) { }
+            long count,
+            List<PostWebDto> postsList
+    ) {
+
+        @Builder
+        public record PostWebDto(
+                Long id,
+                Long boardId,
+                String authorName,
+                String title,
+                String contents,
+                Boolean isAnonymous,
+                Boolean isRevised,
+                LocalDateTime createdAt
+        ) { }
+    }
 }

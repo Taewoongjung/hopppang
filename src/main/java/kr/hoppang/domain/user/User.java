@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -20,6 +19,7 @@ import kr.hoppang.adapter.common.exception.custom.HoppangLoginException;
 import kr.hoppang.util.common.BoolType;
 import kr.hoppang.util.deserializer.UserDeserializerForUserCache;
 import kr.hoppang.util.serializer.UserSerializerForUserCache;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
@@ -45,8 +45,8 @@ public class User extends Throwable implements UserDetails {
     private LocalDateTime deletedAt;
 
     private UserAddress userAddress;
-    private List<UserToken> userTokenList = new ArrayList<>();
-    private List<UserDevice> userDeviceList = new ArrayList<>();
+    private List<UserToken> userTokenList;
+    private List<UserDevice> userDeviceList;
     private UserConfigInfo userConfigInfo;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
@@ -58,6 +58,7 @@ public class User extends Throwable implements UserDetails {
     // 첫 번째 로그인인지 확인.
     private boolean isFirstLogin = true;
 
+    @Builder
     private User(
             final Long id,
             final String name,

@@ -12,6 +12,7 @@ import static kr.hoppang.util.converter.user.UserEntityConverter.userLoginHistor
 import static kr.hoppang.util.converter.user.UserEntityConverter.userToEntity;
 import static kr.hoppang.util.converter.user.UserEntityConverter.userTokenToEntity;
 
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,6 +21,7 @@ import kr.hoppang.adapter.common.exception.custom.HoppangLoginException;
 import kr.hoppang.adapter.outbound.jpa.entity.user.UserConfigInfoEntity;
 import kr.hoppang.adapter.outbound.jpa.entity.user.UserEntity;
 import kr.hoppang.adapter.outbound.jpa.entity.user.UserTokenEntity;
+import kr.hoppang.adapter.outbound.jpa.repository.user.dto.FindUsersIdInDto;
 import kr.hoppang.adapter.outbound.jpa.repository.user.userconfiginfo.UserConfigInfoJpaRepository;
 import kr.hoppang.domain.user.OauthType;
 import kr.hoppang.domain.user.TokenType;
@@ -39,6 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Getter
 @Repository
+@Transactional
 @RequiredArgsConstructor
 public class UserRepositoryAdapter implements UserRepository {
 
@@ -88,7 +91,6 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
-    @Transactional
     public User save(final User user) {
         UserEntity entity = userJpaRepository.save(userToEntity(user));
 
@@ -112,7 +114,6 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
-    @Transactional
     public void updateToken(final String email, final TokenType tokenType, final String token,
             final LocalDateTime expireTime) {
 
@@ -134,7 +135,6 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
-    @Transactional
     public User userConfiguration(
             final String userEmail,
             final String phoneNumber,
@@ -151,7 +151,6 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
-    @Transactional
     public User updateDeviceInfo(final String userEmail, final UserDevice userDevice) {
 
         UserEntity entity = userJpaRepository.findByEmailAndDeletedAtIsNull(userEmail);
@@ -175,7 +174,6 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
-    @Transactional
     public User updateUserTokenInfo(final String userEmail, final List<UserToken> userTokens) {
 
         UserEntity entity = userJpaRepository.findByEmailAndDeletedAtIsNull(userEmail);
@@ -217,7 +215,6 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
-    @Transactional
     public void updateUserConfiguration(
             final long id,
             final boolean isPushOn,
@@ -260,6 +257,7 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<User> findAllAvailableUsers(final long offset, final int limit) {
 
         List<UserEntity> userEntityList = queryFactory
@@ -280,6 +278,7 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Long findCountOfAllAvailableUsers() {
 
         Long count = queryFactory.select(userEntity.count())
@@ -291,6 +290,7 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Long findCountOfAllUsers() {
 
         int count = queryFactory
@@ -308,6 +308,7 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<User> findAllRegisteredUsersBetween(final LocalDateTime start,
             final LocalDateTime end) {
 
@@ -329,6 +330,7 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<User> findAllDeletedUsersBetween(final LocalDateTime start,
             final LocalDateTime end) {
 
@@ -350,6 +352,7 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<User> findAllUsersByDeviceType(final String deviceType) {
 
         List<UserEntity> userEntityList = queryFactory
@@ -373,5 +376,33 @@ public class UserRepositoryAdapter implements UserRepository {
         return userEntityList.stream()
                 .map(UserEntity::toPojo)
                 .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<User> findAllUsersIdIn(final List<Long> userIds) {
+        List<FindUsersIdInDto> usersResult = queryFactory
+                .select(
+                        Projections.constructor(FindUsersIdInDto.class,
+                        userEntity.id,
+                        userEntity.name,
+                        userEntity.deletedAt
+                ))
+                .from(userEntity)
+                .where(
+                        allOf(
+                                userEntity.id.in(userIds)
+                        )
+                )
+                .fetch();
+
+        return usersResult.stream()
+                .map(user ->
+                        User.builder()
+                                .id(user.id())
+                                .name(user.name())
+                                .deletedAt(user.deletedAt())
+                                .build()
+                ).toList();
     }
 }

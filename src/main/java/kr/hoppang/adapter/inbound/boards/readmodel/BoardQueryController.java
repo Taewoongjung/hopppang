@@ -7,6 +7,7 @@ import kr.hoppang.adapter.inbound.boards.readmodel.facade.GetPostsByConditionFac
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetPostsByConditionFacadeResultDto;
 import kr.hoppang.adapter.inbound.boards.readmodel.webdto.GetAllBoardsWebDtoV1;
 import kr.hoppang.adapter.inbound.boards.readmodel.webdto.GetPostsByConditionWebDtoV1;
+import kr.hoppang.adapter.inbound.boards.readmodel.webdto.GetPostsByConditionWebDtoV1.Res.PostWebDto;
 import kr.hoppang.application.readmodel.boards.hanlders.FindBoardsQueryHandler;
 import kr.hoppang.application.util.EmptyQuery;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +45,17 @@ public class BoardQueryController {
                 );
     }
 
+    @GetMapping("/posts/{postId}")
+    public ResponseEntity<Object> getPostById(
+            @PathVariable final long postId
+    ) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(
+                        getPostByIdFacade.query(postId)
+                );
+    }
+
     @GetMapping("/posts")
     public ResponseEntity<GetPostsByConditionWebDtoV1.Res> getPostsByCondition(
             @Valid final GetPostsByConditionWebDtoV1.Req req
@@ -58,20 +70,23 @@ public class BoardQueryController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(
                         GetPostsByConditionWebDtoV1.Res.builder()
-                                .postsList(resultDto.postsList())
                                 .count(resultDto.count())
+                                .postsList(
+                                        resultDto.postsList().stream()
+                                                .map(post ->
+                                                        PostWebDto.builder()
+                                                                .id(post.id())
+                                                                .authorName(post.authorName())
+                                                                .title(post.title())
+                                                                .contents(post.contents())
+                                                                .isAnonymous(post.isAnonymous())
+                                                                .isRevised(post.isRevised())
+                                                                .createdAt(post.createdAt())
+                                                                .build()
+                                                )
+                                                .toList()
+                                )
                                 .build()
-                );
-    }
-
-    @GetMapping("/posts/{postId}")
-    public ResponseEntity<Object> getPostById(
-            @PathVariable final long postId
-    ) {
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(
-                        getPostByIdFacade.query(postId)
                 );
     }
 }

@@ -20,6 +20,7 @@ public class GetPostByIdFacade {
     private final FindUserByIdQueryHandler findUserByIdQueryHandler;
     private final FindBoardsByIdQueryHandler findBoardsByIdQueryHandler;
 
+
     public GetPostByIdFacadeResultDto query(final long postId) {
         Posts posts = postsQueryRepository.findPostsByPostId(postId);
 

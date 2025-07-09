@@ -2,10 +2,12 @@ package kr.hoppang.adapter.inbound.boards.readmodel.facade;
 
 import java.util.List;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetPostsByConditionFacadeResultDto;
+import kr.hoppang.application.readmodel.boards.hanlders.FindAllPostsQueryHandler;
+import kr.hoppang.application.readmodel.boards.queries.FindAllPostsQuery;
+import kr.hoppang.application.readmodel.boards.queryresults.FindAllPostsQueryResult;
 import kr.hoppang.domain.boards.Posts;
-import kr.hoppang.domain.boards.repository.PostsQueryRepository;
-import kr.hoppang.domain.boards.repository.dto.ConditionOfFindPosts;
-import kr.hoppang.util.CountQueryExecutionUtil;
+import kr.hoppang.domain.user.User;
+import kr.hoppang.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +15,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class GetPostsByConditionFacade {
 
-    private final PostsQueryRepository postsQueryRepository;
+    private final UserRepository userRepository;
+    private final FindAllPostsQueryHandler findAllPostsByCondition;
 
 
     public GetPostsByConditionFacadeResultDto query(
@@ -22,24 +25,25 @@ public class GetPostsByConditionFacade {
             List<Long> boardIds
     ) {
 
-        ConditionOfFindPosts condition = ConditionOfFindPosts.builder()
-                .boardIds(boardIds)
-                .limit(limit)
-                .offset(offset)
-                .build();
-
-        List<Posts> postsList = postsQueryRepository.findAllPostsByCondition(condition);
-
-        long count = CountQueryExecutionUtil.count(
-                postsList,
-                offset,
-                limit,
-                () -> postsQueryRepository.countAllPostsByCondition(condition)
+        FindAllPostsQueryResult result = findAllPostsByCondition.handle(
+                FindAllPostsQuery.builder()
+                        .boardIds(boardIds)
+                        .limit(limit)
+                        .offset(offset)
+                        .build()
         );
 
-        return GetPostsByConditionFacadeResultDto.builder()
-                .postsList(postsList)
-                .count(count)
-                .build();
+        List<User> authorList = userRepository.findAllUsersIdIn(
+                result.postsList().stream()
+                        .map(Posts::getRegisterId)
+                        .distinct()
+                        .toList()
+        );
+
+        return GetPostsByConditionFacadeResultDto.of(
+                result.count(),
+                result.postsList(),
+                authorList
+        );
     }
 }
