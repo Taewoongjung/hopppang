@@ -23,22 +23,26 @@ public class BoardCommandController {
 
 
     @PostMapping("/posts")
-    public ResponseEntity<Boolean> addPost(
+    public ResponseEntity<AddPostWebDtoV1.Res> addPost(
             @RequestBody AddPostWebDtoV1.Req req,
             @AuthenticationUserId final Long registerId
     ) {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(
-                        addPostsCommandHandler.handle(
-                                AddPostsCommand.builder()
-                                        .boardId(req.boardId())
-                                        .title(req.title())
-                                        .contents(req.contents())
-                                        .isAnonymous(req.isAnonymous())
-                                        .registerId(registerId)
-                                        .build()
-                        )
+                        AddPostWebDtoV1.Res.builder()
+                                .createdPostId(
+                                        addPostsCommandHandler.handle(
+                                                AddPostsCommand.builder()
+                                                        .boardId(req.boardId())
+                                                        .title(req.title())
+                                                        .contents(req.contents())
+                                                        .isAnonymous(req.isAnonymous())
+                                                        .registerId(registerId)
+                                                        .build()
+                                        )
+                                )
+                                .build()
                 );
     }
 }

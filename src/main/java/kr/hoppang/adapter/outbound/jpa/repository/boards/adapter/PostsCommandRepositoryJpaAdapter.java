@@ -1,5 +1,6 @@
 package kr.hoppang.adapter.outbound.jpa.repository.boards.adapter;
 
+import kr.hoppang.adapter.outbound.jpa.entity.board.PostsEntity;
 import kr.hoppang.adapter.outbound.jpa.repository.boards.PostsJpaRepository;
 import kr.hoppang.domain.boards.Posts;
 import kr.hoppang.domain.boards.repository.PostsCommandRepository;
@@ -15,7 +16,9 @@ public class PostsCommandRepositoryJpaAdapter implements PostsCommandRepository 
 
 
     @Override
-    public void create(final Posts newPost) {
-        postsJpaRepository.save(PostsConverter.toEntity(newPost));
+    public Long create(final Posts newPost) {
+        PostsEntity createdEntity = postsJpaRepository.save(PostsConverter.toEntity(newPost));
+
+        return createdEntity.getId();
     }
 }

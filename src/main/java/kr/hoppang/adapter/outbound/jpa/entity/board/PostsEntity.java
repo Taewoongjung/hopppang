@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import kr.hoppang.adapter.outbound.jpa.entity.BaseEntity;
+import kr.hoppang.domain.boards.Posts;
 import kr.hoppang.util.common.BoolType;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -86,5 +87,19 @@ public class PostsEntity extends BaseEntity {
                 isAnonymous,
                 isDeleted
         );
+    }
+
+    public Posts toPojo() {
+        return Posts.builder()
+                .id(this.id)
+                .boardId(this.boardId)
+                .registerId(this.registerId)
+                .title(this.title)
+                .contents(this.contents)
+                .isAnonymous(this.isAnonymous)
+                .isDeleted(this.isDeleted)
+                .createdAt(this.getCreatedAt())
+                .lastModified(this.getLastModified())
+                .build();
     }
 }

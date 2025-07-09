@@ -1,6 +1,7 @@
 package kr.hoppang.adapter.outbound.jpa.repository.boards.adapter;
 
 import java.util.List;
+import java.util.Optional;
 import kr.hoppang.adapter.outbound.jpa.entity.board.BoardsEntity;
 import kr.hoppang.adapter.outbound.jpa.repository.boards.BoardsJpaRepository;
 import kr.hoppang.domain.boards.Boards;
@@ -33,5 +34,13 @@ public class BoardsQueryRepositoryJpaAdapter implements BoardsQueryRepository {
         return boardsEntityList.stream()
                 .map(BoardsEntity::toPojo)
                 .toList();
+    }
+
+    @Override
+    public Boards getBoardsById(final long boardsId) {
+        Optional<BoardsEntity> boards = boardsJpaRepository.findById(boardsId);
+
+        return boards.map(BoardsEntity::toPojo)
+                .orElse(null);
     }
 }

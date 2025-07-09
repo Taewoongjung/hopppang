@@ -5,13 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import kr.hoppang.domain.boards.Boards;
 import kr.hoppang.domain.boards.repository.BoardsQueryRepository;
 import kr.hoppang.domain.boards.repository.BoardsQueryStrategy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Repository;
 
 @Slf4j
@@ -55,5 +55,19 @@ public class BoardQueryRepositoryRedisAdapter implements BoardsQueryRepository {
                 })
                 .filter(Objects::nonNull)
                 .toList();
+    }
+
+    @Override
+    public Boards getBoardsById(final long boardsId) {
+        String key = DEFAULT_BOARD_KEY + boardsId;
+        final ValueOperations<String, String> valueOps = redisTemplate.opsForValue();
+
+        try{
+            String board = valueOps.get(key);
+            return objectMapper.readValue(board, Boards.class);
+        } catch (JsonProcessingException e) {
+            log.error("Failed to deserialize 'Boards' from Redis", e);
+            return null;
+        }
     }
 }

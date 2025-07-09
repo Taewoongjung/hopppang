@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AddPostsCommandHandler implements ICommandHandler<AddPostsCommand, Boolean> {
+public class AddPostsCommandHandler implements ICommandHandler<AddPostsCommand, Long> {
 
     private final PostsCommandRepositoryJpaAdapter postsRepositoryCommandAdapter;
 
@@ -25,9 +25,9 @@ public class AddPostsCommandHandler implements ICommandHandler<AddPostsCommand, 
 
     @Override
     @Transactional
-    public Boolean handle(final AddPostsCommand command) {
+    public Long handle(final AddPostsCommand command) {
 
-        postsRepositoryCommandAdapter.create(
+        return postsRepositoryCommandAdapter.create(
                 Posts.builder()
                         .boardId(command.boardId())
                         .title(command.title())
@@ -39,7 +39,5 @@ public class AddPostsCommandHandler implements ICommandHandler<AddPostsCommand, 
                         .registerId(command.registerId())
                         .build()
         );
-
-        return true;
     }
 }

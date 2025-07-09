@@ -4,5 +4,5 @@ import kr.hoppang.domain.boards.Posts;
 
 public interface PostsCommandRepository {
 
-    void create(final Posts newPost);
+    Long create(final Posts newPost);
 }

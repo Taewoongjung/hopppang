@@ -65,6 +65,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,
                                 "/actuator/prometheus"
                                 , "/api/boards"
+                                , "/api/boards/posts"
+                                , "/api/boards/posts/{postId}"
                                 , "/api/emails/validations"
                                 , "/api/phones/validations"
                                 , "/api/users/emails"

@@ -8,4 +8,6 @@ public interface BoardsQueryRepository {
     BoardsQueryStrategy getBoardsQueryStrategy();
 
     List<Boards> getAllBoards();
+
+    Boards getBoardsById(long boardsId);
 }

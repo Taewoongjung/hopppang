@@ -13,6 +13,7 @@ import kr.hoppang.adapter.outbound.alarm.dto.ErrorAlarm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -106,10 +107,16 @@ public class GlobalControllerAdvice {
 
         errorPrinter(request, e);
 
+        String message = e.getAllErrors()
+                .stream()
+                .findFirst()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .orElse("잘못된 요청입니다.");
+
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse(
-                        -1,
-                        "요청 형식이 맞지 않습니다."
+                        e.getStatusCode().value(),
+                        message
                 ));
     }
 
