@@ -103,8 +103,7 @@ public class BoardQueryController {
     ) {
 
         GetPostRepliesByIdFacadeResultDto resultDto = getPostRepliesByIdFacade.query(
-                postId,
-                loggedInUserId
+                postId
         );
 
         return ResponseEntity.status(HttpStatus.OK)

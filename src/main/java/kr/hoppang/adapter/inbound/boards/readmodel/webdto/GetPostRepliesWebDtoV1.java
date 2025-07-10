@@ -20,7 +20,6 @@ public record GetPostRepliesWebDtoV1() {
                 String contents,
                 Long registerId,
                 String registerName,
-                boolean isOwner,
                 boolean isAnonymous,
                 boolean hasRevised,
                 LocalDateTime createdAt
@@ -37,7 +36,6 @@ public record GetPostRepliesWebDtoV1() {
                                             .contents(facadeResult.contents())
                                             .registerId(facadeResult.registerId())
                                             .registerName(facadeResult.registerName())
-                                            .isOwner(facadeResult.isOwner())
                                             .isAnonymous(facadeResult.isAnonymous())
                                             .hasRevised(facadeResult.hasRevised())
                                             .createdAt(facadeResult.createdAt())

@@ -18,8 +18,7 @@ public class GetPostRepliesByIdFacade {
 
 
     public GetPostRepliesByIdFacadeResultDto query(
-            final long postId,
-            final Long loggedInUserId
+            final long postId
     ) {
 
         List<PostsReply> postsReplyList = postsReplyQueryRepository.findPostsReplyByPostId(postId);
@@ -33,8 +32,7 @@ public class GetPostRepliesByIdFacade {
 
         return GetPostRepliesByIdFacadeResultDto.of(
                 postsReplyList,
-                registerUserList,
-                loggedInUserId
+                registerUserList
         );
     }
 }

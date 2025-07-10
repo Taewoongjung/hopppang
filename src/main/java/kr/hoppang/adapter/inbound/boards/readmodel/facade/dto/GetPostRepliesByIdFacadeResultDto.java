@@ -20,16 +20,14 @@ public record GetPostRepliesByIdFacadeResultDto(
             String contents,
             Long registerId,
             String registerName,
-            boolean isOwner, // 소유주 여부
             boolean isAnonymous,
-            boolean hasRevised, // 수정 됐는지 여부
+            boolean hasRevised,
             LocalDateTime createdAt
     ) { }
 
     public static GetPostRepliesByIdFacadeResultDto of(
             final List<PostsReply> postsReplyList,
-            final List<User> registerUserList,
-            final Long loggedInUserId
+            final List<User> registerUserList
     ) {
         return new GetPostRepliesByIdFacadeResultDto(
                 postsReplyList.stream()
@@ -49,11 +47,6 @@ public record GetPostRepliesByIdFacadeResultDto(
                                             .registerId(postsReply.getRegisterId())
                                             .registerName(
                                                     register != null ? register.getName() : null
-                                            )
-                                            .isOwner(
-                                                    loggedInUserId != null &&
-                                                            loggedInUserId.equals(
-                                                                    postsReply.getRegisterId())
                                             )
                                             .isAnonymous(
                                                     BoolType.convertToBoolean(

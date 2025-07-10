@@ -9,6 +9,7 @@ public record GetPostByIdFacadeResultDto(
         Long id,
         String boardName,
         String registerName,
+        Long registerId,
         String title,
         String contents,
         BoolType isAnonymous,

@@ -40,6 +40,7 @@ public class GetPostByIdFacade {
                 .id(posts.getId())
                 .boardName(boards.getName())
                 .registerName(user.getName())
+                .registerId(user.getId())
                 .title(posts.getTitle())
                 .contents(posts.getContents())
                 .isAnonymous(posts.getIsAnonymous())
