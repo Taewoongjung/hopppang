@@ -76,6 +76,7 @@ public class BoardQueryController {
                                                 .map(post ->
                                                         PostWebDto.builder()
                                                                 .id(post.id())
+                                                                .boardId(post.boardId())
                                                                 .authorName(post.authorName())
                                                                 .title(post.title())
                                                                 .contents(post.contents())
