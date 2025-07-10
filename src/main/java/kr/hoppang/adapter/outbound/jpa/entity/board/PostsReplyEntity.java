@@ -10,7 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import kr.hoppang.adapter.outbound.jpa.entity.BaseEntity;
-import kr.hoppang.domain.boards.Posts;
+import kr.hoppang.domain.boards.PostsReply;
 import kr.hoppang.util.common.BoolType;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -19,25 +19,25 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Table(name = "posts")
+@Table(name = "posts_reply")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostsEntity extends BaseEntity {
+public class PostsReplyEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "board_id", nullable = false, columnDefinition = "bigint")
-    private Long boardId;
+    @Column(name = "post_id", nullable = false, columnDefinition = "bigint")
+    private Long postId;
 
-    @Column(name = "register_id", nullable = false, columnDefinition = "bigint")
-    private Long registerId;
-
-    @Column(name = "title", nullable = false)
-    private String title;
+    @Column(name = "root_reply_id", columnDefinition = "bigint")
+    private Long rootReplyId;
 
     @Column(name = "contents", nullable = false)
     private String contents;
+
+    @Column(name = "register_id", nullable = false, columnDefinition = "bigint")
+    private Long registerId;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "is_anonymous", nullable = false, columnDefinition = "char(1)")
@@ -49,12 +49,12 @@ public class PostsEntity extends BaseEntity {
 
 
     @Builder
-    private PostsEntity(
+    private PostsReplyEntity(
             final Long id,
-            final Long boardId,
-            final Long registerId,
-            final String title,
+            final Long postId,
+            final Long rootReplyId,
             final String contents,
+            final Long registerId,
             final BoolType isAnonymous,
             final BoolType isDeleted
     ) {
@@ -62,39 +62,39 @@ public class PostsEntity extends BaseEntity {
         super(LocalDateTime.now(), LocalDateTime.now());
 
         this.id = id;
-        this.boardId = boardId;
-        this.registerId = registerId;
-        this.title = title;
+        this.postId = postId;
+        this.rootReplyId = rootReplyId;
         this.contents = contents;
+        this.registerId = registerId;
         this.isAnonymous = isAnonymous;
         this.isDeleted = isDeleted;
     }
 
-    public static PostsEntity create(
-            final Long boardId,
-            final Long registerId,
-            final String title,
+    public static PostsReplyEntity create(
+            final Long postId,
+            final Long rootReplyId,
             final String contents,
+            final Long registerId,
             final BoolType isAnonymous
     ) {
-        return new PostsEntity(
+        return new PostsReplyEntity(
                 null,
-                boardId,
-                registerId,
-                title,
+                postId,
+                rootReplyId,
                 contents,
+                registerId,
                 isAnonymous,
                 BoolType.F
         );
     }
 
-    public Posts toPojo() {
-        return Posts.builder()
+    public PostsReply toPojo() {
+        return PostsReply.builder()
                 .id(this.id)
-                .boardId(this.boardId)
-                .registerId(this.registerId)
-                .title(this.title)
+                .postId(this.postId)
+                .rootReplyId(this.rootReplyId)
                 .contents(this.contents)
+                .registerId(this.registerId)
                 .isAnonymous(this.isAnonymous)
                 .isDeleted(this.isDeleted)
                 .createdAt(this.getCreatedAt())

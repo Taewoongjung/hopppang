@@ -5,16 +5,16 @@ import kr.hoppang.domain.boards.Posts;
 
 public class PostsConverter {
 
-    public static PostsEntity toEntity(final Posts posts) {
+    public static PostsEntity toEntity(final Posts pojo) {
         return PostsEntity.builder()
-                .id(posts.getId())
-                .boardId(posts.getBoardId())
-                .registerId(posts.getRegisterId())
-                .title(posts.getTitle())
-                .title(posts.getTitle())
-                .contents(posts.getContents())
-                .isAnonymous(posts.getIsAnonymous())
-                .isDeleted(posts.getIsDeleted())
+                .id(pojo.getId())
+                .boardId(pojo.getBoardId())
+                .registerId(pojo.getRegisterId())
+                .title(pojo.getTitle())
+                .title(pojo.getTitle())
+                .contents(pojo.getContents())
+                .isAnonymous(pojo.getIsAnonymous())
+                .isDeleted(pojo.getIsDeleted())
                 .build();
     }
 }

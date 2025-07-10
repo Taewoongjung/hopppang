@@ -6,9 +6,13 @@ import kr.hoppang.domain.boards.Posts;
 import kr.hoppang.domain.boards.repository.PostsCommandRepository;
 import kr.hoppang.util.converter.boards.PostsConverter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+@Primary
 @Repository
+@Transactional
 @RequiredArgsConstructor
 public class PostsCommandRepositoryJpaAdapter implements PostsCommandRepository {
 

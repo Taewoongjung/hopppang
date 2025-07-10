@@ -67,6 +67,7 @@ public class SecurityConfig {
                                 , "/api/boards"
                                 , "/api/boards/posts"
                                 , "/api/boards/posts/{postId}"
+                                , "/api/boards/posts/{postId}/replies"
                                 , "/api/emails/validations"
                                 , "/api/phones/validations"
                                 , "/api/users/emails"
