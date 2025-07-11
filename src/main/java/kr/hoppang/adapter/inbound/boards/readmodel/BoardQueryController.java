@@ -5,16 +5,15 @@ import java.util.List;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.GetPostByIdFacade;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.GetPostRepliesByIdFacade;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.GetPostsByConditionFacade;
+import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetPostByIdFacadeResultDto;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetPostRepliesByIdFacadeResultDto;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetPostsByConditionFacadeResultDto;
 import kr.hoppang.adapter.inbound.boards.readmodel.webdto.GetAllBoardsWebDtoV1;
-import kr.hoppang.adapter.inbound.boards.readmodel.webdto.GetPostRepliesWebDtoV1;
 import kr.hoppang.adapter.inbound.boards.readmodel.webdto.GetPostsByConditionWebDtoV1;
 import kr.hoppang.adapter.inbound.boards.readmodel.webdto.GetPostsByConditionWebDtoV1.Res.PostWebDto;
 import kr.hoppang.application.readmodel.boards.hanlders.FindBoardsQueryHandler;
 import kr.hoppang.application.util.EmptyQuery;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/boards")
@@ -51,7 +49,7 @@ public class BoardQueryController {
     }
 
     @GetMapping("/posts/{postId}")
-    public ResponseEntity<Object> getPostById(
+    public ResponseEntity<GetPostByIdFacadeResultDto> getPostById(
             @PathVariable final long postId
     ) {
 
@@ -97,18 +95,12 @@ public class BoardQueryController {
     }
 
     @GetMapping("/posts/{postId}/replies")
-    public ResponseEntity<GetPostRepliesWebDtoV1.Res> getPostReplies(
+    public ResponseEntity<GetPostRepliesByIdFacadeResultDto> getPostReplies(
             @PathVariable(value = "postId") final long postId,
             @RequestParam(value = "loggedInUserId", required = false) final Long loggedInUserId
     ) {
 
-        GetPostRepliesByIdFacadeResultDto resultDto = getPostRepliesByIdFacade.query(
-                postId
-        );
-
         return ResponseEntity.status(HttpStatus.OK)
-                .body(
-                        GetPostRepliesWebDtoV1.Res.of(resultDto)
-                );
+                .body(getPostRepliesByIdFacade.query(postId));
     }
 }

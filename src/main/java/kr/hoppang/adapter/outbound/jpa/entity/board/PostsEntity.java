@@ -49,7 +49,7 @@ public class PostsEntity extends BaseEntity {
 
 
     @Builder
-    private PostsEntity(
+    public PostsEntity(
             final Long id,
             final Long boardId,
             final Long registerId,

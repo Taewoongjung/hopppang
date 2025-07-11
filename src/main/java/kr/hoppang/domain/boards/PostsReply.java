@@ -18,4 +18,8 @@ public class PostsReply {
     private final BoolType isDeleted;
     private final LocalDateTime createdAt;
     private final LocalDateTime lastModified;
+
+    public boolean isParent() {
+        return this.rootReplyId == null;
+    }
 }

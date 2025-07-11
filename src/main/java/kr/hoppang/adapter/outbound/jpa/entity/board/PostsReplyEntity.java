@@ -49,7 +49,7 @@ public class PostsReplyEntity extends BaseEntity {
 
 
     @Builder
-    private PostsReplyEntity(
+    public PostsReplyEntity(
             final Long id,
             final Long postId,
             final Long rootReplyId,

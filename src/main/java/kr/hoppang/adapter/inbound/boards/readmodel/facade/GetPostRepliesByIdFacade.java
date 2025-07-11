@@ -21,17 +21,26 @@ public class GetPostRepliesByIdFacade {
             final long postId
     ) {
 
-        List<PostsReply> postsReplyList = postsReplyQueryRepository.findPostsReplyByPostId(postId);
+        List<PostsReply> allPostsReplyList = postsReplyQueryRepository.findPostsReplyByPostId(postId);
 
         List<User> registerUserList = userRepository.findAllUsersIdIn(
-                postsReplyList.stream()
+                allPostsReplyList.stream()
                         .map(PostsReply::getRegisterId)
                         .distinct()
                         .toList()
         );
 
+        List<PostsReply> postsRootReplyList = allPostsReplyList.stream()
+                .filter(PostsReply::isParent)
+                .toList();
+
+        List<PostsReply> postsBranchReplyList = allPostsReplyList.stream()
+                .filter(f -> !f.isParent())
+                .toList();
+
         return GetPostRepliesByIdFacadeResultDto.of(
-                postsReplyList,
+                postsRootReplyList,
+                postsBranchReplyList,
                 registerUserList
         );
     }
