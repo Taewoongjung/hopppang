@@ -64,18 +64,17 @@ public class PostsReplyLikeCommandRepositoryRedisAdapter
             if (added != null && added == 1L) {
 
                 String script = """
-                                    if redis.call('EXISTS', KEYS[1]) == 1 then
-                                        return redis.call('INCR', KEYS[1])
-                                    else
-                                        redis.call('SETEX', KEYS[1], ARGV[1], 1)
-                                        return 1
+                                    local newValue = redis.call('INCR', KEYS[1])
+                                    if newValue == 1 then
+                                        redis.call('EXPIRE', KEYS[1], tonumber(ARGV[1]))
                                     end
+                                    return newValue
                                 """;
 
                 redisTemplate.execute(
                         RedisScript.of(script, Long.class),
                         List.of(countKey),
-                        Duration.ofMinutes(30)
+                        Duration.ofMinutes(30).getSeconds()
                 );
             }
 
