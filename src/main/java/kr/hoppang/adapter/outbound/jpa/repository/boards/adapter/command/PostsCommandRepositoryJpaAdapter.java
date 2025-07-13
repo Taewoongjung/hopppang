@@ -21,7 +21,8 @@ public class PostsCommandRepositoryJpaAdapter implements PostsCommandRepository 
 
     @Override
     public Long create(final Posts newPost) {
-        PostsEntity createdEntity = postsJpaRepository.save(PostsConverter.toEntity(newPost));
+        PostsEntity createdEntity = postsJpaRepository.save(
+                PostsConverter.toEntity(newPost));
 
         return createdEntity.getId();
     }

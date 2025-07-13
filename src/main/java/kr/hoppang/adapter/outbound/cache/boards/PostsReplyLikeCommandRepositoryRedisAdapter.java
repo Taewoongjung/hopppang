@@ -3,6 +3,7 @@ package kr.hoppang.adapter.outbound.cache.boards;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Repository;
 
 @Slf4j
@@ -59,12 +61,22 @@ public class PostsReplyLikeCommandRepositoryRedisAdapter
 
             Long added = setOps.add(likeInfoKey, redisValue);
 
-            if (
-                    added != null
-                            && added == 1L
-                            && Boolean.TRUE.equals(redisTemplate.hasKey(countKey))
-            ) {
-                valueOps.increment(countKey);
+            if (added != null && added == 1L) {
+
+                String script = """
+                                    if redis.call('EXISTS', KEYS[1]) == 1 then
+                                        return redis.call('INCR', KEYS[1])
+                                    else
+                                        redis.call('SETEX', KEYS[1], ARGV[1], 1)
+                                        return 1
+                                    end
+                                """;
+
+                redisTemplate.execute(
+                        RedisScript.of(script, Long.class),
+                        List.of(countKey),
+                        Duration.ofMinutes(30)
+                );
             }
 
         } catch (JsonProcessingException e) {
