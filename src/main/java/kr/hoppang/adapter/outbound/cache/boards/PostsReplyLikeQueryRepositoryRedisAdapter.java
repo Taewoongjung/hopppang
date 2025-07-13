@@ -47,7 +47,6 @@ public class PostsReplyLikeQueryRepositoryRedisAdapter implements PostsReplyLike
                     // 잘못된 값이 들어가 있을 경우 예외 방지
                 }
             }
-
         }
 
         return result;

@@ -36,7 +36,8 @@ public class FlushToDatabaseScheduler {
     @Scheduled(cron = "0 */10 * * * *")
     public void flushReplyLikesToDb() {
         Set<String> replyLikeBufferKeys = redisTemplate.keys(
-                POSTS_REPLY_LIKE_BUFFER_CACHE_KEY_PREFIX + "*");
+                POSTS_REPLY_LIKE_BUFFER_CACHE_KEY_PREFIX.replace("{replyId}", "*")
+        );
 
         if (replyLikeBufferKeys.isEmpty()) return;
 
@@ -84,12 +85,11 @@ public class FlushToDatabaseScheduler {
 
         // Redis 캐시 삭제 (무효화)
         replyLikeBufferKeys.forEach(redisTemplate::delete);
-
-
     }
 
     private Long extractReplyId(final String key) {
-        return Long.valueOf(key.replace(POSTS_REPLY_LIKE_BUFFER_CACHE_KEY_PREFIX, ""));
+        String[] parts = key.split(":");
+        return Long.valueOf(parts[parts.length - 1]);
     }
 
     @Getter
@@ -104,8 +104,10 @@ public class FlushToDatabaseScheduler {
 
 
     @Scheduled(cron = "0 */10 * * * *")
-    public void flushPostLikesToDb() {
-        Set<String> keys = redisTemplate.keys(POSTS_LIKE_BUFFER_CACHE_KEY_PREFIX + "*");
+    public void flushPostsLikesToDb() {
+        Set<String> keys = redisTemplate.keys(
+                POSTS_LIKE_BUFFER_CACHE_KEY_PREFIX.replace("{replyId}", "*")
+        );
 
         if (keys.isEmpty()) return;
 
@@ -150,7 +152,8 @@ public class FlushToDatabaseScheduler {
     }
 
     private Long extractPostId(final String key) {
-        return Long.valueOf(key.replace(POSTS_LIKE_BUFFER_CACHE_KEY_PREFIX, ""));
+        String[] parts = key.split(":");
+        return Long.valueOf(parts[parts.length - 1]);
     }
 
     @Getter

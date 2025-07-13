@@ -17,9 +17,10 @@ public class PostsReply {
     private final Long registerId;
     private final BoolType isAnonymous;
     private final BoolType isDeleted;
-    private final Boolean amILiked;
     private final LocalDateTime createdAt;
     private final LocalDateTime lastModified;
+
+    private Boolean amILiked;
 
     @Setter
     private Long likeCount;
@@ -30,5 +31,9 @@ public class PostsReply {
 
     public boolean isChild() {
         return this.rootReplyId != null;
+    }
+
+    public void liked() {
+        this.amILiked = true;
     }
 }

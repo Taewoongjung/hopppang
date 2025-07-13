@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import kr.hoppang.adapter.outbound.jpa.entity.board.PostsReplyEntity;
 import kr.hoppang.domain.boards.PostsReply;
+import kr.hoppang.domain.boards.repository.BoardsRepositoryStrategy;
 import kr.hoppang.domain.boards.repository.PostsReplyQueryRepository;
 import kr.hoppang.util.common.BoolType;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,12 @@ public class PostsReplyQueryRepositoryJpaAdapter implements PostsReplyQueryRepos
 
 
     @Override
-    public List<PostsReply> findPostsReplyByPostId(final long postId, final Long loggedInUserId) {
+    public BoardsRepositoryStrategy strategy() {
+        return BoardsRepositoryStrategy.RDB;
+    }
+
+    @Override
+    public List<PostsReply> findPostsReplyByPostId(final long postId) {
         List<PostsReplyEntity> replyEntityList = queryFactory.selectFrom(postsReplyEntity)
                 .where(
                         resolvePostIdEquals(postId),
@@ -39,31 +45,27 @@ public class PostsReplyQueryRepositoryJpaAdapter implements PostsReplyQueryRepos
             return Collections.emptyList();
         }
 
-        if (loggedInUserId != null) {
-            // 댓글 ID 목록 추출
-            List<Long> replyIds = replyEntityList.stream()
-                    .map(PostsReplyEntity::getId)
-                    .toList();
-
-            // 좋아요 테이블에서 유저가 누른 댓글 ID 조회
-            List<Long> likedReplyIds = queryFactory
-                    .select(postsReplyLikeEntity.id.postReplyId)
-                    .from(postsReplyLikeEntity)
-                    .where(
-                            postsReplyLikeEntity.id.userId.eq(loggedInUserId),
-                            postsReplyLikeEntity.id.postReplyId.in(replyIds)
-                    )
-                    .fetch();
-
-            replyEntityList.stream()
-                    .filter(f -> likedReplyIds.contains(f.getId()))
-                    .forEach(PostsReplyEntity::iLiked);
-        }
-
         return replyEntityList.stream()
                 .map(PostsReplyEntity::toPojo)
                 .toList();
     }
+
+    @Override
+    public List<Long> findAllLikedReplyIdsByUserId(
+            final List<Long> replyIds,
+            final long userId
+    ) {
+
+        return queryFactory
+                .select(postsReplyLikeEntity.id.postReplyId)
+                .from(postsReplyLikeEntity)
+                .where(
+                        postsReplyLikeEntity.id.userId.eq(userId),
+                        postsReplyLikeEntity.id.postReplyId.in(replyIds)
+                )
+                .fetch();
+    }
+
 
     private BooleanExpression resolvePostIdEquals(final Long postId) {
         if (postId == null) {

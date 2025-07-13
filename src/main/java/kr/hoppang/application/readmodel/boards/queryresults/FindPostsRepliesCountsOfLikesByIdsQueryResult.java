@@ -4,6 +4,6 @@ import java.util.Map;
 import lombok.Builder;
 
 @Builder
-public record FindPostsRepliesCountsOfLikesByIdsQQueryResult(
+public record FindPostsRepliesCountsOfLikesByIdsQueryResult(
         Map<Long, Long> countDatas
 ) { }

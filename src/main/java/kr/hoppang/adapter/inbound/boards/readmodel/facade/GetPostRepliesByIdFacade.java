@@ -4,8 +4,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetPostRepliesByIdFacadeResultDto;
-import kr.hoppang.application.readmodel.boards.hanlders.FindPostsRepliesCountsOfLikesByIdsQQueryHandler;
+import kr.hoppang.application.readmodel.boards.hanlders.FindPostsRepliesCountsOfLikesByIdsQueryHandler;
+import kr.hoppang.application.readmodel.boards.hanlders.FindPostsRepliesLikeClickedByIdsQueryHandler;
 import kr.hoppang.application.readmodel.boards.queries.FindPostsRepliesCountsOfLikesByIdsQuery;
+import kr.hoppang.application.readmodel.boards.queries.FindPostsRepliesLikeClickedByIdsQuery;
 import kr.hoppang.domain.boards.PostsReply;
 import kr.hoppang.domain.boards.repository.PostsReplyQueryRepository;
 import kr.hoppang.domain.user.User;
@@ -19,7 +21,8 @@ public class GetPostRepliesByIdFacade {
 
     private final UserRepository userRepository;
     private final PostsReplyQueryRepository postsReplyQueryRepository;
-    private final FindPostsRepliesCountsOfLikesByIdsQQueryHandler findPostsRepliesCountsOfLikesByIdsQQueryHandler;
+    private final FindPostsRepliesLikeClickedByIdsQueryHandler findPostsRepliesLikeClickedByIdsQueryHandler;
+    private final FindPostsRepliesCountsOfLikesByIdsQueryHandler findPostsRepliesCountsOfLikesByIdsQueryHandler;
 
 
     public GetPostRepliesByIdFacadeResultDto query(
@@ -28,8 +31,7 @@ public class GetPostRepliesByIdFacade {
     ) {
 
         List<PostsReply> allPostsReplyList = postsReplyQueryRepository.findPostsReplyByPostId(
-                postId,
-                loggedInUserId
+                postId
         );
 
         if (allPostsReplyList.isEmpty()) {
@@ -43,7 +45,24 @@ public class GetPostRepliesByIdFacade {
                         .toList()
         );
 
-        Map<Long, Long> countsOfReplies = findPostsRepliesCountsOfLikesByIdsQQueryHandler.handle(
+        if (loggedInUserId != null) {
+            List<Long> likedReplyIdList = findPostsRepliesLikeClickedByIdsQueryHandler.handle(
+                    FindPostsRepliesLikeClickedByIdsQuery.builder()
+                            .replyIdList(
+                                    allPostsReplyList.stream()
+                                            .map(PostsReply::getId)
+                                            .toList()
+                            )
+                            .loggedUserId(loggedInUserId)
+                            .build()
+            );
+
+            allPostsReplyList.stream()
+                    .filter(f -> likedReplyIdList.contains(f.getId()))
+                    .forEach(PostsReply::liked);
+        }
+
+        Map<Long, Long> countsOfReplies = findPostsRepliesCountsOfLikesByIdsQueryHandler.handle(
                 FindPostsRepliesCountsOfLikesByIdsQuery.builder()
                         .replyIdList(
                                 allPostsReplyList.stream()

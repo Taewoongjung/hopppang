@@ -8,7 +8,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import java.time.LocalDateTime;
 import kr.hoppang.adapter.outbound.jpa.entity.BaseEntity;
 import kr.hoppang.domain.boards.PostsReply;
@@ -47,9 +46,6 @@ public class PostsReplyEntity extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     @Column(name = "is_deleted", nullable = false, columnDefinition = "char(1)")
     private BoolType isDeleted;
-
-    @Transient
-    private Boolean amILiked;
 
 
     @Builder
@@ -101,13 +97,8 @@ public class PostsReplyEntity extends BaseEntity {
                 .registerId(this.registerId)
                 .isAnonymous(this.isAnonymous)
                 .isDeleted(this.isDeleted)
-                .amILiked(this.amILiked)
                 .createdAt(this.getCreatedAt())
                 .lastModified(this.getLastModified())
                 .build();
-    }
-
-    public void iLiked() {
-        amILiked = true;
     }
 }

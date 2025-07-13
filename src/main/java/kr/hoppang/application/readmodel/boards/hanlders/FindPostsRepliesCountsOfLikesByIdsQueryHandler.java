@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import kr.hoppang.abstraction.domain.IQueryHandler;
 import kr.hoppang.application.command.boards.event.events.AddPostsReplyLikeCountCommandEvent;
 import kr.hoppang.application.readmodel.boards.queries.FindPostsRepliesCountsOfLikesByIdsQuery;
-import kr.hoppang.application.readmodel.boards.queryresults.FindPostsRepliesCountsOfLikesByIdsQQueryResult;
+import kr.hoppang.application.readmodel.boards.queryresults.FindPostsRepliesCountsOfLikesByIdsQueryResult;
 import kr.hoppang.domain.boards.repository.BoardsRepositoryStrategy;
 import kr.hoppang.domain.boards.repository.PostsReplyLikeQueryRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class FindPostsRepliesCountsOfLikesByIdsQQueryHandler implements IQueryHandler<FindPostsRepliesCountsOfLikesByIdsQuery, FindPostsRepliesCountsOfLikesByIdsQQueryResult> {
+public class FindPostsRepliesCountsOfLikesByIdsQueryHandler implements IQueryHandler<FindPostsRepliesCountsOfLikesByIdsQuery, FindPostsRepliesCountsOfLikesByIdsQueryResult> {
 
     private final ApplicationEventPublisher applicationEventPublisher;
     private final List<PostsReplyLikeQueryRepository> postsReplyLikeQueryRepositoryList;
@@ -43,7 +43,7 @@ public class FindPostsRepliesCountsOfLikesByIdsQQueryHandler implements IQueryHa
 
     @Override
     @Transactional(readOnly = true)
-    public FindPostsRepliesCountsOfLikesByIdsQQueryResult handle(
+    public FindPostsRepliesCountsOfLikesByIdsQueryResult handle(
             final FindPostsRepliesCountsOfLikesByIdsQuery query
     ) {
 
@@ -52,7 +52,7 @@ public class FindPostsRepliesCountsOfLikesByIdsQQueryHandler implements IQueryHa
         ).findCountOfLikesByPostId(query.replyIdList());
 
         List<Long> notCachedCountsOfReplyIdList = query.replyIdList().stream()
-                .filter(postId -> !countDatas.containsKey(postId))
+                .filter(postReplyId -> !countDatas.containsKey(postReplyId))
                 .toList();
 
         if (!notCachedCountsOfReplyIdList.isEmpty()) {
@@ -68,7 +68,7 @@ public class FindPostsRepliesCountsOfLikesByIdsQQueryHandler implements IQueryHa
             );
         }
 
-        return FindPostsRepliesCountsOfLikesByIdsQQueryResult.builder()
+        return FindPostsRepliesCountsOfLikesByIdsQueryResult.builder()
                 .countDatas(countDatas)
                 .build();
     }
