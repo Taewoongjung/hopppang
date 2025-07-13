@@ -59,7 +59,11 @@ public class PostsReplyLikeCommandRepositoryRedisAdapter
 
             Long added = setOps.add(likeInfoKey, redisValue);
 
-            if (added != null && added == 1L) {
+            if (
+                    added != null
+                            && added == 1L
+                            && Boolean.TRUE.equals(redisTemplate.hasKey(countKey))
+            ) {
                 valueOps.increment(countKey);
             }
 
