@@ -1,4 +1,4 @@
-package kr.hoppang.adapter.outbound.jpa.repository.boards.adapter;
+package kr.hoppang.adapter.outbound.jpa.repository.boards.adapter.command;
 
 import java.util.List;
 import kr.hoppang.adapter.outbound.jpa.repository.boards.PostsLikeJpaRepository;

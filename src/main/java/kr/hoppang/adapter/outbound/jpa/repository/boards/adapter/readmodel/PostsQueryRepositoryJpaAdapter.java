@@ -1,4 +1,4 @@
-package kr.hoppang.adapter.outbound.jpa.repository.boards.adapter;
+package kr.hoppang.adapter.outbound.jpa.repository.boards.adapter.readmodel;
 
 import static kr.hoppang.adapter.outbound.jpa.entity.board.QPostsEntity.postsEntity;
 

@@ -1,4 +1,4 @@
-package kr.hoppang.adapter.outbound.jpa.repository.boards.adapter;
+package kr.hoppang.adapter.outbound.jpa.repository.boards.adapter.readmodel;
 
 import java.util.List;
 import java.util.Map;

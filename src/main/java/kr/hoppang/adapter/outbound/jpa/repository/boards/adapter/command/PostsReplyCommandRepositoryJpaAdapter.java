@@ -1,4 +1,4 @@
-package kr.hoppang.adapter.outbound.jpa.repository.boards.adapter;
+package kr.hoppang.adapter.outbound.jpa.repository.boards.adapter.command;
 
 import kr.hoppang.adapter.outbound.jpa.entity.board.PostsReplyEntity;
 import kr.hoppang.adapter.outbound.jpa.repository.boards.PostsReplyJpaRepository;
