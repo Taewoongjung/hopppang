@@ -5,7 +5,7 @@ import kr.hoppang.domain.boards.Boards;
 
 public interface BoardsQueryRepository {
 
-    BoardsQueryStrategy getBoardsQueryStrategy();
+    BoardsRepositoryStrategy getBoardsQueryStrategy();
 
     List<Boards> getAllBoards();
 

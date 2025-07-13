@@ -1,4 +1,4 @@
-package kr.hoppang.application.command.event.events;
+package kr.hoppang.application.command.boards.event.events;
 
 import java.time.LocalDateTime;
 import lombok.Builder;

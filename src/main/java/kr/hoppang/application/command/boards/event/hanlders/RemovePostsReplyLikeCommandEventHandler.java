@@ -1,29 +1,28 @@
-package kr.hoppang.application.command.event.hanlders;
+package kr.hoppang.application.command.boards.event.hanlders;
 
-import kr.hoppang.application.command.event.events.AddPostsReplyLikeCommandEvent;
+import kr.hoppang.application.command.boards.event.events.RemovePostsReplyLikeCommandEvent;
 import kr.hoppang.domain.boards.PostsReplyLike;
 import kr.hoppang.domain.boards.repository.PostsReplyLikeCommandRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 @RequiredArgsConstructor
-public class AddPostsReplyLikeCommandEventHandler {
+public class RemovePostsReplyLikeCommandEventHandler {
 
     private final PostsReplyLikeCommandRepository postsReplyLikeCommandRepository;
 
 
     @Async
-    @TransactionalEventListener
-    public void handle(final AddPostsReplyLikeCommandEvent command) {
+    @EventListener
+    public void handle(final RemovePostsReplyLikeCommandEvent command) {
 
-        postsReplyLikeCommandRepository.create(
+        postsReplyLikeCommandRepository.delete(
                 PostsReplyLike.builder()
                         .postReplyId(command.replyId())
-                        .userId(command.likedUserId())
-                        .clickedAt(command.clickedAt())
+                        .userId(command.unlikedUserId())
                         .build()
         );
     }

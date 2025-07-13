@@ -1,7 +1,9 @@
 package kr.hoppang.adapter.outbound.jpa.repository.boards.adapter;
 
+import java.util.List;
 import kr.hoppang.adapter.outbound.jpa.repository.boards.PostsLikeJpaRepository;
 import kr.hoppang.domain.boards.PostsLike;
+import kr.hoppang.domain.boards.repository.BoardsRepositoryStrategy;
 import kr.hoppang.domain.boards.repository.PostsLikeCommandRepository;
 import kr.hoppang.util.converter.boards.PostsLikeConverter;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +19,27 @@ public class PostsLikeCommandRepositoryJpaAdapter implements PostsLikeCommandRep
 
 
     @Override
-    public void create(final PostsLike postsLike) {
+    public BoardsRepositoryStrategy strategy() {
+        return BoardsRepositoryStrategy.RDB;
+    }
 
+    @Override
+    public void create(final PostsLike postsLike) {
         postsLikeJpaRepository.save(
                 PostsLikeConverter.toEntity(postsLike)
+        );
+    }
+
+    @Override
+    public void createAll(final List<PostsLike> postsLikes) {
+        if (postsLikes == null || postsLikes.isEmpty()) {
+            return;
+        }
+
+        postsLikeJpaRepository.saveAll(
+                postsLikes.stream()
+                        .map(PostsLikeConverter::toEntity)
+                        .toList()
         );
     }
 

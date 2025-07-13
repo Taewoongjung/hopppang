@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 import kr.hoppang.domain.boards.Boards;
 import kr.hoppang.domain.boards.repository.BoardsQueryRepository;
-import kr.hoppang.domain.boards.repository.BoardsQueryStrategy;
+import kr.hoppang.domain.boards.repository.BoardsRepositoryStrategy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -25,8 +25,8 @@ public class BoardQueryRepositoryRedisAdapter implements BoardsQueryRepository {
     private final String DEFAULT_BOARD_KEY = "boards:";
 
     @Override
-    public BoardsQueryStrategy getBoardsQueryStrategy() {
-        return BoardsQueryStrategy.CACHE;
+    public BoardsRepositoryStrategy getBoardsQueryStrategy() {
+        return BoardsRepositoryStrategy.CACHE;
     }
 
     @Override

@@ -9,7 +9,7 @@ import kr.hoppang.application.readmodel.boards.queryresults.FindBoardsQueryResul
 import kr.hoppang.application.util.EmptyQuery;
 import kr.hoppang.domain.boards.Boards;
 import kr.hoppang.domain.boards.repository.BoardsQueryRepository;
-import kr.hoppang.domain.boards.repository.BoardsQueryStrategy;
+import kr.hoppang.domain.boards.repository.BoardsRepositoryStrategy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,7 @@ public class FindBoardsQueryHandler implements IQueryHandler<EmptyQuery, List<Fi
 
     private final List<BoardsQueryRepository> boardsQueryRepositoryList;
 
-    private EnumMap<BoardsQueryStrategy, BoardsQueryRepository> boardsQueryRepositoryMap;
+    private EnumMap<BoardsRepositoryStrategy, BoardsQueryRepository> boardsQueryRepositoryMap;
 
     @PostConstruct
     void init() {
@@ -28,7 +28,7 @@ public class FindBoardsQueryHandler implements IQueryHandler<EmptyQuery, List<Fi
                         BoardsQueryRepository::getBoardsQueryStrategy,
                         (boardsQueryRepository) -> boardsQueryRepository,
                         (existBoardsQueryRepository, newBoardsQueryRepository) -> existBoardsQueryRepository,
-                        () -> new EnumMap<>(BoardsQueryStrategy.class)
+                        () -> new EnumMap<>(BoardsRepositoryStrategy.class)
                 ));
     }
 
@@ -41,11 +41,11 @@ public class FindBoardsQueryHandler implements IQueryHandler<EmptyQuery, List<Fi
     @Override
     public List<FindBoardsQueryResult> handle(EmptyQuery query) {
 
-        List<Boards> boardsList = boardsQueryRepositoryMap.get(BoardsQueryStrategy.CACHE)
+        List<Boards> boardsList = boardsQueryRepositoryMap.get(BoardsRepositoryStrategy.CACHE)
                 .getAllBoards();
 
         if (boardsList == null || boardsList.isEmpty()) {
-            boardsList = boardsQueryRepositoryMap.get(BoardsQueryStrategy.RDB)
+            boardsList = boardsQueryRepositoryMap.get(BoardsRepositoryStrategy.RDB)
                     .getAllBoards();
         }
 

@@ -6,7 +6,7 @@ import kr.hoppang.adapter.outbound.jpa.entity.board.BoardsEntity;
 import kr.hoppang.adapter.outbound.jpa.repository.boards.BoardsJpaRepository;
 import kr.hoppang.domain.boards.Boards;
 import kr.hoppang.domain.boards.repository.BoardsQueryRepository;
-import kr.hoppang.domain.boards.repository.BoardsQueryStrategy;
+import kr.hoppang.domain.boards.repository.BoardsRepositoryStrategy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
@@ -22,8 +22,8 @@ public class BoardsQueryRepositoryJpaAdapter implements BoardsQueryRepository {
 
 
     @Override
-    public BoardsQueryStrategy getBoardsQueryStrategy() {
-        return BoardsQueryStrategy.RDB;
+    public BoardsRepositoryStrategy getBoardsQueryStrategy() {
+        return BoardsRepositoryStrategy.RDB;
     }
 
     @Override

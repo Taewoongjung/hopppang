@@ -8,7 +8,7 @@ import kr.hoppang.abstraction.domain.IQueryHandler;
 import kr.hoppang.application.readmodel.boards.queries.FindBoardsByIdQuery;
 import kr.hoppang.domain.boards.Boards;
 import kr.hoppang.domain.boards.repository.BoardsQueryRepository;
-import kr.hoppang.domain.boards.repository.BoardsQueryStrategy;
+import kr.hoppang.domain.boards.repository.BoardsRepositoryStrategy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ public class FindBoardsByIdQueryHandler implements IQueryHandler<FindBoardsByIdQ
 
     private final List<BoardsQueryRepository> boardsQueryRepositoryList;
 
-    private EnumMap<BoardsQueryStrategy, BoardsQueryRepository> boardsQueryRepositoryMap;
+    private EnumMap<BoardsRepositoryStrategy, BoardsQueryRepository> boardsQueryRepositoryMap;
 
     @PostConstruct
     void init() {
@@ -27,7 +27,7 @@ public class FindBoardsByIdQueryHandler implements IQueryHandler<FindBoardsByIdQ
                         BoardsQueryRepository::getBoardsQueryStrategy,
                         (boardsQueryRepository) -> boardsQueryRepository,
                         (existBoardsQueryRepository, newBoardsQueryRepository) -> existBoardsQueryRepository,
-                        () -> new EnumMap<>(BoardsQueryStrategy.class)
+                        () -> new EnumMap<>(BoardsRepositoryStrategy.class)
                 ));
     }
 
@@ -40,11 +40,11 @@ public class FindBoardsByIdQueryHandler implements IQueryHandler<FindBoardsByIdQ
     @Override
     public Boards handle(final FindBoardsByIdQuery query) {
 
-        Boards board = boardsQueryRepositoryMap.get(BoardsQueryStrategy.CACHE)
+        Boards board = boardsQueryRepositoryMap.get(BoardsRepositoryStrategy.CACHE)
                 .getBoardsById(query.boardId());
 
         if (board == null) {
-            board = boardsQueryRepositoryMap.get(BoardsQueryStrategy.RDB)
+            board = boardsQueryRepositoryMap.get(BoardsRepositoryStrategy.RDB)
                     .getBoardsById(query.boardId());
         }
 

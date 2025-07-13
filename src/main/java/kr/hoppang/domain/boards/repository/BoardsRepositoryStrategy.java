@@ -1,6 +1,6 @@
 package kr.hoppang.domain.boards.repository;
 
-public enum BoardsQueryStrategy {
+public enum BoardsRepositoryStrategy {
     CACHE,
     RDB
 }

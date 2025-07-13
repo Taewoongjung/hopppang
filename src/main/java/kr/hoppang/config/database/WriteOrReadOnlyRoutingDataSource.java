@@ -4,16 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import javax.sql.DataSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 public class WriteOrReadOnlyRoutingDataSource extends AbstractRoutingDataSource {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(WriteOrReadOnlyRoutingDataSource.class);
-
     private final Map<Object, Object> targetDataSources;
+
 
     public WriteOrReadOnlyRoutingDataSource(DataSource writeDataSource, DataSource readOnlyDataSource) {
         Objects.requireNonNull(writeDataSource, "writeDataSource cannot be null");
@@ -29,7 +26,6 @@ public class WriteOrReadOnlyRoutingDataSource extends AbstractRoutingDataSource 
     protected Object determineCurrentLookupKey() {
         RoutingType routingType = TransactionSynchronizationManager.isCurrentTransactionReadOnly() ?
             RoutingType.READ_ONLY : RoutingType.WRITE;
-        LOGGER.info("DataSource is routed to {}", routingType);
         return routingType;
     }
 }

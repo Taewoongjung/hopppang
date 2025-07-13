@@ -5,5 +5,5 @@ import kr.hoppang.domain.boards.PostsReply;
 
 public interface PostsReplyQueryRepository {
 
-    List<PostsReply> findPostsReplyByPostId(Long postId);
+    List<PostsReply> findPostsReplyByPostId(long postId, Long loggedInUserId);
 }

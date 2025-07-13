@@ -27,6 +27,8 @@ public record GetPostRepliesByIdFacadeResultDto(
         private String registerName;
         private boolean anonymous;
         private boolean revised;
+        private long likes;
+        private boolean isLiked;
         private LocalDateTime createdAt;
 
         @Setter(AccessLevel.PRIVATE)
@@ -43,6 +45,8 @@ public record GetPostRepliesByIdFacadeResultDto(
             String registerName,
             boolean anonymous,
             boolean revised,
+            long likes,
+            boolean isLiked,
             LocalDateTime createdAt
     ) {}
 
@@ -86,6 +90,8 @@ public record GetPostRepliesByIdFacadeResultDto(
                 .registerName(userMap.get(reply.getRegisterId()))
                 .anonymous(BoolType.convertToBoolean(reply.getIsAnonymous()))
                 .revised(!reply.getCreatedAt().isEqual(reply.getLastModified()))
+                .likes(reply.getLikeCount() != null ? reply.getLikeCount() : 0)
+                .isLiked(reply.getAmILiked() != null ? reply.getAmILiked() : false)
                 .createdAt(reply.getCreatedAt())
                 .build();
     }
@@ -103,6 +109,8 @@ public record GetPostRepliesByIdFacadeResultDto(
                 .registerName(userMap.get(reply.getRegisterId()))
                 .anonymous(BoolType.convertToBoolean(reply.getIsAnonymous()))
                 .revised(!reply.getCreatedAt().isEqual(reply.getLastModified()))
+                .likes(reply.getLikeCount() != null ? reply.getLikeCount() : 0)
+                .isLiked(reply.getAmILiked() != null ? reply.getAmILiked() : false)
                 .createdAt(reply.getCreatedAt())
                 .build();
     }

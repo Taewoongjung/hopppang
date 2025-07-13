@@ -101,6 +101,6 @@ public class BoardQueryController {
     ) {
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(getPostRepliesByIdFacade.query(postId));
+                .body(getPostRepliesByIdFacade.query(postId, loggedInUserId));
     }
 }
