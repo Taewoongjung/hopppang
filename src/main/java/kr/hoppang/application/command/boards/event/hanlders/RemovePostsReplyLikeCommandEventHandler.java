@@ -9,12 +9,10 @@ import kr.hoppang.domain.boards.PostsReplyLike;
 import kr.hoppang.domain.boards.repository.BoardsRepositoryStrategy;
 import kr.hoppang.domain.boards.repository.PostsReplyLikeCommandRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class RemovePostsReplyLikeCommandEventHandler {
@@ -48,9 +46,6 @@ public class RemovePostsReplyLikeCommandEventHandler {
                                     .build()
                     );
 
-        } catch (Exception e) {
-            log.warn("{} 원인으로 캐싱 실패. 이후 디비 직접 반영", e.getMessage());
-
             postsReplyLikeCommandRepositoryEnumMap.get(BoardsRepositoryStrategy.RDB)
                     .delete(
                             PostsReplyLike.builder()
@@ -58,6 +53,6 @@ public class RemovePostsReplyLikeCommandEventHandler {
                                     .userId(command.unlikedUserId())
                                     .build()
                     );
-        }
+        } catch (Exception ignored) {}
     }
 }
