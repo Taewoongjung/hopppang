@@ -10,7 +10,7 @@ import kr.hoppang.domain.boards.repository.BoardsRepositoryStrategy;
 import kr.hoppang.domain.boards.repository.PostsViewCommandRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Repository;
 
@@ -32,7 +32,7 @@ public class PostsViewCommandRepositoryRedisAdapter implements PostsViewCommandR
 
     @Override
     public void create(final PostsView postsView) {
-        final ValueOperations<String, String> valueOps = redisTemplate.opsForValue();
+        final SetOperations<String, String> setOps = redisTemplate.opsForSet();
 
         String viewBufferKey = POSTS_VIEW_BUFFER_CACHE_KEY_PREFIX.replace(
                 "{postId}",
@@ -52,7 +52,7 @@ public class PostsViewCommandRepositoryRedisAdapter implements PostsViewCommandR
                     )
             );
 
-            valueOps.set(viewBufferKey, redisValue);
+            setOps.add(viewBufferKey, redisValue);
 
             String script = """
                                 local newValue = redis.call('INCR', KEYS[1])
