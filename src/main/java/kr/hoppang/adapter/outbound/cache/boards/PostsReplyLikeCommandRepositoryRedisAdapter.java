@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Repository;
 
@@ -39,9 +38,8 @@ public class PostsReplyLikeCommandRepositoryRedisAdapter
     @Override
     public void create(final PostsReplyLike postsReplyLike) {
         final SetOperations<String, String> setOps = redisTemplate.opsForSet();
-        final ValueOperations<String, String> valueOps = redisTemplate.opsForValue();
 
-        String likeInfoKey = POSTS_REPLY_LIKE_BUFFER_CACHE_KEY_PREFIX.replace(
+        String likeBufferKey = POSTS_REPLY_LIKE_BUFFER_CACHE_KEY_PREFIX.replace(
                 "{replyId}",
                 postsReplyLike.postReplyId().toString()
         );
@@ -59,7 +57,7 @@ public class PostsReplyLikeCommandRepositoryRedisAdapter
                     )
             );
 
-            setOps.add(likeInfoKey, redisValue);
+            setOps.add(likeBufferKey, redisValue);
 
             String script = """
                                 local newValue = redis.call('INCR', KEYS[1])
@@ -86,9 +84,8 @@ public class PostsReplyLikeCommandRepositoryRedisAdapter
     @Override
     public void delete(final PostsReplyLike postsReplyLike) {
         final SetOperations<String, String> setOps = redisTemplate.opsForSet();
-        final ValueOperations<String, String> valueOps = redisTemplate.opsForValue();
 
-        String likeInfoKey = POSTS_REPLY_LIKE_BUFFER_CACHE_KEY_PREFIX.replace(
+        String likeBufferKey = POSTS_REPLY_LIKE_BUFFER_CACHE_KEY_PREFIX.replace(
                 "{replyId}",
                 postsReplyLike.postReplyId().toString()
         );
@@ -99,7 +96,7 @@ public class PostsReplyLikeCommandRepositoryRedisAdapter
         );
 
         try {
-            Set<String> allMembers = setOps.members(likeInfoKey);
+            Set<String> allMembers = setOps.members(likeBufferKey);
 
             if (allMembers != null) {
                 Long removed = 0L;
@@ -108,7 +105,7 @@ public class PostsReplyLikeCommandRepositoryRedisAdapter
                     try {
                         JsonNode node = objectMapper.readTree(member);
                         if (node.get("userId").asLong() == postsReplyLike.userId()) {
-                            removed = setOps.remove(likeInfoKey, member);
+                            removed = setOps.remove(likeBufferKey, member);
                             if (removed != null && removed > 0) {
                                 break; // 첫 번째 일치 항목만 삭제하고 탈출
                             }

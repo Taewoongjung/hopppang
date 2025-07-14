@@ -2,6 +2,7 @@ package kr.hoppang.application.command.boards.scheduler;
 
 import static kr.hoppang.adapter.outbound.cache.boards.PostsLikeCommandRepositoryRedisAdapter.POSTS_LIKE_BUFFER_CACHE_KEY_PREFIX;
 import static kr.hoppang.adapter.outbound.cache.boards.PostsReplyLikeCommandRepositoryRedisAdapter.POSTS_REPLY_LIKE_BUFFER_CACHE_KEY_PREFIX;
+import static kr.hoppang.adapter.outbound.cache.boards.PostsViewCommandRepositoryRedisAdapter.POSTS_VIEW_BUFFER_CACHE_KEY_PREFIX;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
@@ -10,8 +11,10 @@ import java.util.List;
 import java.util.Set;
 import kr.hoppang.domain.boards.PostsLike;
 import kr.hoppang.domain.boards.PostsReplyLike;
+import kr.hoppang.domain.boards.PostsView;
 import kr.hoppang.domain.boards.repository.PostsLikeCommandRepository;
 import kr.hoppang.domain.boards.repository.PostsReplyLikeCommandRepository;
+import kr.hoppang.domain.boards.repository.PostsViewCommandRepository;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,6 +33,7 @@ public class FlushToDatabaseScheduler {
     private final ObjectMapper objectMapper;
     private final RedisTemplate<String, String> redisTemplate;
     private final PostsLikeCommandRepository postsLikeCommandRepository;
+    private final PostsViewCommandRepository postsViewCommandRepository;
     private final PostsReplyLikeCommandRepository postsReplyLikeCommandRepository;
 
 
@@ -160,6 +164,64 @@ public class FlushToDatabaseScheduler {
     @NoArgsConstructor
     @AllArgsConstructor
     private static class RedisPostLikeEntry {
+        @Setter
+        private Long postId;
+        private Long userId;
+        private LocalDateTime clickedAt;
+    }
+
+    @Scheduled(cron = "0 */5 * * * *")
+    public void flushPostsViewsToDb() {
+        Set<String> keys = redisTemplate.keys(
+                POSTS_VIEW_BUFFER_CACHE_KEY_PREFIX.replace("{replyId}", "*")
+        );
+
+        if (keys.isEmpty()) return;
+
+        List<RedisPostViewEntry> dbFlushTargetList = new ArrayList<>();
+
+        for (String postRedisKey : keys) {
+            Long postId = extractPostId(postRedisKey);
+            Set<String> valueSet = redisTemplate.opsForSet().members(postRedisKey);
+
+            if (valueSet == null || valueSet.isEmpty()) continue;
+
+            for (String json : valueSet) {
+                try {
+                    RedisPostViewEntry entry = objectMapper.readValue(json, RedisPostViewEntry.class);
+                    entry.setPostId(postId);
+                    dbFlushTargetList.add(entry);
+                } catch (Exception e) {
+                    log.error("게시글 조회수 반영 실패: postId={}, raw={}, error={}", postId, json, e.getMessage(), e);
+                }
+            }
+        }
+
+        if (!dbFlushTargetList.isEmpty()) {
+            try {
+                postsViewCommandRepository.createAll(
+                        dbFlushTargetList.stream()
+                                .map(e ->
+                                        PostsView.builder()
+                                                .postId(e.postId)
+                                                .userId(e.userId)
+                                                .clickedAt(e.clickedAt)
+                                                .build()
+                                ).toList()
+                );
+            } catch (Exception ignored) {
+                // 유니크 키 중복 등은 무시
+            }
+        }
+
+        // Redis 캐시 삭제 (무효화)
+        keys.forEach(redisTemplate::delete);
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    private static class RedisPostViewEntry {
         @Setter
         private Long postId;
         private Long userId;
