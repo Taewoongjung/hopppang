@@ -59,24 +59,19 @@ public class PostsReplyLikeCommandRepositoryRedisAdapter
                     )
             );
 
-            Long added = setOps.add(likeInfoKey, redisValue);
+            setOps.add(likeInfoKey, redisValue);
 
-            if (added != null && added == 1L) {
+            String script = """
+                                local newValue = redis.call('INCR', KEYS[1])
+                                redis.call('EXPIRE', KEYS[1], tonumber(ARGV[1]))
+                                return newValue
+                            """;
 
-                String script = """
-                                    local newValue = redis.call('INCR', KEYS[1])
-                                    if newValue > 0 then
-                                        redis.call('EXPIRE', KEYS[1], tonumber(ARGV[1]))
-                                    end
-                                    return newValue
-                                """;
-
-                redisTemplate.execute(
-                        RedisScript.of(script, Long.class),
-                        List.of(countKey),
-                        Duration.ofMinutes(30).getSeconds()
-                );
-            }
+            redisTemplate.execute(
+                    RedisScript.of(script, Long.class),
+                    List.of(countKey),
+                    String.valueOf(Duration.ofMinutes(10).getSeconds())
+            );
 
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Redis value 직렬화 실패", e);
@@ -104,8 +99,6 @@ public class PostsReplyLikeCommandRepositoryRedisAdapter
         );
 
         try {
-            boolean isAnyDeleted = false;
-
             Set<String> allMembers = setOps.members(likeInfoKey);
 
             if (allMembers != null) {
@@ -117,7 +110,6 @@ public class PostsReplyLikeCommandRepositoryRedisAdapter
                         if (node.get("userId").asLong() == postsReplyLike.userId()) {
                             removed = setOps.remove(likeInfoKey, member);
                             if (removed != null && removed > 0) {
-                                isAnyDeleted = true;
                                 break; // 첫 번째 일치 항목만 삭제하고 탈출
                             }
                         }
@@ -127,22 +119,20 @@ public class PostsReplyLikeCommandRepositoryRedisAdapter
                     }
                 }
 
-                if (isAnyDeleted) {
-                    String script = """
-                                        local current = redis.call("GET", KEYS[1])
-                                        if current and tonumber(current) > 0 then
-                                            return redis.call("DECRBY", KEYS[1], ARGV[1])
-                                        else
-                                            return current
-                                        end
-                                    """;
+                String script = """
+                                    local current = redis.call("GET", KEYS[1])
+                                    if current and tonumber(current) > 0 then
+                                        return redis.call("DECRBY", KEYS[1], ARGV[1])
+                                    else
+                                        return current
+                                    end
+                                """;
 
-                    redisTemplate.execute(
-                            RedisScript.of(script, Long.class),
-                            List.of(countKey),
-                            1
-                    );
-                }
+                redisTemplate.execute(
+                        RedisScript.of(script, Long.class),
+                        List.of(countKey),
+                        "1"
+                );
             }
 
         } catch (Exception e) {
