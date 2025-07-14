@@ -11,4 +11,5 @@ public class PostsView {
     private Long postId;
     private LocalDateTime clickedAt;
     private Long userId;
+    private Long originCount; // 원래 카운트 갯수
 }

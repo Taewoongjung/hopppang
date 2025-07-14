@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Primary
-@Repository
+@Repository("PostsViewQueryRepositoryJpa")
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class PostsViewQueryRepositoryJpaAdapter implements PostsViewQueryRepository {

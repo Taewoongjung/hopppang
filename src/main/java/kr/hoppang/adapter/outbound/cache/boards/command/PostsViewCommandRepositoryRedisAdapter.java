@@ -55,7 +55,7 @@ public class PostsViewCommandRepositoryRedisAdapter implements PostsViewCommandR
             setOps.add(viewBufferKey, redisValue);
 
             String script = """
-                                local newValue = redis.call('INCR', KEYS[1])
+                                local newValue = redis.call('INCRBY', KEYS[1], tonumber(ARGV[2]))
                                 redis.call('EXPIRE', KEYS[1], tonumber(ARGV[1]))
                                 return newValue
                             """;
@@ -63,9 +63,12 @@ public class PostsViewCommandRepositoryRedisAdapter implements PostsViewCommandR
             redisTemplate.execute(
                     RedisScript.of(script, Long.class),
                     List.of(viewCountKey),
-                    String.valueOf(Duration.ofMinutes(10).getSeconds())
+                    String.valueOf(Duration.ofMinutes(10).getSeconds()),  // ARGV[1]: expire time
+                    String.valueOf(
+                            postsView.getOriginCount() != null ?
+                                    postsView.getOriginCount() : 1
+                    )  // ARGV[2]: originCount
             );
-
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Redis value 직렬화 실패", e);
         }
