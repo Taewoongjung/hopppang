@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class PostsVIewCommandRepositoryJpaAdapter implements PostsViewCommandRepository {
 
-    private PostsViewJpaRepository postsViewJpaRepository;
+    private final PostsViewJpaRepository postsViewJpaRepository;
 
 
     @Override
