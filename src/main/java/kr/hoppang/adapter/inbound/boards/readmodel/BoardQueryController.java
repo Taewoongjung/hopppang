@@ -50,12 +50,13 @@ public class BoardQueryController {
 
     @GetMapping("/posts/{postId}")
     public ResponseEntity<GetPostByIdFacadeResultDto> getPostById(
-            @PathVariable final long postId
+            @PathVariable final long postId,
+            @RequestParam(value = "loggedInUserId", required = false) final Long loggedInUserId
     ) {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(
-                        getPostByIdFacade.query(postId)
+                        getPostByIdFacade.query(postId, loggedInUserId)
                 );
     }
 
