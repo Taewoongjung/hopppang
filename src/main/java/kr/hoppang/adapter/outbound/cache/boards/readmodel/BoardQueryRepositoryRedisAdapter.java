@@ -1,4 +1,4 @@
-package kr.hoppang.adapter.outbound.cache.boards;
+package kr.hoppang.adapter.outbound.cache.boards.readmodel;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,10 +1,14 @@
 package kr.hoppang.adapter.inbound.boards.readmodel.facade;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetPostByIdFacadeResultDto;
 import kr.hoppang.application.command.boards.event.events.AddPostsViewCommandEvent;
 import kr.hoppang.application.readmodel.boards.hanlders.FindBoardsByIdQueryHandler;
+import kr.hoppang.application.readmodel.boards.hanlders.FindPostsViewsByIdsQueryHandler;
 import kr.hoppang.application.readmodel.boards.queries.FindBoardsByIdQuery;
+import kr.hoppang.application.readmodel.boards.queries.FindPostsViewsByIdsQuery;
 import kr.hoppang.application.readmodel.user.handlers.FindUserByIdQueryHandler;
 import kr.hoppang.application.readmodel.user.queries.FindUserByIdQuery;
 import kr.hoppang.domain.boards.Boards;
@@ -23,6 +27,7 @@ public class GetPostByIdFacade {
     private final PostsQueryRepository postsQueryRepository;
     private final FindUserByIdQueryHandler findUserByIdQueryHandler;
     private final FindBoardsByIdQueryHandler findBoardsByIdQueryHandler;
+    private final FindPostsViewsByIdsQueryHandler findPostsViewsByIdsQueryHandler;
 
 
     public GetPostByIdFacadeResultDto query(
@@ -43,6 +48,13 @@ public class GetPostByIdFacade {
                         .build()
         );
 
+        Map<Long, Long> postViewCount = findPostsViewsByIdsQueryHandler.handle(
+                FindPostsViewsByIdsQuery.builder()
+                        .postIds(
+                                List.of(postId)
+                        ).build()
+        ).viewCountDatas();
+
         eventPublisher.publishEvent(
                 AddPostsViewCommandEvent.builder()
                         .postId(postId)
@@ -61,6 +73,7 @@ public class GetPostByIdFacade {
                 .isAnonymous(posts.getIsAnonymous())
                 .createdAt(posts.getCreatedAt())
                 .lastModified(posts.getLastModified())
+                .viewCount(postViewCount.get(postId) != null ? postViewCount.get(postId) : 0L)
                 .build();
     }
 }

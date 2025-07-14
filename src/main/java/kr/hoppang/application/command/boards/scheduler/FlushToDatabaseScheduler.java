@@ -1,8 +1,8 @@
 package kr.hoppang.application.command.boards.scheduler;
 
-import static kr.hoppang.adapter.outbound.cache.boards.PostsLikeCommandRepositoryRedisAdapter.POSTS_LIKE_BUFFER_CACHE_KEY_PREFIX;
-import static kr.hoppang.adapter.outbound.cache.boards.PostsReplyLikeCommandRepositoryRedisAdapter.POSTS_REPLY_LIKE_BUFFER_CACHE_KEY_PREFIX;
-import static kr.hoppang.adapter.outbound.cache.boards.PostsViewCommandRepositoryRedisAdapter.POSTS_VIEW_BUFFER_CACHE_KEY_PREFIX;
+import static kr.hoppang.adapter.outbound.cache.boards.command.PostsLikeCommandRepositoryRedisAdapter.POSTS_LIKE_BUFFER_CACHE_KEY_PREFIX;
+import static kr.hoppang.adapter.outbound.cache.boards.command.PostsReplyLikeCommandRepositoryRedisAdapter.POSTS_REPLY_LIKE_BUFFER_CACHE_KEY_PREFIX;
+import static kr.hoppang.adapter.outbound.cache.boards.command.PostsViewCommandRepositoryRedisAdapter.POSTS_VIEW_BUFFER_CACHE_KEY_PREFIX;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
@@ -173,7 +173,7 @@ public class FlushToDatabaseScheduler {
     @Scheduled(cron = "0 */5 * * * *")
     public void flushPostsViewsToDb() {
         Set<String> keys = redisTemplate.keys(
-                POSTS_VIEW_BUFFER_CACHE_KEY_PREFIX.replace("{replyId}", "*")
+                POSTS_VIEW_BUFFER_CACHE_KEY_PREFIX.replace("{postId}", "*")
         );
 
         if (keys.isEmpty()) return;

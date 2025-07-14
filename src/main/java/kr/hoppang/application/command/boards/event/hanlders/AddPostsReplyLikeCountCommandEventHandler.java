@@ -1,6 +1,6 @@
 package kr.hoppang.application.command.boards.event.hanlders;
 
-import static kr.hoppang.adapter.outbound.cache.boards.PostsReplyLikeCommandRepositoryRedisAdapter.POSTS_REPLY_LIKE_COUNT_CACHE_KEY_PREFIX;
+import static kr.hoppang.adapter.outbound.cache.boards.command.PostsReplyLikeCommandRepositoryRedisAdapter.POSTS_REPLY_LIKE_COUNT_CACHE_KEY_PREFIX;
 
 import java.time.Duration;
 import kr.hoppang.application.command.boards.event.events.AddPostsReplyLikeCountCommandEvent;

@@ -1,6 +1,6 @@
-package kr.hoppang.adapter.outbound.cache.boards;
+package kr.hoppang.adapter.outbound.cache.boards.readmodel;
 
-import static kr.hoppang.adapter.outbound.cache.boards.PostsReplyLikeCommandRepositoryRedisAdapter.POSTS_REPLY_LIKE_BUFFER_CACHE_KEY_PREFIX;
+import static kr.hoppang.adapter.outbound.cache.boards.command.PostsReplyLikeCommandRepositoryRedisAdapter.POSTS_REPLY_LIKE_BUFFER_CACHE_KEY_PREFIX;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;

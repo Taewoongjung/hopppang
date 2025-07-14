@@ -14,5 +14,6 @@ public record GetPostByIdFacadeResultDto(
         String contents,
         BoolType isAnonymous,
         LocalDateTime createdAt,
-        LocalDateTime lastModified
+        LocalDateTime lastModified,
+        long viewCount
 ) { }

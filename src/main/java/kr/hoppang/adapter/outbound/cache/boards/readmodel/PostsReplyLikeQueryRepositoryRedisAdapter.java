@@ -1,4 +1,4 @@
-package kr.hoppang.adapter.outbound.cache.boards;
+package kr.hoppang.adapter.outbound.cache.boards.readmodel;
 
 import java.util.HashMap;
 import java.util.List;
