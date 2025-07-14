@@ -65,7 +65,7 @@ public class PostsReplyLikeCommandRepositoryRedisAdapter
 
                 String script = """
                                     local newValue = redis.call('INCR', KEYS[1])
-                                    if newValue == 1 then
+                                    if newValue > 0 then
                                         redis.call('EXPIRE', KEYS[1], tonumber(ARGV[1]))
                                     end
                                     return newValue
@@ -140,7 +140,7 @@ public class PostsReplyLikeCommandRepositoryRedisAdapter
                     redisTemplate.execute(
                             RedisScript.of(script, Long.class),
                             List.of(countKey),
-                            "1"
+                            1
                     );
                 }
             }
