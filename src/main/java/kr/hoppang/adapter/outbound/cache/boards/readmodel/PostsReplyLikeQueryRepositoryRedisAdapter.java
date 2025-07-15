@@ -39,7 +39,7 @@ public class PostsReplyLikeQueryRepositoryRedisAdapter implements PostsReplyLike
 
             if (value != null) {
                 try {
-                    Long count = Long.parseLong(value);
+                    Long count = Long.parseLong(value.trim());
 
                     result.put(replyId, count);
 

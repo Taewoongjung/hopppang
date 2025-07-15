@@ -9,17 +9,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import kr.hoppang.abstraction.domain.IQueryHandler;
+import kr.hoppang.application.command.boards.event.events.AddPostsViewCountCommandForCachingEvent;
 import kr.hoppang.application.readmodel.boards.queries.FindPostsViewsByIdsQuery;
 import kr.hoppang.application.readmodel.boards.queryresults.FindPostsViewByIdsQueryResult;
 import kr.hoppang.domain.boards.repository.BoardsRepositoryStrategy;
 import kr.hoppang.domain.boards.repository.PostsViewQueryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class FindPostsViewsByIdsQueryHandler implements IQueryHandler<FindPostsViewsByIdsQuery, FindPostsViewByIdsQueryResult> {
 
+    private final ApplicationEventPublisher eventPublisher;
     private final List<PostsViewQueryRepository> postsViewQueryRepositoryList;
     private EnumMap<BoardsRepositoryStrategy, PostsViewQueryRepository> postsViewQueryRepositoryEnumMap;
 
@@ -33,7 +36,6 @@ public class FindPostsViewsByIdsQueryHandler implements IQueryHandler<FindPostsV
                         () -> new EnumMap<>(BoardsRepositoryStrategy.class)
                 ));
     }
-
 
     @Override
     public boolean isQueryHandler() {
@@ -60,10 +62,16 @@ public class FindPostsViewsByIdsQueryHandler implements IQueryHandler<FindPostsV
         }
 
         if (dataFromCache == null || !yetCachedViewCountData.isEmpty()) {
-            result.putAll(
-                    postsViewQueryRepositoryEnumMap.get(
-                            BoardsRepositoryStrategy.RDB
-                    ).findCountOfViewsByPostIds(query.postIds())
+            Map<Long, Long> countDataFromRdb = postsViewQueryRepositoryEnumMap.get(
+                    BoardsRepositoryStrategy.RDB
+            ).findCountOfViewsByPostIds(query.postIds());
+
+            result.putAll(countDataFromRdb);
+
+            eventPublisher.publishEvent(
+                AddPostsViewCountCommandForCachingEvent.builder()
+                        .countDataForCaching(countDataFromRdb)
+                        .build()
             );
         }
 

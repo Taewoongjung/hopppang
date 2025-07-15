@@ -11,11 +11,12 @@ import kr.hoppang.domain.boards.repository.PostsViewCommandRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Repository;
 
-@Repository("PostsViewCommandRepositoryRedis")
 @RequiredArgsConstructor
+@Repository("PostsViewCommandRepositoryRedis")
 public class PostsViewCommandRepositoryRedisAdapter implements PostsViewCommandRepository {
 
     private final ObjectMapper objectMapper;
@@ -47,9 +48,11 @@ public class PostsViewCommandRepositoryRedisAdapter implements PostsViewCommandR
         try {
             String redisValue = objectMapper.writeValueAsString(
                     Map.of(
-                            "userId",
-                            postsView.getUserId() == null ? "null"
-                                    : postsView.getUserId().toString(),
+                            "userId", (
+                                    postsView.getUserId() == null ?
+                                            "null"
+                                            : postsView.getUserId().toString()
+                            ),
                             "clickedAt", postsView.getClickedAt()
                     )
             );
@@ -77,7 +80,21 @@ public class PostsViewCommandRepositoryRedisAdapter implements PostsViewCommandR
     }
 
     @Override
-    public void createAll(List<PostsView> postsViewList) {
-        // yet developed
+    public void createAll(final List<PostsView> postsViewList) {
+        // 카운트 수만 다시 캐싱 하는 로직
+        final ValueOperations<String, String> valueOps = redisTemplate.opsForValue();
+
+        postsViewList.forEach(postsView -> {
+            String viewCountKey = POSTS_VIEW_COUNT_CACHE_KEY_PREFIX.replace(
+                    "{postId}",
+                    postsView.getPostId().toString()
+            );
+
+            valueOps.set(
+                    viewCountKey,
+                    postsView.getOriginCount().toString(),
+                    Duration.ofMinutes(10).getSeconds()
+            );
+        });
     }
 }

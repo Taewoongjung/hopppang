@@ -39,10 +39,10 @@ public class PostsViewQueryRepositoryRedisAdapter implements PostsViewQueryRepos
             String value = valueOps.get(key);
 
             if (value == null || value.isBlank()) {
-                return null;
+                continue;
             }
 
-            result.put(postId, Long.parseLong(value));
+            result.put(postId, Long.parseLong(value.trim()));
         }
 
         return result;
