@@ -34,6 +34,7 @@ public class FindPostsViewsByIdsQueryHandler implements IQueryHandler<FindPostsV
                 ));
     }
 
+
     @Override
     public boolean isQueryHandler() {
         return true;
@@ -54,6 +55,8 @@ public class FindPostsViewsByIdsQueryHandler implements IQueryHandler<FindPostsV
             yetCachedViewCountData = query.postIds().stream()
                     .filter(f -> !cachedPostIds.contains(f))
                     .toList();
+
+            result.putAll(dataFromCache);
         }
 
         if (dataFromCache == null || !yetCachedViewCountData.isEmpty()) {
@@ -62,8 +65,6 @@ public class FindPostsViewsByIdsQueryHandler implements IQueryHandler<FindPostsV
                             BoardsRepositoryStrategy.RDB
                     ).findCountOfViewsByPostIds(query.postIds())
             );
-        } else {
-            result.putAll(dataFromCache);
         }
 
         return FindPostsViewByIdsQueryResult.builder()
