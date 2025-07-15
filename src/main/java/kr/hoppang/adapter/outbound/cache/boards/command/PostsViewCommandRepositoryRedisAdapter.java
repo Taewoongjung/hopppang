@@ -47,7 +47,9 @@ public class PostsViewCommandRepositoryRedisAdapter implements PostsViewCommandR
         try {
             String redisValue = objectMapper.writeValueAsString(
                     Map.of(
-                            "userId", postsView.getUserId(),
+                            "userId",
+                            postsView.getUserId() == null ? "null"
+                                    : postsView.getUserId().toString(),
                             "clickedAt", postsView.getClickedAt()
                     )
             );
