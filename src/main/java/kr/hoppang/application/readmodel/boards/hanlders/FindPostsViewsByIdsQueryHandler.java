@@ -20,7 +20,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class FindPostsViewsByIdsQueryHandler implements IQueryHandler<FindPostsViewsByIdsQuery, FindPostsViewByIdsQueryResult> {
+public class FindPostsViewsByIdsQueryHandler implements
+        IQueryHandler<FindPostsViewsByIdsQuery, FindPostsViewByIdsQueryResult> {
 
     private final ApplicationEventPublisher eventPublisher;
     private final List<PostsViewQueryRepository> postsViewQueryRepositoryList;
@@ -45,7 +46,6 @@ public class FindPostsViewsByIdsQueryHandler implements IQueryHandler<FindPostsV
     @Override
     public FindPostsViewByIdsQueryResult handle(final FindPostsViewsByIdsQuery query) {
         Map<Long, Long> result = new HashMap<>();
-
         Map<Long, Long> dataFromCache = postsViewQueryRepositoryEnumMap.get(
                 BoardsRepositoryStrategy.CACHE
         ).findCountOfViewsByPostIds(query.postIds());
@@ -64,15 +64,31 @@ public class FindPostsViewsByIdsQueryHandler implements IQueryHandler<FindPostsV
         if (dataFromCache == null || !yetCachedViewCountData.isEmpty()) {
             Map<Long, Long> countDataFromRdb = postsViewQueryRepositoryEnumMap.get(
                     BoardsRepositoryStrategy.RDB
-            ).findCountOfViewsByPostIds(query.postIds());
+            ).findCountOfViewsByPostIds(yetCachedViewCountData);
 
-            result.putAll(countDataFromRdb);
+            if (countDataFromRdb != null && !countDataFromRdb.isEmpty()) {
+                result.putAll(countDataFromRdb);
 
-            eventPublisher.publishEvent(
-                AddPostsViewCountCommandForCachingEvent.builder()
-                        .countDataForCaching(countDataFromRdb)
-                        .build()
-            );
+                eventPublisher.publishEvent(
+                        AddPostsViewCountCommandForCachingEvent.builder()
+                                .countDataForCaching(countDataFromRdb)
+                                .build()
+                );
+            }
+        }
+
+        if (query.postIds().size() != result.size()) {
+            // 지금 단계 까지 없는 조회수 데이터는 0으로 처리
+            Map<Long, Long> yetNotViewedList = query.postIds().stream()
+                    .filter(postId -> !result.containsKey(postId))
+                    .collect(
+                            Collectors.toMap(
+                                    postId -> postId,
+                                    viewValue -> 0L
+                            )
+                    );
+
+            result.putAll(yetNotViewedList);
         }
 
         return FindPostsViewByIdsQueryResult.builder()

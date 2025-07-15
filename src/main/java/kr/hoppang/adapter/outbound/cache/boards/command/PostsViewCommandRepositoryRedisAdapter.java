@@ -92,7 +92,10 @@ public class PostsViewCommandRepositoryRedisAdapter implements PostsViewCommandR
 
             valueOps.set(
                     viewCountKey,
-                    postsView.getOriginCount().toString(),
+                    (
+                            postsView.getOriginCount() == null ?
+                                    "0" : postsView.getOriginCount().toString()
+                    ),
                     Duration.ofMinutes(10).getSeconds()
             );
         });
