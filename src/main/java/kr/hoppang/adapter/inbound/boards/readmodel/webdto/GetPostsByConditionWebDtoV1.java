@@ -36,7 +36,8 @@ public record GetPostsByConditionWebDtoV1() {
                 String contents,
                 Boolean isAnonymous,
                 Boolean isRevised,
-                LocalDateTime createdAt
+                LocalDateTime createdAt,
+                Long viewCount
         ) { }
     }
 }

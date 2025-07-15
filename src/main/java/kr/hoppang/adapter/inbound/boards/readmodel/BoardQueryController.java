@@ -87,6 +87,7 @@ public class BoardQueryController {
                                                                 .isAnonymous(post.isAnonymous())
                                                                 .isRevised(post.isRevised())
                                                                 .createdAt(post.createdAt())
+                                                                .viewCount(post.viewCount())
                                                                 .build()
                                                 )
                                                 .toList()

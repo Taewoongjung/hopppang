@@ -2,6 +2,7 @@ package kr.hoppang.adapter.inbound.boards.readmodel.facade.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import kr.hoppang.domain.boards.Posts;
 import kr.hoppang.domain.user.User;
 import kr.hoppang.util.common.BoolType;
@@ -23,13 +24,15 @@ public record GetPostsByConditionFacadeResultDto(
             String contents,
             Boolean isAnonymous,
             Boolean isRevised,
+            Long viewCount,
             LocalDateTime createdAt
     ) { }
 
     public static GetPostsByConditionFacadeResultDto of(
             long count,
             List<Posts> postsList,
-            List<User> authorList
+            List<User> authorList,
+            Map<Long, Long> viewCountByPostId
     ) {
 
         return GetPostsByConditionFacadeResultDto.builder()
@@ -54,6 +57,7 @@ public record GetPostsByConditionFacadeResultDto(
                                                     post.getCreatedAt()
                                                             .isEqual(post.getLastModified())
                                             )
+                                            .viewCount(viewCountByPostId.get(post.getId()))
                                             .createdAt(post.getCreatedAt())
                                             .build();
                                 })
