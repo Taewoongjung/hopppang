@@ -60,10 +60,28 @@ public class PostsViewCommandRepositoryRedisAdapter implements PostsViewCommandR
             setOps.add(viewBufferKey, redisValue);
 
             String script = """
-                                local newValue = redis.call('INCRBY', KEYS[1], tonumber(ARGV[2]))
-                                redis.call('EXPIRE', KEYS[1], tonumber(ARGV[1]))
-                                return newValue
-                            """;
+                        local key = KEYS[1]
+                        local expireTime = tonumber(ARGV[1])
+                        local incrementValue = tonumber(ARGV[2])
+                    
+                        -- 현재 값 가져오기
+                        local currentValue = redis.call('GET', key)
+                        local cleanValue
+                    
+                        if currentValue == false then
+                            cleanValue = 0
+                        else
+                            -- NULL 바이트 제거 및 숫자 변환. (숫자 욍 쓰레기값 들어가는거 방지하기 위함)
+                            cleanValue = string.gsub(currentValue, '%z', '')  -- NULL 바이트 제거
+                            cleanValue = string.gsub(cleanValue, '[^0-9%-]', '')  -- 숫자가 아닌 문자 제거
+                            cleanValue = tonumber(cleanValue) or 0
+                        end
+                    
+                        local newValue = cleanValue + incrementValue
+                        redis.call('SET', key, tostring(newValue))
+                        redis.call('EXPIRE', key, expireTime)
+                        return newValue
+                    """;
 
             redisTemplate.execute(
                     RedisScript.of(script, Long.class),
