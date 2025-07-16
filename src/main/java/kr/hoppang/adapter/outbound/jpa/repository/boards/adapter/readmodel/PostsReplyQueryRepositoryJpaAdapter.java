@@ -7,7 +7,11 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import kr.hoppang.adapter.outbound.jpa.entity.board.PostsReplyEntity;
+import kr.hoppang.adapter.outbound.jpa.repository.boards.PostsReplyJpaRepository;
+import kr.hoppang.adapter.outbound.jpa.repository.boards.dto.PostReplyCountDto;
 import kr.hoppang.domain.boards.PostsReply;
 import kr.hoppang.domain.boards.repository.BoardsRepositoryStrategy;
 import kr.hoppang.domain.boards.repository.PostsReplyQueryRepository;
@@ -24,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostsReplyQueryRepositoryJpaAdapter implements PostsReplyQueryRepository{
 
     private final JPAQueryFactory queryFactory;
+    private final PostsReplyJpaRepository postsReplyJpaRepository;
 
 
     @Override
@@ -64,6 +69,20 @@ public class PostsReplyQueryRepositoryJpaAdapter implements PostsReplyQueryRepos
                         postsReplyLikeEntity.id.postReplyId.in(replyIds)
                 )
                 .fetch();
+    }
+
+    @Override
+    public Map<Long, Long> findCountOfLikesByPostId(final List<Long> postIds) {
+        List<PostReplyCountDto> countOfRepliesByPost = postsReplyJpaRepository.countRepliesGroupedByPostId(
+                postIds);
+
+        return countOfRepliesByPost.stream()
+                .collect(
+                        Collectors.toMap(
+                                PostReplyCountDto::postId,
+                                PostReplyCountDto::replyCount
+                        )
+                );
     }
 
 

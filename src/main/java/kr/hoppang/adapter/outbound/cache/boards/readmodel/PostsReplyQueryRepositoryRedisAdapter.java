@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import kr.hoppang.domain.boards.PostsReply;
 import kr.hoppang.domain.boards.repository.BoardsRepositoryStrategy;
@@ -64,5 +65,11 @@ public class PostsReplyQueryRepositoryRedisAdapter implements PostsReplyQueryRep
         }
 
         return likedReplyListByTargetUser;
+    }
+
+    @Override
+    public Map<Long, Long> findCountOfLikesByPostId(List<Long> replyIds) {
+        // yet developed
+        return Map.of();
     }
 }

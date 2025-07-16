@@ -91,6 +91,7 @@ public class BoardQueryController {
                                                                 .isRevised(post.isRevised())
                                                                 .createdAt(post.createdAt())
                                                                 .viewCount(post.viewCount())
+                                                                .replyCount(post.replyCount())
                                                                 .build()
                                                 )
                                                 .toList()

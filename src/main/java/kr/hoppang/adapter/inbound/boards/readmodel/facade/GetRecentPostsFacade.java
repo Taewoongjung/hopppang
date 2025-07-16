@@ -13,6 +13,7 @@ import kr.hoppang.application.readmodel.boards.queryresults.FindBoardsQueryResul
 import kr.hoppang.application.util.EmptyQuery;
 import kr.hoppang.domain.boards.Posts;
 import kr.hoppang.domain.boards.repository.PostsQueryRepository;
+import kr.hoppang.domain.boards.repository.PostsReplyQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,7 @@ public class GetRecentPostsFacade {
 
     private final PostsQueryRepository postsQueryRepository;
     private final FindBoardsQueryHandler findBoardsQueryHandler;
+    private final PostsReplyQueryRepository postsReplyQueryRepository;
     private final FindPostsViewsByIdsQueryHandler findPostsViewsByIdsQueryHandler;
 
 
@@ -39,15 +41,19 @@ public class GetRecentPostsFacade {
 
         List<Posts> recentPosts = postsQueryRepository.findRecentFivePosts();
 
+        List<Long> postIds = recentPosts.stream()
+                .map(Posts::getId)
+                .toList();
+
         Map<Long, Long> viewCountOfEachPosts = findPostsViewsByIdsQueryHandler.handle(
                 FindPostsViewsByIdsQuery.builder()
-                        .postIds(
-                                recentPosts.stream()
-                                        .map(Posts::getId)
-                                        .toList()
-                        )
+                        .postIds(postIds)
                         .build()
         ).viewCountDatas();
+
+        Map<Long, Long> replyCountOfEachPosts = postsReplyQueryRepository.findCountOfLikesByPostId(
+                postIds
+        );
 
         return recentPosts.stream()
                 .map(post -> {
@@ -68,6 +74,10 @@ public class GetRecentPostsFacade {
                             .viewCount(
                                     viewCountOfEachPosts.get(post.getBoardId()) != null ?
                                             viewCountOfEachPosts.get(post.getBoardId()) : 0
+                            )
+                            .replyCount(
+                                    replyCountOfEachPosts.get(post.getBoardId()) != null ?
+                                            replyCountOfEachPosts.get(post.getBoardId()) : 0
                             )
                             .build();
                 })

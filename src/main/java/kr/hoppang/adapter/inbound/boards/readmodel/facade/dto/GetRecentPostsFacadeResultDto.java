@@ -9,5 +9,6 @@ public record GetRecentPostsFacadeResultDto(
         String contents,
         String boardName,
         String createdTime, // 00:00
-        long viewCount
+        long viewCount,
+        long replyCount
 ) { }

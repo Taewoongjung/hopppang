@@ -37,7 +37,8 @@ public record GetPostsByConditionWebDtoV1() {
                 Boolean isAnonymous,
                 Boolean isRevised,
                 LocalDateTime createdAt,
-                Long viewCount
+                Long viewCount,
+                Long replyCount
         ) { }
     }
 }
