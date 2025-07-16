@@ -72,12 +72,12 @@ public class GetRecentPostsFacade {
                             )
                             .createdTime(getCreatedTime(post.getCreatedAt()))
                             .viewCount(
-                                    viewCountOfEachPosts.get(post.getBoardId()) != null ?
-                                            viewCountOfEachPosts.get(post.getBoardId()) : 0
+                                    viewCountOfEachPosts.get(post.getId()) != null ?
+                                            viewCountOfEachPosts.get(post.getId()) : 0
                             )
                             .replyCount(
-                                    replyCountOfEachPosts.get(post.getBoardId()) != null ?
-                                            replyCountOfEachPosts.get(post.getBoardId()) : 0
+                                    replyCountOfEachPosts.get(post.getId()) != null ?
+                                            replyCountOfEachPosts.get(post.getId()) : 0
                             )
                             .build();
                 })
