@@ -5,9 +5,11 @@ import java.util.List;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.GetPostByIdFacade;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.GetPostRepliesByIdFacade;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.GetPostsByConditionFacade;
+import kr.hoppang.adapter.inbound.boards.readmodel.facade.GetRecentPostsFacade;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetPostByIdFacadeResultDto;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetPostRepliesByIdFacadeResultDto;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetPostsByConditionFacadeResultDto;
+import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetRecentPostsFacadeResultDto;
 import kr.hoppang.adapter.inbound.boards.readmodel.webdto.GetAllBoardsWebDtoV1;
 import kr.hoppang.adapter.inbound.boards.readmodel.webdto.GetPostsByConditionWebDtoV1;
 import kr.hoppang.adapter.inbound.boards.readmodel.webdto.GetPostsByConditionWebDtoV1.Res.PostWebDto;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BoardQueryController {
 
     private final GetPostByIdFacade getPostByIdFacade;
+    private final GetRecentPostsFacade getRecentPostsFacade;
     private final FindBoardsQueryHandler findBoardsQueryHandler;
     private final GetPostRepliesByIdFacade getPostRepliesByIdFacade;
     private final GetPostsByConditionFacade getPostsByConditionFacade;
@@ -104,5 +107,12 @@ public class BoardQueryController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(getPostRepliesByIdFacade.query(postId, loggedInUserId));
+    }
+
+    @GetMapping("/posts/recent")
+    public ResponseEntity<List<GetRecentPostsFacadeResultDto>> getRecentPosts() {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(getRecentPostsFacade.query());
     }
 }

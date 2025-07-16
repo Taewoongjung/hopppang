@@ -7,8 +7,10 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import kr.hoppang.adapter.outbound.jpa.entity.board.PostsEntity;
 import kr.hoppang.domain.boards.Posts;
+import kr.hoppang.domain.boards.repository.BoardsRepositoryStrategy;
 import kr.hoppang.domain.boards.repository.PostsQueryRepository;
 import kr.hoppang.domain.boards.repository.dto.ConditionOfFindPosts;
+import kr.hoppang.util.common.BoolType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
@@ -24,10 +26,16 @@ public class PostsQueryRepositoryJpaAdapter implements PostsQueryRepository {
 
 
     @Override
+    public BoardsRepositoryStrategy strategy() {
+        return BoardsRepositoryStrategy.RDB;
+    }
+
+    @Override
     public List<Posts> findAllPostsByCondition(final ConditionOfFindPosts condition) {
 
         List<PostsEntity> contents = queryFactory.selectFrom(postsEntity)
                 .where(
+                        notDeleted(),
                         resolveBoardIn(condition.boardIds())
                 )
                 .orderBy(postsEntity.createdAt.desc())
@@ -45,6 +53,7 @@ public class PostsQueryRepositoryJpaAdapter implements PostsQueryRepository {
         Long count = queryFactory.select(postsEntity.count())
                 .from(postsEntity)
                 .where(
+                        notDeleted(),
                         resolveBoardIn(condition.boardIds())
                 )
                 .fetchOne();
@@ -56,11 +65,27 @@ public class PostsQueryRepositoryJpaAdapter implements PostsQueryRepository {
     public Posts findPostsByPostId(final long postId) {
         PostsEntity post = queryFactory.selectFrom(postsEntity)
                 .where(
+                        notDeleted(),
                         resolvePostsIdEquals(postId)
                 )
                 .fetchOne();
 
         return post == null ? null : post.toPojo();
+    }
+
+    @Override
+    public List<Posts> findRecentFivePosts() {
+        List<PostsEntity> posts = queryFactory.selectFrom(postsEntity)
+                .where(
+                        notDeleted()
+                )
+                .orderBy(postsEntity.createdAt.desc())
+                .limit(5)
+                .fetch();
+
+        return posts.stream()
+                .map(PostsEntity::toPojo)
+                .toList();
     }
 
 
@@ -78,5 +103,9 @@ public class PostsQueryRepositoryJpaAdapter implements PostsQueryRepository {
         }
 
         return postsEntity.id.eq(boardId);
+    }
+
+    private BooleanExpression notDeleted() {
+        return postsEntity.isDeleted.eq(BoolType.F);
     }
 }
