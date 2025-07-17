@@ -8,4 +8,6 @@ public interface PostsLikeQueryRepository {
     BoardsRepositoryStrategy strategy();
 
     Map<Long, Long> findCountOfLikesByPostIds(List<Long> postIds);
+
+    boolean isLikedByPostId(Long postId, Long loggedInUserId);
 }

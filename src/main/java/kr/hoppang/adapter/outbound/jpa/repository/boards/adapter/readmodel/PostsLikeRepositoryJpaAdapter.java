@@ -40,4 +40,9 @@ public class PostsLikeRepositoryJpaAdapter implements PostsLikeQueryRepository {
                         )
                 );
     }
+
+    @Override
+    public boolean isLikedByPostId(final Long postId, final Long loggedInUserId) {
+        return postsLikeJpaRepository.existsById_PostIdAndId_UserId(postId, loggedInUserId);
+    }
 }

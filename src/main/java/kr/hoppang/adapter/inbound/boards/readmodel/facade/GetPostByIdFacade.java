@@ -15,6 +15,7 @@ import kr.hoppang.application.readmodel.user.handlers.FindUserByIdQueryHandler;
 import kr.hoppang.application.readmodel.user.queries.FindUserByIdQuery;
 import kr.hoppang.domain.boards.Boards;
 import kr.hoppang.domain.boards.Posts;
+import kr.hoppang.domain.boards.repository.PostsLikeQueryRepository;
 import kr.hoppang.domain.boards.repository.PostsQueryRepository;
 import kr.hoppang.domain.user.User;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ public class GetPostByIdFacade {
 
     private final ApplicationEventPublisher eventPublisher;
     private final PostsQueryRepository postsQueryRepository;
+    private final PostsLikeQueryRepository postsLikeQueryRepository;
     private final FindUserByIdQueryHandler findUserByIdQueryHandler;
     private final FindBoardsByIdQueryHandler findBoardsByIdQueryHandler;
     private final FindPostsViewsByIdsQueryHandler findPostsViewsByIdsQueryHandler;
@@ -72,6 +74,11 @@ public class GetPostByIdFacade {
                         .build()
         );
 
+        boolean didILikedThisPost = false;
+        if (loggedInUserId != null) {
+            didILikedThisPost = postsLikeQueryRepository.isLikedByPostId(postId, loggedInUserId);
+        }
+
         return GetPostByIdFacadeResultDto.builder()
                 .id(posts.getId())
                 .boardName(boards.getName())
@@ -84,6 +91,7 @@ public class GetPostByIdFacade {
                 .lastModified(posts.getLastModified())
                 .viewCount(postViewCount.get(postId) != null ? postViewCount.get(postId) : 0L)
                 .likeCount(postLikeCount.get(postId) != null ? postLikeCount.get(postId) : 0L)
+                .didILiked(didILikedThisPost)
                 .build();
     }
 }

@@ -21,4 +21,6 @@ public interface PostsLikeJpaRepository extends JpaRepository<PostsLikeEntity, L
             """
     )
     List<PostLikeCountDto> countLikesGroupedByPostIds(@Param("postIds") List<Long> postIds);
+
+    boolean existsById_PostIdAndId_UserId(@Param("postId") Long postId, @Param("userId") Long userId);
 }

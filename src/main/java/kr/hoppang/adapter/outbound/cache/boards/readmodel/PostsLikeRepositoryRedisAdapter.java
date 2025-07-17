@@ -52,4 +52,10 @@ public class PostsLikeRepositoryRedisAdapter implements PostsLikeQueryRepository
 
         return result;
     }
+
+    @Override
+    public boolean isLikedByPostId(Long postId, Long loggedInUserId) {
+        // yet developed
+        return false;
+    }
 }
