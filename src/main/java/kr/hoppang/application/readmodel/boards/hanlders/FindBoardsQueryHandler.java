@@ -52,6 +52,7 @@ public class FindBoardsQueryHandler implements IQueryHandler<EmptyQuery, List<Fi
         return boardsList.stream()
                 .map(board -> FindBoardsQueryResult.builder()
                         .id(board.getId())
+                        .rootId(board.getRootBoardId())
                         .name(board.getName())
                         .build()
                 ).toList();

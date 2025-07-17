@@ -5,5 +5,6 @@ import lombok.Builder;
 @Builder
 public record FindBoardsQueryResult(
         long id,
+        Long rootId,
         String name
 ) { }

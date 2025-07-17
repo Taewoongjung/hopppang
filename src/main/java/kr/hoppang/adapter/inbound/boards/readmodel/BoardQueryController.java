@@ -14,6 +14,7 @@ import kr.hoppang.adapter.inbound.boards.readmodel.webdto.GetAllBoardsWebDtoV1;
 import kr.hoppang.adapter.inbound.boards.readmodel.webdto.GetPostsByConditionWebDtoV1;
 import kr.hoppang.adapter.inbound.boards.readmodel.webdto.GetPostsByConditionWebDtoV1.Res.PostWebDto;
 import kr.hoppang.application.readmodel.boards.hanlders.FindBoardsQueryHandler;
+import kr.hoppang.application.readmodel.boards.queryresults.FindBoardsQueryResult;
 import kr.hoppang.application.util.EmptyQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -39,16 +40,17 @@ public class BoardQueryController {
     @GetMapping("")
     public ResponseEntity<List<GetAllBoardsWebDtoV1.Res>> getAllBoards() {
 
+        List<FindBoardsQueryResult> result = findBoardsQueryHandler.handle(
+                EmptyQuery.builder().build());
+
+        List<FindBoardsQueryResult> roots = result.stream().filter(f -> f.rootId() == null)
+                .toList();
+
+        List<FindBoardsQueryResult> branches = result.stream().filter(f -> f.rootId() != null)
+                .toList();
+
         return ResponseEntity.status(HttpStatus.OK)
-                .body(
-                        findBoardsQueryHandler.handle(EmptyQuery.builder().build()).stream()
-                                .map(e ->
-                                        GetAllBoardsWebDtoV1.Res.builder()
-                                                .id(e.id())
-                                                .name(e.name())
-                                                .build()
-                                ).toList()
-                );
+                .body(GetAllBoardsWebDtoV1.Res.of(roots, branches));
     }
 
     @GetMapping("/posts/{postId}")
