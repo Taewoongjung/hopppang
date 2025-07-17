@@ -9,5 +9,5 @@ public interface PostsLikeQueryRepository {
 
     Map<Long, Long> findCountOfLikesByPostIds(List<Long> postIds);
 
-    boolean isLikedByPostId(Long postId, Long loggedInUserId);
+    Boolean isLikedByPostId(Long postId, Long loggedInUserId);
 }

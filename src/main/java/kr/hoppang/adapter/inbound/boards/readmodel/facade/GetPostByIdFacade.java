@@ -7,15 +7,16 @@ import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetPostByIdFacadeR
 import kr.hoppang.application.command.boards.event.events.AddPostsViewCommandEvent;
 import kr.hoppang.application.readmodel.boards.hanlders.FindBoardsByIdQueryHandler;
 import kr.hoppang.application.readmodel.boards.hanlders.FindPostsCountOfLikesByIdsQueryHandler;
+import kr.hoppang.application.readmodel.boards.hanlders.FindPostsIsLikedByIdQueryHandler;
 import kr.hoppang.application.readmodel.boards.hanlders.FindPostsViewsByIdsQueryHandler;
 import kr.hoppang.application.readmodel.boards.queries.FindBoardsByIdQuery;
 import kr.hoppang.application.readmodel.boards.queries.FindPostsCountOfLikesByIdsQuery;
+import kr.hoppang.application.readmodel.boards.queries.FindPostsIsLikedByIdQuery;
 import kr.hoppang.application.readmodel.boards.queries.FindPostsViewsByIdsQuery;
 import kr.hoppang.application.readmodel.user.handlers.FindUserByIdQueryHandler;
 import kr.hoppang.application.readmodel.user.queries.FindUserByIdQuery;
 import kr.hoppang.domain.boards.Boards;
 import kr.hoppang.domain.boards.Posts;
-import kr.hoppang.domain.boards.repository.PostsLikeQueryRepository;
 import kr.hoppang.domain.boards.repository.PostsQueryRepository;
 import kr.hoppang.domain.user.User;
 import lombok.RequiredArgsConstructor;
@@ -28,10 +29,10 @@ public class GetPostByIdFacade {
 
     private final ApplicationEventPublisher eventPublisher;
     private final PostsQueryRepository postsQueryRepository;
-    private final PostsLikeQueryRepository postsLikeQueryRepository;
     private final FindUserByIdQueryHandler findUserByIdQueryHandler;
     private final FindBoardsByIdQueryHandler findBoardsByIdQueryHandler;
     private final FindPostsViewsByIdsQueryHandler findPostsViewsByIdsQueryHandler;
+    private final FindPostsIsLikedByIdQueryHandler findPostsIsLikedByIdQueryHandler;
     private final FindPostsCountOfLikesByIdsQueryHandler findPostsCountOfLikesByIdsQueryHandler;
 
 
@@ -76,7 +77,12 @@ public class GetPostByIdFacade {
 
         boolean didILikedThisPost = false;
         if (loggedInUserId != null) {
-            didILikedThisPost = postsLikeQueryRepository.isLikedByPostId(postId, loggedInUserId);
+            didILikedThisPost = findPostsIsLikedByIdQueryHandler.handle(
+                    FindPostsIsLikedByIdQuery.builder()
+                            .postId(postId)
+                            .loggedInUserId(loggedInUserId)
+                            .build()
+            );
         }
 
         return GetPostByIdFacadeResultDto.builder()

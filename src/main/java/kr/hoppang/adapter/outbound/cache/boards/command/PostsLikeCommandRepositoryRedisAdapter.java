@@ -96,23 +96,23 @@ public class PostsLikeCommandRepositoryRedisAdapter
         );
 
         try {
-            Set<String> allMembers = setOps.members(likeBufferKey);
+            Set<String> allBuffers = setOps.members(likeBufferKey);
 
-            if (allMembers != null) {
+            if (allBuffers != null) {
                 Long removed = 0L;
 
-                for (String member : allMembers) {
+                for (String buffer : allBuffers) {
                     try {
-                        JsonNode node = objectMapper.readTree(member);
+                        JsonNode node = objectMapper.readTree(buffer);
                         if (node.get("userId").asLong() == postsLike.userId()) {
-                            removed = setOps.remove(likeBufferKey, member);
+                            removed = setOps.remove(likeBufferKey, buffer);
                             if (removed != null && removed > 0) {
                                 break; // 첫 번째 일치 항목만 삭제하고 탈출
                             }
                         }
                     } catch (JsonProcessingException e) {
                         // 무시하고 다음 항목 계속 진행
-                        log.warn("잘못된 JSON 형식: {}", member);
+                        log.warn("잘못된 JSON 형식: {}", buffer);
                     }
                 }
 
