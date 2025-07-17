@@ -15,5 +15,6 @@ public record GetPostByIdFacadeResultDto(
         BoolType isAnonymous,
         LocalDateTime createdAt,
         LocalDateTime lastModified,
-        long viewCount
+        long viewCount,
+        long likeCount
 ) { }

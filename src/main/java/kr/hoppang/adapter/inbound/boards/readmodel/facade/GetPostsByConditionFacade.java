@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Map;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetPostsByConditionFacadeResultDto;
 import kr.hoppang.application.readmodel.boards.hanlders.FindAllPostsQueryHandler;
+import kr.hoppang.application.readmodel.boards.hanlders.FindPostsCountOfLikesByIdsQueryHandler;
 import kr.hoppang.application.readmodel.boards.hanlders.FindPostsViewsByIdsQueryHandler;
 import kr.hoppang.application.readmodel.boards.queries.FindAllPostsQuery;
+import kr.hoppang.application.readmodel.boards.queries.FindPostsCountOfLikesByIdsQuery;
 import kr.hoppang.application.readmodel.boards.queries.FindPostsViewsByIdsQuery;
 import kr.hoppang.application.readmodel.boards.queryresults.FindAllPostsQueryResult;
 import kr.hoppang.domain.boards.Posts;
@@ -24,6 +26,7 @@ public class GetPostsByConditionFacade {
     private final FindAllPostsQueryHandler findAllPostsByCondition;
     private final PostsReplyQueryRepository postsReplyQueryRepository;
     private final FindPostsViewsByIdsQueryHandler findPostsViewsByIdsQueryHandler;
+    private final FindPostsCountOfLikesByIdsQueryHandler findPostsCountOfLikesByIdsQueryHandler;
 
 
     public GetPostsByConditionFacadeResultDto query(
@@ -46,6 +49,7 @@ public class GetPostsByConditionFacade {
                     result.postsList(),
                     Collections.emptyList(),
                     Collections.emptyMap(),
+                    Collections.emptyMap(),
                     Collections.emptyMap()
             );
         }
@@ -67,6 +71,12 @@ public class GetPostsByConditionFacade {
                         .build()
         ).viewCountDatas();
 
+        Map<Long, Long> postLikeCountByPostId = findPostsCountOfLikesByIdsQueryHandler.handle(
+                FindPostsCountOfLikesByIdsQuery.builder()
+                        .postIds(postIds)
+                        .build()
+        ).countDatas();
+
         Map<Long, Long> replyCountByPostId = postsReplyQueryRepository.findCountOfLikesByPostId(
                 postIds);
 
@@ -75,7 +85,8 @@ public class GetPostsByConditionFacade {
                 result.postsList(),
                 authorList,
                 viewCountByPostId,
-                replyCountByPostId
+                replyCountByPostId,
+                postLikeCountByPostId
         );
     }
 }

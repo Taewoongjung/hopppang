@@ -25,6 +25,7 @@ public record GetPostsByConditionFacadeResultDto(
             Boolean isAnonymous,
             Boolean isRevised,
             Long viewCount,
+            Long likeCount,
             Long replyCount,
             LocalDateTime createdAt
     ) { }
@@ -34,7 +35,8 @@ public record GetPostsByConditionFacadeResultDto(
             final List<Posts> postsList,
             final List<User> authorList,
             final Map<Long, Long> viewCountByPostId,
-            final Map<Long, Long> replyCountByPostId
+            final Map<Long, Long> replyCountByPostId,
+            final Map<Long, Long> postLikeCountByPostId
     ) {
 
         return GetPostsByConditionFacadeResultDto.builder()
@@ -60,6 +62,7 @@ public record GetPostsByConditionFacadeResultDto(
                                                             .isEqual(post.getLastModified())
                                             )
                                             .viewCount(viewCountByPostId.get(post.getId()))
+                                            .likeCount(postLikeCountByPostId.get(post.getId()))
                                             .replyCount(replyCountByPostId.get(post.getId()))
                                             .createdAt(post.getCreatedAt())
                                             .build();

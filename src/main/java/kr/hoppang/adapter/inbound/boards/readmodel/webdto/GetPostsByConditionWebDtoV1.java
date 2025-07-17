@@ -38,6 +38,7 @@ public record GetPostsByConditionWebDtoV1() {
                 Boolean isRevised,
                 LocalDateTime createdAt,
                 Long viewCount,
+                Long likeCount,
                 Long replyCount
         ) { }
     }

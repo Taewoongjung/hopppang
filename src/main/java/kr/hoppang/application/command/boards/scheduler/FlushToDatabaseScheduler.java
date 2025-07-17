@@ -47,13 +47,9 @@ public class FlushToDatabaseScheduler {
 
         List<RedisReplyLikeEntry> dbFlushTargetList = new ArrayList<>();
 
-        List<Long> flushedReplyIds = new ArrayList<>();
-
         for (String replyRedisKey : replyLikeBufferKeys) {
 
             Long replyId = extractReplyId(replyRedisKey);
-
-            flushedReplyIds.add(replyId);
 
             Set<String> valueSet = redisTemplate.opsForSet().members(replyRedisKey);
 

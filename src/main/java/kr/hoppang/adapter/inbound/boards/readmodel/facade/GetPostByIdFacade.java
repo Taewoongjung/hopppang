@@ -6,8 +6,10 @@ import java.util.Map;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetPostByIdFacadeResultDto;
 import kr.hoppang.application.command.boards.event.events.AddPostsViewCommandEvent;
 import kr.hoppang.application.readmodel.boards.hanlders.FindBoardsByIdQueryHandler;
+import kr.hoppang.application.readmodel.boards.hanlders.FindPostsCountOfLikesByIdsQueryHandler;
 import kr.hoppang.application.readmodel.boards.hanlders.FindPostsViewsByIdsQueryHandler;
 import kr.hoppang.application.readmodel.boards.queries.FindBoardsByIdQuery;
+import kr.hoppang.application.readmodel.boards.queries.FindPostsCountOfLikesByIdsQuery;
 import kr.hoppang.application.readmodel.boards.queries.FindPostsViewsByIdsQuery;
 import kr.hoppang.application.readmodel.user.handlers.FindUserByIdQueryHandler;
 import kr.hoppang.application.readmodel.user.queries.FindUserByIdQuery;
@@ -28,6 +30,7 @@ public class GetPostByIdFacade {
     private final FindUserByIdQueryHandler findUserByIdQueryHandler;
     private final FindBoardsByIdQueryHandler findBoardsByIdQueryHandler;
     private final FindPostsViewsByIdsQueryHandler findPostsViewsByIdsQueryHandler;
+    private final FindPostsCountOfLikesByIdsQueryHandler findPostsCountOfLikesByIdsQueryHandler;
 
 
     public GetPostByIdFacadeResultDto query(
@@ -55,6 +58,12 @@ public class GetPostByIdFacade {
                         ).build()
         ).viewCountDatas();
 
+        Map<Long, Long> postLikeCount = findPostsCountOfLikesByIdsQueryHandler.handle(
+                FindPostsCountOfLikesByIdsQuery.builder()
+                        .postIds(List.of(postId))
+                        .build()
+        ).countDatas();
+
         eventPublisher.publishEvent(
                 AddPostsViewCommandEvent.builder()
                         .postId(postId)
@@ -74,6 +83,7 @@ public class GetPostByIdFacade {
                 .createdAt(posts.getCreatedAt())
                 .lastModified(posts.getLastModified())
                 .viewCount(postViewCount.get(postId) != null ? postViewCount.get(postId) : 0L)
+                .likeCount(postLikeCount.get(postId) != null ? postLikeCount.get(postId) : 0L)
                 .build();
     }
 }
