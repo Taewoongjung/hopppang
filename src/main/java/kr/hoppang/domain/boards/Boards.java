@@ -10,6 +10,7 @@ import lombok.Getter;
 public class Boards {
 
     private final Long id;
+    private final Long rootBoardId;
     private final String name;
     private final BoolType isAvailable;
     private final LocalDateTime createdAt;

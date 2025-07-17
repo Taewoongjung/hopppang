@@ -25,6 +25,9 @@ public class BoardsEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "root_board_id", columnDefinition = "bigint")
+    private Long rootBoardId;
+
     @Column(name = "name", nullable = false)
     private String name;
 
@@ -36,6 +39,7 @@ public class BoardsEntity extends BaseEntity {
     public Boards toPojo() {
         return Boards.builder()
                 .id(this.id)
+                .rootBoardId(this.rootBoardId)
                 .name(this.name)
                 .isAvailable(this.isAvailable)
                 .createdAt(this.getCreatedAt())

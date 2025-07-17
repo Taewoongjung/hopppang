@@ -38,16 +38,16 @@ public class FindPostsIsLikedByIdQueryHandler implements IQueryHandler<FindPosts
     @Override
     public Boolean handle(final FindPostsIsLikedByIdQuery query) {
 
-        Boolean didILikeFromCache = postsLikeQueryRepositoryEnumMap.get(
+        Boolean didILike = postsLikeQueryRepositoryEnumMap.get(
                 BoardsRepositoryStrategy.CACHE
         ).isLikedByPostId(query.postId(), query.loggedInUserId());
 
-        if (didILikeFromCache == null) {
-            didILikeFromCache = postsLikeQueryRepositoryEnumMap.get(
+        if (didILike == null) {
+            didILike = postsLikeQueryRepositoryEnumMap.get(
                     BoardsRepositoryStrategy.RDB
             ).isLikedByPostId(query.postId(), query.loggedInUserId());
         }
 
-        return didILikeFromCache;
+        return didILike;
     }
 }

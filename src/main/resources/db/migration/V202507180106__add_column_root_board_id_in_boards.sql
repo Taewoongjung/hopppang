@@ -1,0 +1,2 @@
+ALTER TABLE boards
+    ADD COLUMN root_board_id BIGINT UNSIGNED NULL COMMENT '상위 종류 id' AFTER id;
