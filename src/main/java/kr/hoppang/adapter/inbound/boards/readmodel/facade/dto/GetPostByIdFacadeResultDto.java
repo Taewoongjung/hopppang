@@ -18,5 +18,6 @@ public record GetPostByIdFacadeResultDto(
         long viewCount,
         long likeCount,
         boolean didILiked,
-        boolean didIBookmarked
+        boolean didIBookmarked,
+        boolean revised
 ) { }

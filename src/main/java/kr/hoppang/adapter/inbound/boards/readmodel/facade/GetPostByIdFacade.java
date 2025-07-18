@@ -105,6 +105,7 @@ public class GetPostByIdFacade {
                 .likeCount(postLikeCount.get(postId) != null ? postLikeCount.get(postId) : 0L)
                 .didILiked(didILikedThisPost)
                 .didIBookmarked(didIBookMarked)
+                .revised(!posts.getCreatedAt().isEqual(posts.getLastModified()))
                 .build();
     }
 }
