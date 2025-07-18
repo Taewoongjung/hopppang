@@ -1,13 +1,16 @@
 package kr.hoppang.adapter.inbound.boards.readmodel;
 
 import jakarta.validation.Valid;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.GetPostByIdFacade;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.GetPostRepliesByIdFacade;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.GetPostsByConditionFacade;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.GetRecentPostsFacade;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetPostByIdFacadeResultDto;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetPostRepliesByIdFacadeResultDto;
+import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetPostRepliesByIdFacadeResultDto.PostsRootReplyFacadeDto;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetPostsByConditionFacadeResultDto;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetRecentPostsFacadeResultDto;
 import kr.hoppang.adapter.inbound.boards.readmodel.webdto.GetAllBoardsWebDtoV1;
@@ -16,6 +19,7 @@ import kr.hoppang.adapter.inbound.boards.readmodel.webdto.GetPostsByConditionWeb
 import kr.hoppang.application.readmodel.boards.hanlders.FindBoardsQueryHandler;
 import kr.hoppang.application.readmodel.boards.queryresults.FindBoardsQueryResult;
 import kr.hoppang.application.util.EmptyQuery;
+import kr.hoppang.domain.boards.PostsReplyOrderType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -107,11 +111,28 @@ public class BoardQueryController {
     @GetMapping("/posts/{postId}/replies")
     public ResponseEntity<GetPostRepliesByIdFacadeResultDto> getPostReplies(
             @PathVariable(value = "postId") final long postId,
-            @RequestParam(value = "loggedInUserId", required = false) final Long loggedInUserId
+            @RequestParam(value = "loggedInUserId", required = false) final Long loggedInUserId,
+            @RequestParam(value = "orderType", required = false) final PostsReplyOrderType orderType
     ) {
 
+        GetPostRepliesByIdFacadeResultDto result = getPostRepliesByIdFacade.query(postId,
+                loggedInUserId);
+
+        if (orderType != null) {
+            if (PostsReplyOrderType.LIKE_DESC.equals(orderType)) {
+                result = new GetPostRepliesByIdFacadeResultDto(
+                        result.postsReplyList().stream()
+                                .sorted(
+                                        Comparator.comparing(PostsRootReplyFacadeDto::getLikes)
+                                                .reversed()
+                                )
+                                .toList()
+                );
+            }
+        }
+
         return ResponseEntity.status(HttpStatus.OK)
-                .body(getPostRepliesByIdFacade.query(postId, loggedInUserId));
+                .body(result);
     }
 
     @GetMapping("/posts/recent")

@@ -18,7 +18,7 @@ public record GetPostRepliesByIdFacadeResultDto(
 ) {
 
     @Getter
-    @Builder(access = AccessLevel.PRIVATE)
+    @Builder
     public static class PostsRootReplyFacadeDto {
         private Long id;
         private Long postId;
