@@ -106,7 +106,7 @@ public class FlushToDatabaseScheduler {
     @Scheduled(cron = "0 */10 * * * *")
     public void flushPostsLikesToDb() {
         Set<String> keys = redisTemplate.keys(
-                POSTS_LIKE_BUFFER_CACHE_KEY_PREFIX.replace("{replyId}", "*")
+                POSTS_LIKE_BUFFER_CACHE_KEY_PREFIX.replace("{postId}", "*")
         );
 
         if (keys.isEmpty()) return;
