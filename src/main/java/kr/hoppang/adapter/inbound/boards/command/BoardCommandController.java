@@ -7,8 +7,10 @@ import kr.hoppang.adapter.inbound.boards.webdto.AddPostWebDtoV1;
 import kr.hoppang.adapter.inbound.user.AuthenticationUserId;
 import kr.hoppang.application.command.boards.commands.AddPostReplyCommand;
 import kr.hoppang.application.command.boards.commands.AddPostsCommand;
+import kr.hoppang.application.command.boards.event.events.AddPostsBookmarkCommandEvent;
 import kr.hoppang.application.command.boards.event.events.AddPostsLikeCommandEvent;
 import kr.hoppang.application.command.boards.event.events.AddPostsReplyLikeCommandEvent;
+import kr.hoppang.application.command.boards.event.events.RemovePostsBookmarkCommandEvent;
 import kr.hoppang.application.command.boards.handlers.AddPostReplyCommandHandler;
 import kr.hoppang.application.command.boards.handlers.AddPostsCommandHandler;
 import kr.hoppang.application.command.boards.event.events.RemovePostsLikeCommandEvent;
@@ -139,6 +141,34 @@ public class BoardCommandController {
                 RemovePostsReplyLikeCommandEvent.builder()
                         .replyId(replyId)
                         .unlikedUserId(unlikedUserId)
+                        .build()
+        );
+    }
+
+    @PatchMapping("/posts/{postId}/bookmarks")
+    public void addPostBookmark(
+            @PathVariable(value = "postId") final long postId,
+            @AuthenticationUserId final long userId
+    ) {
+
+        eventPublisher.publishEvent(
+                AddPostsBookmarkCommandEvent.builder()
+                        .postId(postId)
+                        .userId(userId)
+                        .build()
+        );
+    }
+
+    @DeleteMapping("/posts/{postId}/bookmarks")
+    public void removePostBookmark(
+            @PathVariable(value = "postId") final long postId,
+            @AuthenticationUserId final long userId
+    ) {
+
+        eventPublisher.publishEvent(
+                RemovePostsBookmarkCommandEvent.builder()
+                        .postId(postId)
+                        .userId(userId)
                         .build()
         );
     }
