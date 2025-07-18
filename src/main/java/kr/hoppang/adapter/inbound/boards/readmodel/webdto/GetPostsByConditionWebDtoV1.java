@@ -38,7 +38,6 @@ public record GetPostsByConditionWebDtoV1() {
                 String title,
                 String contents,
                 Boolean isAnonymous,
-                Boolean isRevised,
                 LocalDateTime createdAt,
                 Long viewCount,
                 Long likeCount,

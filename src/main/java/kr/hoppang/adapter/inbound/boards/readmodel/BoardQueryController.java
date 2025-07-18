@@ -3,7 +3,6 @@ package kr.hoppang.adapter.inbound.boards.readmodel;
 import jakarta.validation.Valid;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.GetPostByIdFacade;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.GetPostRepliesByIdFacade;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.GetPostsByConditionFacade;
@@ -83,7 +82,6 @@ public class BoardQueryController {
                                                                 .title(post.title())
                                                                 .contents(post.contents())
                                                                 .isAnonymous(post.isAnonymous())
-                                                                .isRevised(post.isRevised())
                                                                 .createdAt(post.createdAt())
                                                                 .viewCount(post.viewCount())
                                                                 .likeCount(post.likeCount())

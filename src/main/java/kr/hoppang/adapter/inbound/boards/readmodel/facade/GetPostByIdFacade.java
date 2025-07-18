@@ -93,6 +93,7 @@ public class GetPostByIdFacade {
 
         return GetPostByIdFacadeResultDto.builder()
                 .id(posts.getId())
+                .boardId(boards.getId())
                 .boardName(boards.getName())
                 .registerName(user.getName())
                 .registerId(user.getId())
@@ -105,7 +106,6 @@ public class GetPostByIdFacade {
                 .likeCount(postLikeCount.get(postId) != null ? postLikeCount.get(postId) : 0L)
                 .didILiked(didILikedThisPost)
                 .didIBookmarked(didIBookMarked)
-                .revised(!posts.getCreatedAt().isEqual(posts.getLastModified()))
                 .build();
     }
 }

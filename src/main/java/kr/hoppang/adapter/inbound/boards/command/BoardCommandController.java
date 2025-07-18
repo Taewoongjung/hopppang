@@ -4,9 +4,13 @@ import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import kr.hoppang.adapter.inbound.boards.webdto.AddPostRepliesWebDtoV1;
 import kr.hoppang.adapter.inbound.boards.webdto.AddPostWebDtoV1;
+import kr.hoppang.adapter.inbound.boards.webdto.RevisePostReplyWebDtoV1;
+import kr.hoppang.adapter.inbound.boards.webdto.RevisePostWebDtoV1;
 import kr.hoppang.adapter.inbound.user.AuthenticationUserId;
 import kr.hoppang.application.command.boards.commands.AddPostReplyCommand;
 import kr.hoppang.application.command.boards.commands.AddPostsCommand;
+import kr.hoppang.application.command.boards.commands.RevisePostsCommand;
+import kr.hoppang.application.command.boards.commands.RevisePostsReplyCommand;
 import kr.hoppang.application.command.boards.event.events.AddPostsBookmarkCommandEvent;
 import kr.hoppang.application.command.boards.event.events.AddPostsLikeCommandEvent;
 import kr.hoppang.application.command.boards.event.events.AddPostsReplyLikeCommandEvent;
@@ -15,6 +19,8 @@ import kr.hoppang.application.command.boards.handlers.AddPostReplyCommandHandler
 import kr.hoppang.application.command.boards.handlers.AddPostsCommandHandler;
 import kr.hoppang.application.command.boards.event.events.RemovePostsLikeCommandEvent;
 import kr.hoppang.application.command.boards.event.events.RemovePostsReplyLikeCommandEvent;
+import kr.hoppang.application.command.boards.handlers.RevisePostsCommandHandler;
+import kr.hoppang.application.command.boards.handlers.RevisePostsReplyCommandHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -24,6 +30,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,7 +43,9 @@ public class BoardCommandController {
 
     private final ApplicationEventPublisher eventPublisher;
     private final AddPostsCommandHandler addPostsCommandHandler;
+    private final RevisePostsCommandHandler revisePostsCommandHandler;
     private final AddPostReplyCommandHandler addPostReplyCommandHandler;
+    private final RevisePostsReplyCommandHandler revisePostsReplyCommandHandler;
 
 
     @PostMapping("/posts")
@@ -54,12 +63,37 @@ public class BoardCommandController {
                                                         .boardId(req.boardId())
                                                         .title(req.title())
                                                         .contents(req.contents())
-                                                        .isAnonymous(req.isAnonymous())
+                                                        .isAnonymous(
+                                                                req.isAnonymous() != null
+                                                                        && req.isAnonymous()
+                                                        )
                                                         .registerId(registerId)
                                                         .build()
                                         )
                                 )
                                 .build()
+                );
+    }
+
+    @PutMapping("/posts/{postId}")
+    public ResponseEntity<Boolean> revisePost(
+            @PathVariable(value = "postId") final long postId,
+            @Valid @RequestBody final RevisePostWebDtoV1.Req req,
+            @AuthenticationUserId final Long reviserId
+    ) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(
+                        revisePostsCommandHandler.handle(
+                                RevisePostsCommand.builder()
+                                        .postId(postId)
+                                        .boardId(req.boardId())
+                                        .title(req.title())
+                                        .contents(req.contents())
+                                        .isAnonymous(req.isAnonymous())
+                                        .revisingUserId(reviserId)
+                                        .build()
+                        )
                 );
     }
 
@@ -84,6 +118,27 @@ public class BoardCommandController {
                                         )
                                 )
                                 .build()
+                );
+    }
+
+    @PutMapping("/posts/{postId}/replies/{replyId}")
+    public ResponseEntity<Boolean> revisePostReply(
+            @PathVariable(value = "postId") final long postId,
+            @PathVariable(value = "replyId") final long replyId,
+            @Valid @RequestBody final RevisePostReplyWebDtoV1.Req req,
+            @AuthenticationUserId final Long reviserId
+    ) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(
+                        revisePostsReplyCommandHandler.handle(
+                                RevisePostsReplyCommand.builder()
+                                        .postId(postId)
+                                        .replyId(replyId)
+                                        .contents(req.contents())
+                                        .revisingUserId(reviserId)
+                                        .build()
+                        )
                 );
     }
 

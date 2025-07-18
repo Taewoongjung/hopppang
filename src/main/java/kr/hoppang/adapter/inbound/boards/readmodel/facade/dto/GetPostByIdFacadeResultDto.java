@@ -7,6 +7,7 @@ import lombok.Builder;
 @Builder
 public record GetPostByIdFacadeResultDto(
         Long id,
+        long boardId,
         String boardName,
         String registerName,
         Long registerId,
@@ -18,6 +19,5 @@ public record GetPostByIdFacadeResultDto(
         long viewCount,
         long likeCount,
         boolean didILiked,
-        boolean didIBookmarked,
-        boolean revised
+        boolean didIBookmarked
 ) { }

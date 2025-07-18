@@ -26,4 +26,11 @@ public class PostsCommandRepositoryJpaAdapter implements PostsCommandRepository 
 
         return createdEntity.getId();
     }
+
+    @Override
+    public boolean revise(final Posts revisedPost) {
+        postsJpaRepository.save(PostsConverter.toEntity(revisedPost));
+
+        return true;
+    }
 }

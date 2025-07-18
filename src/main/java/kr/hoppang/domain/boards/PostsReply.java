@@ -13,7 +13,10 @@ public class PostsReply {
     private final Long id;
     private final Long postId;
     private final Long rootReplyId;
-    private final String contents;
+
+    @Setter
+    private String contents;
+
     private final Long registerId;
     private final BoolType isAnonymous;
     private final BoolType isDeleted;

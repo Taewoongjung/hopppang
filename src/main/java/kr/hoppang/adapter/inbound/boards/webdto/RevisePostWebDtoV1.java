@@ -5,8 +5,9 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 
-public record AddPostWebDtoV1() {
+public record RevisePostWebDtoV1() {
 
+    @Builder
     public record Req(
 
             @NotNull(message = "카테고리 정보가 없습니다")
@@ -24,17 +25,10 @@ public record AddPostWebDtoV1() {
             @Size(
                     min = 1,
                     max = 1000,
-                    message = "글 내용은 최소 {min} 최대 {max}개를 초과할 수 없습니다."
+                    message = "게시뭏 내용은 최소 {min} 최대 {max}개를 초과할 수 없습니다."
             )
             String contents,
 
             Boolean isAnonymous
-
-    ) { }
-
-
-    @Builder
-    public record Res(
-            long createdPostId
     ) { }
 }

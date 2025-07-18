@@ -23,7 +23,6 @@ public record GetPostsByConditionFacadeResultDto(
             String title,
             String contents,
             Boolean isAnonymous,
-            Boolean isRevised,
             Long viewCount,
             Long likeCount,
             Long replyCount,
@@ -57,10 +56,6 @@ public record GetPostsByConditionFacadeResultDto(
                                             )
                                             .title(post.getTitle())
                                             .contents(post.getContents())
-                                            .isRevised(
-                                                    post.getCreatedAt()
-                                                            .isEqual(post.getLastModified())
-                                            )
                                             .viewCount(viewCountByPostId.get(post.getId()))
                                             .likeCount(postLikeCountByPostId.get(post.getId()))
                                             .replyCount(replyCountByPostId.get(post.getId()))

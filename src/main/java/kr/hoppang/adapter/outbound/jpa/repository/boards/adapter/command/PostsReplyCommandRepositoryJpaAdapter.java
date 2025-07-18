@@ -27,4 +27,12 @@ public class PostsReplyCommandRepositoryJpaAdapter implements PostsReplyCommandR
 
         return postsReplyEntity.getId();
     }
+
+    @Override
+    public boolean revise(final PostsReply revisingPostsReply) {
+
+        postsReplyJpaRepository.save(PostsReplyConverter.toEntity(revisingPostsReply));
+
+        return true;
+    }
 }

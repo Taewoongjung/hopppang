@@ -1,6 +1,7 @@
 package kr.hoppang.adapter.inbound.boards.readmodel.facade.dto;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -82,6 +83,12 @@ public record GetPostRepliesByIdFacadeResultDto(
             final PostsReply reply,
             final Map<Long, String> userMap
     ) {
+        boolean isRevised =
+                reply.getCreatedAt().truncatedTo(ChronoUnit.SECONDS)
+                        .isEqual(reply.getLastModified()
+                                .truncatedTo(ChronoUnit.SECONDS));
+
+
         return PostsRootReplyFacadeDto.builder()
                 .id(reply.getId())
                 .postId(reply.getPostId())
@@ -89,7 +96,7 @@ public record GetPostRepliesByIdFacadeResultDto(
                 .registerId(reply.getRegisterId())
                 .registerName(userMap.get(reply.getRegisterId()))
                 .anonymous(BoolType.convertToBoolean(reply.getIsAnonymous()))
-                .revised(!reply.getCreatedAt().isEqual(reply.getLastModified()))
+                .revised(!isRevised)
                 .likes(reply.getLikeCount() != null ? reply.getLikeCount() : 0)
                 .isLiked(reply.getAmILiked() != null ? reply.getAmILiked() : false)
                 .createdAt(reply.getCreatedAt())
