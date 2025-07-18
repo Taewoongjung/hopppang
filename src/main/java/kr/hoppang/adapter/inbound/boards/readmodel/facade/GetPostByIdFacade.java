@@ -17,6 +17,7 @@ import kr.hoppang.application.readmodel.user.handlers.FindUserByIdQueryHandler;
 import kr.hoppang.application.readmodel.user.queries.FindUserByIdQuery;
 import kr.hoppang.domain.boards.Boards;
 import kr.hoppang.domain.boards.Posts;
+import kr.hoppang.domain.boards.repository.PostsBookmarkQueryRepository;
 import kr.hoppang.domain.boards.repository.PostsQueryRepository;
 import kr.hoppang.domain.user.User;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class GetPostByIdFacade {
     private final PostsQueryRepository postsQueryRepository;
     private final FindUserByIdQueryHandler findUserByIdQueryHandler;
     private final FindBoardsByIdQueryHandler findBoardsByIdQueryHandler;
+    private final PostsBookmarkQueryRepository postsBookmarkQueryRepository;
     private final FindPostsViewsByIdsQueryHandler findPostsViewsByIdsQueryHandler;
     private final FindPostsIsLikedByIdQueryHandler findPostsIsLikedByIdQueryHandler;
     private final FindPostsCountOfLikesByIdsQueryHandler findPostsCountOfLikesByIdsQueryHandler;
@@ -75,6 +77,7 @@ public class GetPostByIdFacade {
                         .build()
         );
 
+        boolean didIBookMarked = false;
         boolean didILikedThisPost = false;
         if (loggedInUserId != null) {
             didILikedThisPost = findPostsIsLikedByIdQueryHandler.handle(
@@ -83,6 +86,9 @@ public class GetPostByIdFacade {
                             .loggedInUserId(loggedInUserId)
                             .build()
             );
+
+            didIBookMarked = postsBookmarkQueryRepository.isMarkedByPostsIdAndUserId(postId,
+                    loggedInUserId);
         }
 
         return GetPostByIdFacadeResultDto.builder()
@@ -98,6 +104,7 @@ public class GetPostByIdFacade {
                 .viewCount(postViewCount.get(postId) != null ? postViewCount.get(postId) : 0L)
                 .likeCount(postLikeCount.get(postId) != null ? postLikeCount.get(postId) : 0L)
                 .didILiked(didILikedThisPost)
+                .didIBookmarked(didIBookMarked)
                 .build();
     }
 }

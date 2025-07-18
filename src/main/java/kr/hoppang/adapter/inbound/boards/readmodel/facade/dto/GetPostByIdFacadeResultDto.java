@@ -17,5 +17,6 @@ public record GetPostByIdFacadeResultDto(
         LocalDateTime lastModified,
         long viewCount,
         long likeCount,
-        boolean didILiked
+        boolean didILiked,
+        boolean didIBookmarked
 ) { }
