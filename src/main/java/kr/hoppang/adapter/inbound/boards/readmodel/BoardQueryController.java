@@ -53,18 +53,6 @@ public class BoardQueryController {
                 .body(GetAllBoardsWebDtoV1.Res.of(roots, branches));
     }
 
-    @GetMapping("/posts/{postId}")
-    public ResponseEntity<GetPostByIdFacadeResultDto> getPostById(
-            @PathVariable final long postId,
-            @RequestParam(value = "loggedInUserId", required = false) final Long loggedInUserId
-    ) {
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(
-                        getPostByIdFacade.query(postId, loggedInUserId)
-                );
-    }
-
     @GetMapping("/posts")
     public ResponseEntity<GetPostsByConditionWebDtoV1.Res> getPostsByCondition(
             @Valid final GetPostsByConditionWebDtoV1.Req req
@@ -73,6 +61,7 @@ public class BoardQueryController {
         GetPostsByConditionFacadeResultDto resultDto = getPostsByConditionFacade.query(
                 req.limit(),
                 req.offset(),
+                req.searchWord(),
                 req.boardIdList()
         );
 
@@ -100,6 +89,18 @@ public class BoardQueryController {
                                                 .toList()
                                 )
                                 .build()
+                );
+    }
+
+    @GetMapping("/posts/{postId}")
+    public ResponseEntity<GetPostByIdFacadeResultDto> getPostById(
+            @PathVariable final long postId,
+            @RequestParam(value = "loggedInUserId", required = false) final Long loggedInUserId
+    ) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(
+                        getPostByIdFacade.query(postId, loggedInUserId)
                 );
     }
 

@@ -17,6 +17,9 @@ public record GetPostsByConditionWebDtoV1() {
             @NotNull(message = "offset 값이 없습니다")
             Long offset,
 
+            @BindParam(value = "searchWord")
+            String searchWord,
+
             @BindParam(value = "boardIdList")
             List<Long> boardIdList
     ) { }

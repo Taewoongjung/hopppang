@@ -6,6 +6,7 @@ import lombok.Builder;
 @Builder
 public record ConditionOfFindPosts(
         List<Long> boardIds,
+        String searchWord,
         int limit,
         long offset
 ) { }

@@ -36,6 +36,7 @@ public class PostsQueryRepositoryJpaAdapter implements PostsQueryRepository {
         List<PostsEntity> contents = queryFactory.selectFrom(postsEntity)
                 .where(
                         notDeleted(),
+                        resolveSearchWordLike(condition.searchWord()),
                         resolveBoardIn(condition.boardIds())
                 )
                 .orderBy(postsEntity.createdAt.desc())
@@ -88,6 +89,14 @@ public class PostsQueryRepositoryJpaAdapter implements PostsQueryRepository {
                 .toList();
     }
 
+
+    private BooleanExpression resolveSearchWordLike(final String searchWord) {
+        if (searchWord == null || searchWord.isBlank()) {
+            return null;
+        }
+
+        return postsEntity.title.contains(searchWord);
+    }
 
     private BooleanExpression resolveBoardIn(final List<Long> boardIds) {
         if (boardIds == null || boardIds.isEmpty()) {

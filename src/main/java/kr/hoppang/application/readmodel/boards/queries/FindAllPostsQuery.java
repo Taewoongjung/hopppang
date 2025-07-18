@@ -7,6 +7,7 @@ import lombok.Builder;
 @Builder
 public record FindAllPostsQuery(
         List<Long> boardIds,
+        String searchWord,
         int limit,
         long offset
 ) implements IQuery { }
