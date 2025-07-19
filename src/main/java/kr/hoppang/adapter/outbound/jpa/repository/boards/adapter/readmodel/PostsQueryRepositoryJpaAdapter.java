@@ -38,7 +38,7 @@ public class PostsQueryRepositoryJpaAdapter implements PostsQueryRepository {
                 .where(
                         notDeleted(),
                         resolveOnlyBookmarked(condition.bookmarkOnly(), condition.userId()),
-                        resolveUserIdEquals(condition.userId()),
+                        resolveUserIdEquals(condition.userId(), condition.bookmarkOnly()),
                         resolveSearchWordLike(condition.searchWord()),
                         resolveBoardIn(condition.boardIds())
                 )
@@ -92,8 +92,13 @@ public class PostsQueryRepositoryJpaAdapter implements PostsQueryRepository {
                 .toList();
     }
 
-    private BooleanExpression resolveUserIdEquals(final Long userId) {
+    private BooleanExpression resolveUserIdEquals(final Long userId, final Boolean bookmarkOnly) {
         if (userId == null) {
+            return null;
+        }
+
+        // 북마크는 타인 게시글도 함께 조회 될 필요가 있음
+        if (bookmarkOnly != null && bookmarkOnly) {
             return null;
         }
 

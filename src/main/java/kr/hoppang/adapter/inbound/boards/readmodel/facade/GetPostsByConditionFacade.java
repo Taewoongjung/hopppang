@@ -56,7 +56,8 @@ public class GetPostsByConditionFacade {
                     Collections.emptyList(),
                     Collections.emptyMap(),
                     Collections.emptyMap(),
-                    Collections.emptyMap()
+                    Collections.emptyMap(),
+                    null
             );
         }
 
@@ -92,7 +93,8 @@ public class GetPostsByConditionFacade {
                 authorList,
                 viewCountByPostId,
                 replyCountByPostId,
-                postLikeCountByPostId
+                postLikeCountByPostId,
+                bookmarkOnly
         );
     }
 }
