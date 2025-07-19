@@ -30,6 +30,7 @@ public class FindAllPostsQueryHandler implements IQueryHandler<FindAllPostsQuery
                 .boardIds(query.boardIds())
                 .userId(query.userId())
                 .searchWord(query.searchWord())
+                .bookmarkOnly(query.bookmarkOnly())
                 .limit(query.limit())
                 .offset(query.offset())
                 .build();

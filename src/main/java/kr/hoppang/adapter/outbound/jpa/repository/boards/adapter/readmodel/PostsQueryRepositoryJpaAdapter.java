@@ -1,6 +1,7 @@
 package kr.hoppang.adapter.outbound.jpa.repository.boards.adapter.readmodel;
 
 import static kr.hoppang.adapter.outbound.jpa.entity.board.QPostsEntity.postsEntity;
+import static kr.hoppang.adapter.outbound.jpa.entity.board.bookmark.QPostsBookmarkEntity.postsBookmarkEntity;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -36,6 +37,7 @@ public class PostsQueryRepositoryJpaAdapter implements PostsQueryRepository {
         List<PostsEntity> contents = queryFactory.selectFrom(postsEntity)
                 .where(
                         notDeleted(),
+                        resolveOnlyBookmarked(condition.bookmarkOnly(), condition.userId()),
                         resolveUserIdEquals(condition.userId()),
                         resolveSearchWordLike(condition.searchWord()),
                         resolveBoardIn(condition.boardIds())
@@ -120,6 +122,21 @@ public class PostsQueryRepositoryJpaAdapter implements PostsQueryRepository {
         }
 
         return postsEntity.id.eq(boardId);
+    }
+
+    private BooleanExpression resolveOnlyBookmarked(
+            final Boolean onlyBookmarked,
+            final Long userId
+    ) {
+        if (onlyBookmarked == null || !onlyBookmarked || userId == null) {
+            return null;
+        }
+
+        return postsEntity.id.in(
+                com.querydsl.jpa.JPAExpressions.select(postsBookmarkEntity.id.postId)
+                        .from(postsBookmarkEntity)
+                        .where(postsBookmarkEntity.id.userId.eq(userId))
+        );
     }
 
     private BooleanExpression notDeleted() {

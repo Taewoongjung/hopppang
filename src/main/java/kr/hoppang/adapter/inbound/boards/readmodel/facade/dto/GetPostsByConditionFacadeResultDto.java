@@ -23,6 +23,7 @@ public record GetPostsByConditionFacadeResultDto(
             String title,
             String contents,
             Boolean isAnonymous,
+            Boolean isBookMarked,
             Long viewCount,
             Long likeCount,
             Long replyCount,

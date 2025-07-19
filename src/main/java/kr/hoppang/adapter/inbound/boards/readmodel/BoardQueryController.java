@@ -69,7 +69,7 @@ public class BoardQueryController {
                 req.offset(),
                 req.searchWord(),
                 req.boardIdList(),
-                null
+                null, null
         );
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -109,7 +109,8 @@ public class BoardQueryController {
                 req.offset(),
                 req.searchWord(),
                 req.boardIdList(),
-                userId
+                userId,
+                req.bookmarkOnly()
         );
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -126,6 +127,7 @@ public class BoardQueryController {
                                                                 .title(post.title())
                                                                 .contents(post.contents())
                                                                 .isAnonymous(post.isAnonymous())
+                                                                .isBookmarked(post.isBookMarked())
                                                                 .createdAt(post.createdAt())
                                                                 .viewCount(post.viewCount())
                                                                 .likeCount(post.likeCount())

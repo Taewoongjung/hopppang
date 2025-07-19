@@ -9,6 +9,7 @@ public record FindAllPostsQuery(
         List<Long> boardIds,
         Long userId,
         String searchWord,
+        Boolean bookmarkOnly,
         int limit,
         long offset
 ) implements IQuery { }

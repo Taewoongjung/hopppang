@@ -34,7 +34,8 @@ public class GetPostsByConditionFacade {
             final long offset,
             final String searchWord,
             final List<Long> boardIds,
-            final Long userId
+            final Long userId,
+            final Boolean bookmarkOnly
     ) {
 
         FindAllPostsQueryResult result = findAllPostsByCondition.handle(
@@ -42,6 +43,7 @@ public class GetPostsByConditionFacade {
                         .boardIds(boardIds)
                         .userId(userId)
                         .searchWord(searchWord)
+                        .bookmarkOnly(bookmarkOnly)
                         .limit(limit)
                         .offset(offset)
                         .build()

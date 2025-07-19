@@ -21,7 +21,10 @@ public record GetMyPostsByConditionWebDtoV1() {
             String searchWord,
 
             @BindParam(value = "boardIdList")
-            List<Long> boardIdList
+            List<Long> boardIdList,
+
+            @BindParam(value = "bookmarkOnly")
+            Boolean bookmarkOnly
     ) { }
 
     @Builder
@@ -38,6 +41,7 @@ public record GetMyPostsByConditionWebDtoV1() {
                 String title,
                 String contents,
                 Boolean isAnonymous,
+                Boolean isBookmarked,
                 LocalDateTime createdAt,
                 Long viewCount,
                 Long likeCount,
