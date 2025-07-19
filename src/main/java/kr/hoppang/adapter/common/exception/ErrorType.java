@@ -51,9 +51,12 @@ public enum ErrorType {
     NOT_EXIST_ADVERTISEMENT_CONTENT(600, "광고 컨텐츠 정보를 찾을 수 없습니다."),
 
     // 커뮤니티
-    NOT_EXIST_REVISED_TARGET_POST(700, "수정 하고자 하는 게시물을 찾을 수 없습니다."),
+    NOT_EXIST_TARGET_POST(700, "해당 게시물을 찾을 수 없습니다."),
     NOT_ALLOWED_USER_REVISING_POST(701, "해당 게시물을 수정할 권한이 없습니다."),
-    NOT_ALLOWED_USER_REVISING_POST_REPLY(702, "해당 댓글을 수정할 권한이 없습니다.")
+
+    NOT_EXIST_TARGET_POST_REPLY(750, "해당 게시물 댓글을 찾을 수 없습니다."),
+    NOT_ALLOWED_USER_REVISING_POST_REPLY(751, "해당 댓글을 수정할 권한이 없습니다."),
+    NOT_ALLOWED_USER_DELETING_POST_REPLY(752, "해당 댓글을 삭제할 권한이 없습니다."),
     ;
 
     private final int code;

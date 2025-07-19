@@ -4,7 +4,9 @@ import kr.hoppang.domain.boards.Posts;
 
 public interface PostsCommandRepository {
 
-    Long create(final Posts newPost);
+    Long create(Posts newPost);
 
-    boolean revise(final Posts revisedPost);
+    boolean revise(Posts revisedPost);
+
+    void delete(Long postId);
 }

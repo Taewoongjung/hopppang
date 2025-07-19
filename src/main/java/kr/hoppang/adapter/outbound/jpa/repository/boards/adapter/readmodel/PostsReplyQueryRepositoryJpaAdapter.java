@@ -40,8 +40,7 @@ public class PostsReplyQueryRepositoryJpaAdapter implements PostsReplyQueryRepos
     public List<PostsReply> findPostsReplyByPostId(final long postId) {
         List<PostsReplyEntity> replyEntityList = queryFactory.selectFrom(postsReplyEntity)
                 .where(
-                        resolvePostIdEquals(postId),
-                        resolveNotDeleted()
+                        resolvePostIdEquals(postId)
                 )
                 .orderBy(postsReplyEntity.createdAt.desc())
                 .fetch();

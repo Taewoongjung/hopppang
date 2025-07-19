@@ -33,4 +33,9 @@ public class PostsCommandRepositoryJpaAdapter implements PostsCommandRepository 
 
         return true;
     }
+
+    @Override
+    public void delete(final Long postId) {
+        postsJpaRepository.reviseAsDeletedById(postId);
+    }
 }

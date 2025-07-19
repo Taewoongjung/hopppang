@@ -120,9 +120,9 @@ public class BoardQueryController {
             if (PostsReplyOrderType.LIKE_DESC.equals(orderType)) {
                 result = new GetPostRepliesByIdFacadeResultDto(
                         result.postsReplyList().stream()
-                                .sorted(
-                                        Comparator.comparing(PostsRootReplyFacadeDto::getLikes)
-                                                .reversed()
+                                .sorted(Comparator
+                                        .comparing(PostsRootReplyFacadeDto::isDeleted) // 삭제 된 것들은 최하단 배치
+                                        .thenComparing(PostsRootReplyFacadeDto::getLikes, Comparator.reverseOrder())
                                 )
                                 .toList()
                 );

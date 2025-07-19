@@ -9,6 +9,8 @@ import kr.hoppang.adapter.inbound.boards.webdto.RevisePostWebDtoV1;
 import kr.hoppang.adapter.inbound.user.AuthenticationUserId;
 import kr.hoppang.application.command.boards.commands.AddPostReplyCommand;
 import kr.hoppang.application.command.boards.commands.AddPostsCommand;
+import kr.hoppang.application.command.boards.commands.DeletePostsCommand;
+import kr.hoppang.application.command.boards.commands.DeletePostsReplyCommand;
 import kr.hoppang.application.command.boards.commands.RevisePostsCommand;
 import kr.hoppang.application.command.boards.commands.RevisePostsReplyCommand;
 import kr.hoppang.application.command.boards.event.events.AddPostsBookmarkCommandEvent;
@@ -19,6 +21,8 @@ import kr.hoppang.application.command.boards.handlers.AddPostReplyCommandHandler
 import kr.hoppang.application.command.boards.handlers.AddPostsCommandHandler;
 import kr.hoppang.application.command.boards.event.events.RemovePostsLikeCommandEvent;
 import kr.hoppang.application.command.boards.event.events.RemovePostsReplyLikeCommandEvent;
+import kr.hoppang.application.command.boards.handlers.DeletePostsCommandHandler;
+import kr.hoppang.application.command.boards.handlers.DeletePostsReplyCommandHandler;
 import kr.hoppang.application.command.boards.handlers.RevisePostsCommandHandler;
 import kr.hoppang.application.command.boards.handlers.RevisePostsReplyCommandHandler;
 import lombok.RequiredArgsConstructor;
@@ -44,8 +48,10 @@ public class BoardCommandController {
     private final ApplicationEventPublisher eventPublisher;
     private final AddPostsCommandHandler addPostsCommandHandler;
     private final RevisePostsCommandHandler revisePostsCommandHandler;
+    private final DeletePostsCommandHandler deletePostsCommandHandler;
     private final AddPostReplyCommandHandler addPostReplyCommandHandler;
     private final RevisePostsReplyCommandHandler revisePostsReplyCommandHandler;
+    private final DeletePostsReplyCommandHandler deletePostsReplyCommandHandler;
 
 
     @PostMapping("/posts")
@@ -97,6 +103,23 @@ public class BoardCommandController {
                 );
     }
 
+    @DeleteMapping("/posts/{postId}")
+    public ResponseEntity<Boolean> deletePost(
+            @PathVariable(value = "postId") final long postId,
+            @AuthenticationUserId final Long deleterId
+    ) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(
+                        deletePostsCommandHandler.handle(
+                                DeletePostsCommand.builder()
+                                        .postId(postId)
+                                        .deleterId(deleterId)
+                                        .build()
+                        )
+                );
+    }
+
     @PostMapping("/posts/{postId}/replies")
     public ResponseEntity<AddPostRepliesWebDtoV1.Res> addPostReplies(
             @PathVariable(value = "postId") final long postId,
@@ -137,6 +160,25 @@ public class BoardCommandController {
                                         .replyId(replyId)
                                         .contents(req.contents())
                                         .revisingUserId(reviserId)
+                                        .build()
+                        )
+                );
+    }
+
+    @DeleteMapping("/posts/{postId}/replies/{replyId}")
+    public ResponseEntity<Boolean> deletePostReply(
+            @PathVariable(value = "postId") final long postId,
+            @PathVariable(value = "replyId") final long replyId,
+            @AuthenticationUserId final Long deleterId
+    ) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(
+                        deletePostsReplyCommandHandler.handle(
+                                DeletePostsReplyCommand.builder()
+                                        .postId(postId)
+                                        .replyId(replyId)
+                                        .deleterId(deleterId)
                                         .build()
                         )
                 );

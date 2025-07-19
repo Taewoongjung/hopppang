@@ -28,6 +28,7 @@ public record GetPostRepliesByIdFacadeResultDto(
         private String registerName;
         private boolean anonymous;
         private boolean revised;
+        private boolean deleted;
         private long likes;
         private boolean isLiked;
         private LocalDateTime createdAt;
@@ -46,6 +47,7 @@ public record GetPostRepliesByIdFacadeResultDto(
             String registerName,
             boolean anonymous,
             boolean revised,
+            boolean deleted,
             long likes,
             boolean isLiked,
             LocalDateTime createdAt
@@ -97,6 +99,7 @@ public record GetPostRepliesByIdFacadeResultDto(
                 .registerName(userMap.get(reply.getRegisterId()))
                 .anonymous(BoolType.convertToBoolean(reply.getIsAnonymous()))
                 .revised(!isRevised)
+                .deleted(BoolType.convertToBoolean(reply.getIsDeleted()))
                 .likes(reply.getLikeCount() != null ? reply.getLikeCount() : 0)
                 .isLiked(reply.getAmILiked() != null ? reply.getAmILiked() : false)
                 .createdAt(reply.getCreatedAt())
@@ -116,6 +119,7 @@ public record GetPostRepliesByIdFacadeResultDto(
                 .registerName(userMap.get(reply.getRegisterId()))
                 .anonymous(BoolType.convertToBoolean(reply.getIsAnonymous()))
                 .revised(!reply.getCreatedAt().isEqual(reply.getLastModified()))
+                .deleted(BoolType.convertToBoolean(reply.getIsDeleted()))
                 .likes(reply.getLikeCount() != null ? reply.getLikeCount() : 0)
                 .isLiked(reply.getAmILiked() != null ? reply.getAmILiked() : false)
                 .createdAt(reply.getCreatedAt())

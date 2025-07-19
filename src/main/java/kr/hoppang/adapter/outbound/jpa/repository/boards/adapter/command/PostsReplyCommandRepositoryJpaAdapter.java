@@ -35,4 +35,9 @@ public class PostsReplyCommandRepositoryJpaAdapter implements PostsReplyCommandR
 
         return true;
     }
+
+    @Override
+    public void delete(final Long postsReplyId) {
+        postsReplyJpaRepository.reviseAsDeletedById(postsReplyId);
+    }
 }

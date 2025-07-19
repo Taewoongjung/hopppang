@@ -1,7 +1,7 @@
 package kr.hoppang.application.command.boards.handlers;
 
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_ALLOWED_USER_REVISING_POST;
-import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_REVISED_TARGET_POST;
+import static kr.hoppang.adapter.common.exception.ErrorType.NOT_EXIST_TARGET_POST;
 import static kr.hoppang.adapter.common.util.CheckUtil.check;
 
 import kr.hoppang.abstraction.domain.ICommandHandler;
@@ -33,7 +33,7 @@ public class RevisePostsCommandHandler implements ICommandHandler<RevisePostsCom
 
         Posts originalPosts = postsQueryRepository.findPostsByPostId(command.postId());
 
-        check(originalPosts == null, NOT_EXIST_REVISED_TARGET_POST);
+        check(originalPosts == null, NOT_EXIST_TARGET_POST);
 
         check(!originalPosts.getRegisterId().equals(command.revisingUserId()),
                 NOT_ALLOWED_USER_REVISING_POST);
