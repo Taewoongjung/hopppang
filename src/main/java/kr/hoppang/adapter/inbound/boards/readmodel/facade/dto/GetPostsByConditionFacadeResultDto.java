@@ -37,7 +37,7 @@ public record GetPostsByConditionFacadeResultDto(
             final Map<Long, Long> viewCountByPostId,
             final Map<Long, Long> replyCountByPostId,
             final Map<Long, Long> postLikeCountByPostId,
-            final Boolean isBookmarkOnly
+            final Map<Long, Boolean> isBookmarkedGroupByPostId
     ) {
 
         return GetPostsByConditionFacadeResultDto.builder()
@@ -58,7 +58,9 @@ public record GetPostsByConditionFacadeResultDto(
                                             )
                                             .title(post.getTitle())
                                             .contents(post.getContents())
-                                            .isBookMarked(isBookmarkOnly != null && isBookmarkOnly)
+                                            .isBookMarked(
+                                                    isBookmarkedGroupByPostId.get(post.getId())
+                                            )
                                             .viewCount(viewCountByPostId.get(post.getId()))
                                             .likeCount(postLikeCountByPostId.get(post.getId()))
                                             .replyCount(replyCountByPostId.get(post.getId()))

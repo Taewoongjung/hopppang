@@ -13,7 +13,7 @@ public interface PostsViewJpaRepository extends JpaRepository<PostsViewEntity, L
             """
                 SELECT new kr.hoppang.adapter.outbound.jpa.repository.boards.dto.PostViewCountDto(
                     p.id.postId,
-                    COUNT(p)
+                    COUNT(*)
                 )
                 FROM PostsViewEntity p
                 WHERE p.id.postId IN :postIds

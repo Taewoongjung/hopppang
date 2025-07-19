@@ -14,7 +14,7 @@ public interface PostsReplyJpaRepository extends JpaRepository<PostsReplyEntity,
             """
                 SELECT new kr.hoppang.adapter.outbound.jpa.repository.boards.dto.PostReplyCountDto(
                     p.postId,
-                    COUNT(p)
+                    COUNT(*)
                 )
                 FROM PostsReplyEntity p
                 WHERE p.postId IN :postIds

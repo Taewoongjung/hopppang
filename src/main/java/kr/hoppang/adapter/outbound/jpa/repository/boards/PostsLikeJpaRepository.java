@@ -13,7 +13,7 @@ public interface PostsLikeJpaRepository extends JpaRepository<PostsLikeEntity, L
             """
                 SELECT new kr.hoppang.adapter.outbound.jpa.repository.boards.dto.PostLikeCountDto(
                     p.id.postId,
-                    COUNT(p)
+                    COUNT(*)
                 )
                 FROM PostsLikeEntity p
                 WHERE p.id.postId IN :postIds

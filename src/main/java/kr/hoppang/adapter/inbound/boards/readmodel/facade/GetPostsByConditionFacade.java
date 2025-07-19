@@ -12,6 +12,7 @@ import kr.hoppang.application.readmodel.boards.queries.FindPostsCountOfLikesById
 import kr.hoppang.application.readmodel.boards.queries.FindPostsViewsByIdsQuery;
 import kr.hoppang.application.readmodel.boards.queryresults.FindAllPostsQueryResult;
 import kr.hoppang.domain.boards.Posts;
+import kr.hoppang.domain.boards.repository.PostsBookmarkQueryRepository;
 import kr.hoppang.domain.boards.repository.PostsReplyQueryRepository;
 import kr.hoppang.domain.user.User;
 import kr.hoppang.domain.user.repository.UserRepository;
@@ -25,6 +26,7 @@ public class GetPostsByConditionFacade {
     private final UserRepository userRepository;
     private final FindAllPostsQueryHandler findAllPostsByCondition;
     private final PostsReplyQueryRepository postsReplyQueryRepository;
+    private final PostsBookmarkQueryRepository postsBookmarkQueryRepository;
     private final FindPostsViewsByIdsQueryHandler findPostsViewsByIdsQueryHandler;
     private final FindPostsCountOfLikesByIdsQueryHandler findPostsCountOfLikesByIdsQueryHandler;
 
@@ -87,6 +89,9 @@ public class GetPostsByConditionFacade {
         Map<Long, Long> replyCountByPostId = postsReplyQueryRepository.findCountOfLikesByPostId(
                 postIds);
 
+        Map<Long, Boolean> isBookmarkedGroupByPostId = postsBookmarkQueryRepository.isBookmarkedGroupByPostsIdAndUserId(
+                postIds, userId);
+
         return GetPostsByConditionFacadeResultDto.of(
                 result.count(),
                 result.postsList(),
@@ -94,7 +99,7 @@ public class GetPostsByConditionFacade {
                 viewCountByPostId,
                 replyCountByPostId,
                 postLikeCountByPostId,
-                bookmarkOnly
+                isBookmarkedGroupByPostId
         );
     }
 }

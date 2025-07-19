@@ -13,7 +13,7 @@ public interface PostsReplyLikeJpaRepository extends JpaRepository<PostsReplyLik
         """
             SELECT new kr.hoppang.adapter.outbound.jpa.repository.boards.dto.ReplyLikeCountDto(
                 p.id.postReplyId,
-                COUNT(p)
+                COUNT(*)
             )
             FROM PostsReplyLikeEntity p
             WHERE p.id.postReplyId IN :replyIds
