@@ -13,8 +13,11 @@ import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetPostRepliesById
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetPostsByConditionFacadeResultDto;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetRecentPostsFacadeResultDto;
 import kr.hoppang.adapter.inbound.boards.readmodel.webdto.GetAllBoardsWebDtoV1;
+import kr.hoppang.adapter.inbound.boards.readmodel.webdto.GetMyPostsByConditionWebDtoV1;
+import kr.hoppang.adapter.inbound.boards.readmodel.webdto.GetMyPostsByConditionWebDtoV1.Res.MyPostWebDto;
 import kr.hoppang.adapter.inbound.boards.readmodel.webdto.GetPostsByConditionWebDtoV1;
 import kr.hoppang.adapter.inbound.boards.readmodel.webdto.GetPostsByConditionWebDtoV1.Res.PostWebDto;
+import kr.hoppang.adapter.inbound.user.AuthenticationUserId;
 import kr.hoppang.application.readmodel.boards.hanlders.FindBoardsQueryHandler;
 import kr.hoppang.application.readmodel.boards.queryresults.FindBoardsQueryResult;
 import kr.hoppang.application.util.EmptyQuery;
@@ -65,7 +68,8 @@ public class BoardQueryController {
                 req.limit(),
                 req.offset(),
                 req.searchWord(),
-                req.boardIdList()
+                req.boardIdList(),
+                null
         );
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -76,6 +80,46 @@ public class BoardQueryController {
                                         resultDto.postsList().stream()
                                                 .map(post ->
                                                         PostWebDto.builder()
+                                                                .id(post.id())
+                                                                .boardId(post.boardId())
+                                                                .authorName(post.authorName())
+                                                                .title(post.title())
+                                                                .contents(post.contents())
+                                                                .isAnonymous(post.isAnonymous())
+                                                                .createdAt(post.createdAt())
+                                                                .viewCount(post.viewCount())
+                                                                .likeCount(post.likeCount())
+                                                                .replyCount(post.replyCount())
+                                                                .build()
+                                                )
+                                                .toList()
+                                )
+                                .build()
+                );
+    }
+
+    @GetMapping("/posts/my")
+    public ResponseEntity<GetMyPostsByConditionWebDtoV1.Res> getMyPostsByCondition(
+            @Valid final GetMyPostsByConditionWebDtoV1.Req req,
+            @AuthenticationUserId final Long userId
+    ) {
+
+        GetPostsByConditionFacadeResultDto resultDto = getPostsByConditionFacade.query(
+                req.limit(),
+                req.offset(),
+                req.searchWord(),
+                req.boardIdList(),
+                userId
+        );
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(
+                        GetMyPostsByConditionWebDtoV1.Res.builder()
+                                .count(resultDto.count())
+                                .postsList(
+                                        resultDto.postsList().stream()
+                                                .map(post ->
+                                                        MyPostWebDto.builder()
                                                                 .id(post.id())
                                                                 .boardId(post.boardId())
                                                                 .authorName(post.authorName())

@@ -36,6 +36,7 @@ public class PostsQueryRepositoryJpaAdapter implements PostsQueryRepository {
         List<PostsEntity> contents = queryFactory.selectFrom(postsEntity)
                 .where(
                         notDeleted(),
+                        resolveUserIdEquals(condition.userId()),
                         resolveSearchWordLike(condition.searchWord()),
                         resolveBoardIn(condition.boardIds())
                 )
@@ -89,6 +90,13 @@ public class PostsQueryRepositoryJpaAdapter implements PostsQueryRepository {
                 .toList();
     }
 
+    private BooleanExpression resolveUserIdEquals(final Long userId) {
+        if (userId == null) {
+            return null;
+        }
+
+        return postsEntity.registerId.eq(userId);
+    }
 
     private BooleanExpression resolveSearchWordLike(final String searchWord) {
         if (searchWord == null || searchWord.isBlank()) {

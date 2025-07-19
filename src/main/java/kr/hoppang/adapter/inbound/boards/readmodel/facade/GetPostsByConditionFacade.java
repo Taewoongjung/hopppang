@@ -30,15 +30,17 @@ public class GetPostsByConditionFacade {
 
 
     public GetPostsByConditionFacadeResultDto query(
-            int limit,
-            long offset,
-            String searchWord,
-            List<Long> boardIds
+            final int limit,
+            final long offset,
+            final String searchWord,
+            final List<Long> boardIds,
+            final Long userId
     ) {
 
         FindAllPostsQueryResult result = findAllPostsByCondition.handle(
                 FindAllPostsQuery.builder()
                         .boardIds(boardIds)
+                        .userId(userId)
                         .searchWord(searchWord)
                         .limit(limit)
                         .offset(offset)

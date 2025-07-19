@@ -28,6 +28,7 @@ public class FindAllPostsQueryHandler implements IQueryHandler<FindAllPostsQuery
 
         ConditionOfFindPosts condition = ConditionOfFindPosts.builder()
                 .boardIds(query.boardIds())
+                .userId(query.userId())
                 .searchWord(query.searchWord())
                 .limit(query.limit())
                 .offset(query.offset())
