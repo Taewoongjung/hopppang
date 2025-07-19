@@ -24,7 +24,10 @@ public record GetMyPostsByConditionWebDtoV1() {
             List<Long> boardIdList,
 
             @BindParam(value = "bookmarkOnly")
-            Boolean bookmarkOnly
+            Boolean bookmarkOnly,
+
+            @BindParam(value = "excludeBookmarked")
+            Boolean excludeBookmarked
     ) { }
 
     @Builder

@@ -37,7 +37,7 @@ public class PostsQueryRepositoryJpaAdapter implements PostsQueryRepository {
         List<PostsEntity> contents = queryFactory.selectFrom(postsEntity)
                 .where(
                         notDeleted(),
-                        resolveOnlyBookmarked(condition.bookmarkOnly(), condition.userId()),
+                        resolveBookmarked(condition.bookmarkOnly(), condition.userId()),
                         resolveUserIdEquals(condition.userId(), condition.bookmarkOnly()),
                         resolveSearchWordLike(condition.searchWord()),
                         resolveBoardIn(condition.boardIds())
@@ -58,6 +58,9 @@ public class PostsQueryRepositoryJpaAdapter implements PostsQueryRepository {
                 .from(postsEntity)
                 .where(
                         notDeleted(),
+                        resolveBookmarked(condition.bookmarkOnly(), condition.userId()),
+                        resolveUserIdEquals(condition.userId(), condition.bookmarkOnly()),
+                        resolveSearchWordLike(condition.searchWord()),
                         resolveBoardIn(condition.boardIds())
                 )
                 .fetchOne();
@@ -129,7 +132,7 @@ public class PostsQueryRepositoryJpaAdapter implements PostsQueryRepository {
         return postsEntity.id.eq(boardId);
     }
 
-    private BooleanExpression resolveOnlyBookmarked(
+    private BooleanExpression resolveBookmarked(
             final Boolean onlyBookmarked,
             final Long userId
     ) {
