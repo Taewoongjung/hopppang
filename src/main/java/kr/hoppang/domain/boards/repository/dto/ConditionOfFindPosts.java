@@ -9,6 +9,7 @@ public record ConditionOfFindPosts(
         Long userId,
         String searchWord,
         Boolean bookmarkOnly,
+        Boolean repliesOnly,
         int limit,
         long offset
 ) { }

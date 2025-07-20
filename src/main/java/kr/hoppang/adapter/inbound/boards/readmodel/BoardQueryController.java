@@ -10,6 +10,7 @@ import kr.hoppang.adapter.inbound.boards.readmodel.facade.GetRecentPostsFacade;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetPostByIdFacadeResultDto;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetPostRepliesByIdFacadeResultDto;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetPostRepliesByIdFacadeResultDto.PostsRootReplyFacadeDto;
+import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetPostsByConditionFacadeRequestDto;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetPostsByConditionFacadeResultDto;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetRecentPostsFacadeResultDto;
 import kr.hoppang.adapter.inbound.boards.readmodel.webdto.GetAllBoardsWebDtoV1;
@@ -65,11 +66,12 @@ public class BoardQueryController {
     ) {
 
         GetPostsByConditionFacadeResultDto resultDto = getPostsByConditionFacade.query(
-                req.limit(),
-                req.offset(),
-                req.searchWord(),
-                req.boardIdList(),
-                null, null
+                GetPostsByConditionFacadeRequestDto.builder()
+                        .limit(req.limit())
+                        .offset(req.offset())
+                        .searchWord(req.searchWord())
+                        .boardIds(req.boardIdList())
+                        .build()
         );
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -105,12 +107,15 @@ public class BoardQueryController {
     ) {
 
         GetPostsByConditionFacadeResultDto resultDto = getPostsByConditionFacade.query(
-                req.limit(),
-                req.offset(),
-                req.searchWord(),
-                req.boardIdList(),
-                userId,
-                req.bookmarkOnly()
+                GetPostsByConditionFacadeRequestDto.builder()
+                        .limit(req.limit())
+                        .offset(req.offset())
+                        .searchWord(req.searchWord())
+                        .boardIds(req.boardIdList())
+                        .userId(userId)
+                        .bookmarkOnly(req.bookmarkOnly())
+                        .repliesOnly(req.repliesOnly())
+                        .build()
         );
 
         return ResponseEntity.status(HttpStatus.OK)

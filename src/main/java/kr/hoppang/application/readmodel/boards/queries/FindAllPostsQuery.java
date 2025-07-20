@@ -10,6 +10,7 @@ public record FindAllPostsQuery(
         Long userId,
         String searchWord,
         Boolean bookmarkOnly,
+        Boolean repliesOnly,
         int limit,
         long offset
 ) implements IQuery { }

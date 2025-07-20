@@ -29,5 +29,4 @@ public interface PostsBookmarkJpaRepository extends JpaRepository<PostsBookmarkE
             @Param("postIds") List<Long> postIds,
             @Param("userId") Long userId
     );
-
 }

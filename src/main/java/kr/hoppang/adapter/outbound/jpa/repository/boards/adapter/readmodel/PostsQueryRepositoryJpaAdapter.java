@@ -1,6 +1,7 @@
 package kr.hoppang.adapter.outbound.jpa.repository.boards.adapter.readmodel;
 
 import static kr.hoppang.adapter.outbound.jpa.entity.board.QPostsEntity.postsEntity;
+import static kr.hoppang.adapter.outbound.jpa.entity.board.QPostsReplyEntity.postsReplyEntity;
 import static kr.hoppang.adapter.outbound.jpa.entity.board.bookmark.QPostsBookmarkEntity.postsBookmarkEntity;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -38,7 +39,12 @@ public class PostsQueryRepositoryJpaAdapter implements PostsQueryRepository {
                 .where(
                         notDeleted(),
                         resolveBookmarked(condition.bookmarkOnly(), condition.userId()),
-                        resolveUserIdEquals(condition.userId(), condition.bookmarkOnly()),
+                        resolveRepliesOnly(condition.repliesOnly(), condition.userId()),
+                        resolveUserIdEquals(
+                                condition.userId(),
+                                condition.bookmarkOnly(),
+                                condition.repliesOnly()
+                        ),
                         resolveSearchWordLike(condition.searchWord()),
                         resolveBoardIn(condition.boardIds())
                 )
@@ -59,7 +65,12 @@ public class PostsQueryRepositoryJpaAdapter implements PostsQueryRepository {
                 .where(
                         notDeleted(),
                         resolveBookmarked(condition.bookmarkOnly(), condition.userId()),
-                        resolveUserIdEquals(condition.userId(), condition.bookmarkOnly()),
+                        resolveRepliesOnly(condition.repliesOnly(), condition.userId()),
+                        resolveUserIdEquals(
+                                condition.userId(),
+                                condition.bookmarkOnly(),
+                                condition.repliesOnly()
+                        ),
                         resolveSearchWordLike(condition.searchWord()),
                         resolveBoardIn(condition.boardIds())
                 )
@@ -95,13 +106,23 @@ public class PostsQueryRepositoryJpaAdapter implements PostsQueryRepository {
                 .toList();
     }
 
-    private BooleanExpression resolveUserIdEquals(final Long userId, final Boolean bookmarkOnly) {
+    private BooleanExpression resolveUserIdEquals(
+            final Long userId,
+            final Boolean bookmarkOnly,
+            final Boolean repliesOnly
+    ) {
+
         if (userId == null) {
             return null;
         }
 
         // 북마크는 타인 게시글도 함께 조회 될 필요가 있음
         if (bookmarkOnly != null && bookmarkOnly) {
+            return null;
+        }
+
+        // 댓글은 타인 게시글도 함께 조회 될 필요가 있음
+        if (repliesOnly != null && repliesOnly) {
             return null;
         }
 
@@ -144,6 +165,18 @@ public class PostsQueryRepositoryJpaAdapter implements PostsQueryRepository {
                 com.querydsl.jpa.JPAExpressions.select(postsBookmarkEntity.id.postId)
                         .from(postsBookmarkEntity)
                         .where(postsBookmarkEntity.id.userId.eq(userId))
+        );
+    }
+
+    private BooleanExpression resolveRepliesOnly(final Boolean repliesOnly, final Long userId) {
+        if (repliesOnly == null || !repliesOnly || userId == null) {
+            return null;
+        }
+
+        return postsEntity.id.in(
+                com.querydsl.jpa.JPAExpressions.selectDistinct(postsReplyEntity.postId)
+                        .from(postsReplyEntity)
+                        .where(postsReplyEntity.registerId.eq(userId))
         );
     }
 

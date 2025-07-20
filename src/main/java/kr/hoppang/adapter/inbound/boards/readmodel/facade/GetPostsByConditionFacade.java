@@ -3,6 +3,7 @@ package kr.hoppang.adapter.inbound.boards.readmodel.facade;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetPostsByConditionFacadeRequestDto;
 import kr.hoppang.adapter.inbound.boards.readmodel.facade.dto.GetPostsByConditionFacadeResultDto;
 import kr.hoppang.application.readmodel.boards.hanlders.FindAllPostsQueryHandler;
 import kr.hoppang.application.readmodel.boards.hanlders.FindPostsCountOfLikesByIdsQueryHandler;
@@ -32,22 +33,18 @@ public class GetPostsByConditionFacade {
 
 
     public GetPostsByConditionFacadeResultDto query(
-            final int limit,
-            final long offset,
-            final String searchWord,
-            final List<Long> boardIds,
-            final Long userId,
-            final Boolean bookmarkOnly
+            final GetPostsByConditionFacadeRequestDto requestDto
     ) {
 
         FindAllPostsQueryResult result = findAllPostsByCondition.handle(
                 FindAllPostsQuery.builder()
-                        .boardIds(boardIds)
-                        .userId(userId)
-                        .searchWord(searchWord)
-                        .bookmarkOnly(bookmarkOnly)
-                        .limit(limit)
-                        .offset(offset)
+                        .boardIds(requestDto.boardIds())
+                        .userId(requestDto.userId())
+                        .searchWord(requestDto.searchWord())
+                        .bookmarkOnly(requestDto.bookmarkOnly())
+                        .repliesOnly(requestDto.repliesOnly())
+                        .limit(requestDto.limit())
+                        .offset(requestDto.offset())
                         .build()
         );
 
@@ -90,7 +87,7 @@ public class GetPostsByConditionFacade {
                 postIds);
 
         Map<Long, Boolean> isBookmarkedGroupByPostId = postsBookmarkQueryRepository.isBookmarkedGroupByPostsIdAndUserId(
-                postIds, userId);
+                postIds, requestDto.userId());
 
         return GetPostsByConditionFacadeResultDto.of(
                 result.count(),

@@ -200,7 +200,7 @@ public class AppleOauthService implements OAuthService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public OAuthServiceLogInResultDto refreshAccessToken(final String userEmail) throws Exception {
+    public OAuthServiceLogInResultDto refreshAccessToken(final String userEmail) {
 
         log.info("애플 리프레시 토큰 발급 = {}", userEmail);
 

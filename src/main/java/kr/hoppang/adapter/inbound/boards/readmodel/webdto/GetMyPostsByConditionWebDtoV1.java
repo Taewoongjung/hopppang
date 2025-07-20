@@ -26,8 +26,8 @@ public record GetMyPostsByConditionWebDtoV1() {
             @BindParam(value = "bookmarkOnly")
             Boolean bookmarkOnly,
 
-            @BindParam(value = "excludeBookmarked")
-            Boolean excludeBookmarked
+            @BindParam(value = "repliesOnly")
+            Boolean repliesOnly
     ) { }
 
     @Builder
