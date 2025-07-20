@@ -15,7 +15,7 @@ public record AddPostWebDtoV1() {
             @NotBlank(message = "title 이 없습니다")
             @Size(
                     min = 1,
-                    max = 100,
+                    max = 500,
                     message = "글 제목은 최소 {min} 최대 {max}개를 초과할 수 없습니다."
             )
             String title,
@@ -23,7 +23,7 @@ public record AddPostWebDtoV1() {
             @NotBlank(message = "contents 가 없습니다")
             @Size(
                     min = 1,
-                    max = 1000,
+                    max = 3000,
                     message = "글 내용은 최소 {min} 최대 {max}개를 초과할 수 없습니다."
             )
             String contents,
