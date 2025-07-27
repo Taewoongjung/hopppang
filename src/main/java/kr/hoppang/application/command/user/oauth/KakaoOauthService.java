@@ -40,6 +40,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -216,6 +217,9 @@ public class KakaoOauthService implements OAuthService {
 
         checkIfLoggedInUserWithExpiredRefreshToken(user);
 
+        log.info("리프레시 요청 유저 = {}", user);
+        log.info("리프레시 요청 유저의 토큰정보 = {}", user.getTheLatestRefreshToken());
+
         Map<String, Object> refreshedInfo = getAccessTokenToRefresh(
                 user.getTheLatestRefreshToken().getToken());
 
@@ -256,6 +260,8 @@ public class KakaoOauthService implements OAuthService {
 
     // 리프레스 토큰으로 엑세스 토큰 갱신하기
     private Map<String, Object> getAccessTokenToRefresh(final String refreshToken) {
+
+        log.info("요청시 부가 정보 => restApiKey={}/refreshToken={}", restApiKey, refreshToken);
         Mono<String> response = webClient.post().uri("https://kauth.kakao.com/oauth/token")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .body(BodyInserters.fromFormData("grant_type", "refresh_token")
@@ -265,7 +271,12 @@ public class KakaoOauthService implements OAuthService {
                 .bodyToMono(String.class)
                 .onErrorResume(e -> {
                     // 에러 처리 로직
-                    log.error("Error occurred while processing Kakao response: ", e);
+                    if (e instanceof WebClientResponseException ex) {
+                        log.error("Kakao token refresh failed: status={}, response={}",
+                                ex.getStatusCode(), ex.getResponseBodyAsString());
+                    } else {
+                        log.error("Unknown error occurred while processing Kakao response: ", e);
+                    }
                     return Mono.empty(); // 또는 기본값 반환
                 });
 

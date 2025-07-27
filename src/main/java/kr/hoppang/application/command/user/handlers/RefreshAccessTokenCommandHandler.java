@@ -1,5 +1,8 @@
 package kr.hoppang.application.command.user.handlers;
 
+import static kr.hoppang.adapter.common.exception.ErrorType.YET_EXPIRED_TOKEN;
+import static kr.hoppang.adapter.common.util.CheckUtil.loginCheck;
+
 import java.util.Map;
 import kr.hoppang.abstraction.domain.ICommandHandler;
 import kr.hoppang.application.command.user.commands.AddUserLoginHistoryCommand;
@@ -39,6 +42,8 @@ public class RefreshAccessTokenCommandHandler implements
                 jwtUtil.getTokenWithoutBearer(command.expiredToken()));
 
         log.info("expiredInfo = {}", expiredInfo);
+
+        loginCheck(expiredInfo == null, YET_EXPIRED_TOKEN);
 
         String userEmail = expiredInfo.get("username");
 
