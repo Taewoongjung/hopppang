@@ -43,8 +43,6 @@ public class RefreshAccessTokenCommandHandler implements
 
         log.info("expiredInfo = {}", expiredInfo);
 
-        loginCheck(expiredInfo == null, YET_EXPIRED_TOKEN);
-
         String userEmail = expiredInfo.get("username");
 
         OAuthServiceLogInResultDto refreshingTokenInfo = oAuthServiceAdapter.refreshAccessToken(

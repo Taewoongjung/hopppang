@@ -213,14 +213,9 @@ public class KakaoOauthService implements OAuthService {
     @Transactional(rollbackFor = Exception.class)
     public OAuthServiceLogInResultDto refreshAccessToken(final String userEmail) {
 
-        log.info("리프레시 요청 유저 이메일 = {}", userEmail);
-
         User user = userRepository.findByEmail(userEmail);
-        log.info("리프레시 요청 유저 id = {}", user.getId());
 
         checkIfLoggedInUserWithExpiredRefreshToken(user);
-
-        log.info("리프레시 요청 유저의 토큰정보 = {}", user.getTheLatestRefreshToken());
 
         Map<String, Object> refreshedInfo = getAccessTokenToRefresh(
                 user.getTheLatestRefreshToken().getToken());
