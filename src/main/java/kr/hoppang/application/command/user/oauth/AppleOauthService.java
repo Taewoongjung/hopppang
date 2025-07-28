@@ -226,11 +226,9 @@ public class AppleOauthService implements OAuthService {
 
         boolean isRefreshTokenExpired = userToken.getExpireIn().isBefore(LocalDateTime.now());
 
-        if (isRefreshTokenExpired) {
-            userRepository.updateRequiredReLogin(isUserExist.getEmail());
-        }
-
         expiredRefreshedTokenCheck(isRefreshTokenExpired, PLEASE_LOGIN_AGAIN);
+
+        userRepository.updateRequiredReLogin(isUserExist.getEmail());
     }
 
     // 리프레스 토큰으로 엑세스 토큰 갱신하기

@@ -202,11 +202,9 @@ public class GoogleOauthService implements OAuthService {
 
         boolean isRefreshTokenExpired = userToken.getExpireIn().isBefore(LocalDateTime.now());
 
-        if (isRefreshTokenExpired) {
-            userRepository.updateRequiredReLogin(targetUser.getEmail());
-        }
-
         expiredRefreshedTokenCheck(isRefreshTokenExpired, PLEASE_LOGIN_AGAIN);
+
+        userRepository.updateRequiredReLogin(targetUser.getEmail());
     }
 
     private void checkIfLoggedInUserWithExpiredAccessToken(final User targetUser) {
