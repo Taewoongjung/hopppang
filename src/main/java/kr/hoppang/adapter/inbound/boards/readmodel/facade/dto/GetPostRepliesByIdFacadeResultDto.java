@@ -86,7 +86,7 @@ public record GetPostRepliesByIdFacadeResultDto(
             final Map<Long, String> userMap
     ) {
         boolean isRevised =
-                reply.getCreatedAt().truncatedTo(ChronoUnit.SECONDS)
+                !reply.getCreatedAt().truncatedTo(ChronoUnit.SECONDS)
                         .isEqual(reply.getLastModified()
                                 .truncatedTo(ChronoUnit.SECONDS));
 

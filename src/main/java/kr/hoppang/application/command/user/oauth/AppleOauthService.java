@@ -129,9 +129,6 @@ public class AppleOauthService implements OAuthService {
     }
 
     private String getTokenInfoFromApple(final String code) {
-        System.out.println("code = " + code);
-        System.out.println("secretKey = " + secretKey);
-
         return webClient.post()
                 .uri("https://appleid.apple.com/auth/token")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
