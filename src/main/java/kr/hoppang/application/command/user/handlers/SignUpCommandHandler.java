@@ -206,7 +206,7 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
             return LocalDateTime.now().plusYears(10L); // 애플은 리프레시토큰 유효기간이 없음
         }
 
-        if (refreshTokenFromEvent.isBlank()) {
+        if (refreshTokenFromEvent == null) {
             return refreshTokenExpireInFromEvent;
         }
 
