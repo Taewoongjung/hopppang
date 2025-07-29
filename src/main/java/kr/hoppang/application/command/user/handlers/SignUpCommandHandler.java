@@ -51,11 +51,15 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
 
         User isUserExist = userRepository.findIfExistUserByEmail(event.email(), event.oauthType());
 
+        log.info("isUserExist1 = {}", isUserExist);
+
         // 이미 회원이 있고, 해당 회원이 다른 디바이스에서 소셜 로그인을 했을 때 (해당 메소드는 소셜 로그인에서 요청 하기 때문에 해당 처리를 함)
         if (isUserExist != null) {
+            log.info("isUserExist2 = {}", isUserExist.getId());
 
             // 모든 토큰이 만료 되어서 다시 로그인이 필요한 유저 start
             if (BoolType.T.equals(isUserExist.getRequiredReLogin())) {
+                log.info("isUserExist3");
 
                 // 토큰 데이터 생성 start
                 UserToken forAccessToken = UserToken.of(
@@ -87,6 +91,8 @@ public class SignUpCommandHandler implements ICommandHandler<SignUpCommand, User
                 return user;
             }
             // 모든 토큰이 만료 되어서 다시 로그인이 필요한 유저 end
+
+            log.info("isUserExist4 = {}", isUserExist);
 
             // 여기에서 이미 회원이 있을 때 리프레시 토큰이 유효한지 검증.
             // 아니면 에러 던짐. (에러에 /api/{kakao || apple || google}/auth 응답값을. 그래서 유저가 해당 uri를 타고 가서 로그인할 수 있게 유도 함.)
