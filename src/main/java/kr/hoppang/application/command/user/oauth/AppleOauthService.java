@@ -238,7 +238,7 @@ public class AppleOauthService implements OAuthService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public boolean withdrawUser(final long userId) {
 
-        User user = userRepository.findById(userId);
+        User user = userRepository.findById(userId, false);
         UserToken userRefreshToken = user.getTheLatestRefreshToken();
 
         ResponseEntity<String> response = webClient.post()

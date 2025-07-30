@@ -5,5 +5,6 @@ import lombok.Builder;
 
 @Builder
 public record FindUserByIdQuery(
-        long userId
+        long userId,
+        Boolean withDeletedUser
 ) implements IQuery { }

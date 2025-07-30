@@ -12,7 +12,7 @@ import kr.hoppang.domain.user.UserToken;
 
 public interface UserRepository {
 
-    User findById(final long userId);
+    User findById(final long userId, Boolean withDeleted);
 
     User findByEmail(final String email);
 

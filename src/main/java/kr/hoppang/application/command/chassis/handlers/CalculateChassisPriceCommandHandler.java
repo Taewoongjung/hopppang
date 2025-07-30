@@ -166,7 +166,7 @@ public class CalculateChassisPriceCommandHandler implements
         int deliveryFee = chassisPriceCalculator.calculateDeliveryFee();
         calculatedPriceResultList.add(deliveryFee);
 
-        User user = userRepository.findById(event.userId());
+        User user = userRepository.findById(event.userId(), false);
 
         // 슬랙 알림 발송
         eventPublisher.publishEvent(

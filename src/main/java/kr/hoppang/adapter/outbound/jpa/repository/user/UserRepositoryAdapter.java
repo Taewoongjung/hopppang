@@ -53,8 +53,14 @@ public class UserRepositoryAdapter implements UserRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public User findById(final long userId) {
-        Optional<UserEntity> entity = userJpaRepository.findByIdAndDeletedAtIsNull(userId);
+    public User findById(final long userId, final Boolean withDeleted) {
+        Optional<UserEntity> entity;
+
+        if (withDeleted != null && withDeleted) {
+            entity = userJpaRepository.findById(userId);
+        } else {
+            entity = userJpaRepository.findByIdAndDeletedAtIsNull(userId);
+        }
 
         check(entity.isEmpty(), NOT_EXIST_USER);
 

@@ -53,6 +53,7 @@ public class GetPostByIdFacade {
         User user = findUserByIdQueryHandler.handle(
                 FindUserByIdQuery.builder()
                         .userId(posts.getRegisterId())
+                        .withDeletedUser(true)
                         .build()
         );
 

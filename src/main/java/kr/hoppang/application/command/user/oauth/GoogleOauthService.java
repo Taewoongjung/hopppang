@@ -240,7 +240,7 @@ public class GoogleOauthService implements OAuthService {
     @Transactional(rollbackFor = Exception.class)
     public boolean withdrawUser(final long userId) {
 
-        User user = userRepository.findById(userId);
+        User user = userRepository.findById(userId, false);
 
         checkIfLoggedInUserWithExpiredRefreshToken(user);
         checkIfLoggedInUserWithExpiredAccessToken(user);

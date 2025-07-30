@@ -282,7 +282,7 @@ public class KakaoOauthService implements OAuthService {
     @Transactional(rollbackFor = Exception.class)
     public boolean withdrawUser(final long userId) {
 
-        User user = userRepository.findById(userId);
+        User user = userRepository.findById(userId, false);
         UserToken userAccessToken = user.getTheLatestAccessToken();
 
         ResponseEntity<String> response = webClient.post().uri("https://kapi.kakao.com/v1/user/unlink")

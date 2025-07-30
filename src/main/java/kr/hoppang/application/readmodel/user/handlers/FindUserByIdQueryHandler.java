@@ -22,6 +22,6 @@ public class FindUserByIdQueryHandler implements IQueryHandler<FindUserByIdQuery
     @Override
     public User handle(final FindUserByIdQuery query) {
 
-        return userRepository.findById(query.userId());
+        return userRepository.findById(query.userId(), query.withDeletedUser());
     }
 }
