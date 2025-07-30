@@ -90,7 +90,6 @@ public record GetPostRepliesByIdFacadeResultDto(
                         .isEqual(reply.getLastModified()
                                 .truncatedTo(ChronoUnit.SECONDS));
 
-
         return PostsRootReplyFacadeDto.builder()
                 .id(reply.getId())
                 .postId(reply.getPostId())
@@ -98,7 +97,7 @@ public record GetPostRepliesByIdFacadeResultDto(
                 .registerId(reply.getRegisterId())
                 .registerName(userMap.get(reply.getRegisterId()))
                 .anonymous(BoolType.convertToBoolean(reply.getIsAnonymous()))
-                .revised(!isRevised)
+                .revised(isRevised)
                 .deleted(BoolType.convertToBoolean(reply.getIsDeleted()))
                 .likes(reply.getLikeCount() != null ? reply.getLikeCount() : 0)
                 .isLiked(reply.getAmILiked() != null ? reply.getAmILiked() : false)
@@ -110,6 +109,11 @@ public record GetPostRepliesByIdFacadeResultDto(
             final PostsReply reply,
             final Map<Long, String> userMap
     ) {
+        boolean isRevised =
+                !reply.getCreatedAt().truncatedTo(ChronoUnit.SECONDS)
+                        .isEqual(reply.getLastModified()
+                                .truncatedTo(ChronoUnit.SECONDS));
+
         return PostsBranchReplyFacadeDto.builder()
                 .id(reply.getId())
                 .postId(reply.getPostId())
@@ -118,7 +122,7 @@ public record GetPostRepliesByIdFacadeResultDto(
                 .registerId(reply.getRegisterId())
                 .registerName(userMap.get(reply.getRegisterId()))
                 .anonymous(BoolType.convertToBoolean(reply.getIsAnonymous()))
-                .revised(!reply.getCreatedAt().isEqual(reply.getLastModified()))
+                .revised(isRevised)
                 .deleted(BoolType.convertToBoolean(reply.getIsDeleted()))
                 .likes(reply.getLikeCount() != null ? reply.getLikeCount() : 0)
                 .isLiked(reply.getAmILiked() != null ? reply.getAmILiked() : false)
