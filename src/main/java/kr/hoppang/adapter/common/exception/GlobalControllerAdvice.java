@@ -30,7 +30,7 @@ public class GlobalControllerAdvice {
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleException(final HttpServletRequest request, final Exception e) {
 
-        errorPrinter(request, e);
+//        errorPrinter(request, e);
 
         return ResponseEntity.badRequest().body(new ErrorResponse(-2, e.toString()));
     }
@@ -38,7 +38,7 @@ public class GlobalControllerAdvice {
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<ErrorResponse> handleDatabaseError(final HttpServletRequest request, DataAccessException e) {
 
-        errorPrinter(request, e);
+//        errorPrinter(request, e);
 
         return ResponseEntity.internalServerError()
                 .body(new ErrorResponse(
