@@ -3,12 +3,15 @@ package kr.hoppang.domain.alimtalk;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
 @Builder
+@ToString
 public class AlimTalkTemplate {
 
     private Long id;
+    private AlimTalkTemplateType type;
     private AlimTalkThirdPartyType thirdPartyType;
     private String templateName;
     private String templateCode;

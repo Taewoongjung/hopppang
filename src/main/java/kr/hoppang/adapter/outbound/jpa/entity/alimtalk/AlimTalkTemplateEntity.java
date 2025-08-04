@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import kr.hoppang.adapter.outbound.jpa.entity.BaseEntity;
 import kr.hoppang.domain.alimtalk.AlimTalkButtonLinkType;
 import kr.hoppang.domain.alimtalk.AlimTalkTemplate;
+import kr.hoppang.domain.alimtalk.AlimTalkTemplateType;
 import kr.hoppang.domain.alimtalk.AlimTalkThirdPartyType;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -27,6 +28,10 @@ public class AlimTalkTemplateEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "type", nullable = false, columnDefinition = "varchar(20)")
+    private AlimTalkTemplateType type;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "third_party_type", nullable = false, columnDefinition = "varchar(20)")
@@ -56,6 +61,7 @@ public class AlimTalkTemplateEntity extends BaseEntity {
     @Builder
     public AlimTalkTemplateEntity(
             Long id,
+            AlimTalkTemplateType type,
             AlimTalkThirdPartyType thirdPartyType,
             String templateName,
             String templateCode,
@@ -71,6 +77,7 @@ public class AlimTalkTemplateEntity extends BaseEntity {
         super(LocalDateTime.now(), LocalDateTime.now());
 
         this.id = id;
+        this.type = type;
         this.thirdPartyType = thirdPartyType;
         this.templateName = templateName;
         this.templateCode = templateCode;
@@ -86,6 +93,7 @@ public class AlimTalkTemplateEntity extends BaseEntity {
     public AlimTalkTemplate toPojo() {
         return AlimTalkTemplate.builder()
                 .id(this.id)
+                .type(this.type)
                 .thirdPartyType(this.thirdPartyType)
                 .templateName(this.templateName)
                 .templateCode(this.templateCode)

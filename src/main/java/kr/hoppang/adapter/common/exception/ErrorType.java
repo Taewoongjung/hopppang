@@ -57,6 +57,9 @@ public enum ErrorType {
     NOT_EXIST_TARGET_POST_REPLY(750, "해당 게시물 댓글을 찾을 수 없습니다."),
     NOT_ALLOWED_USER_REVISING_POST_REPLY(751, "해당 댓글을 수정할 권한이 없습니다."),
     NOT_ALLOWED_USER_DELETING_POST_REPLY(752, "해당 댓글을 삭제할 권한이 없습니다."),
+
+    NO_ALIM_TALK_TEMPLATE(800, "알림톡 템플릿이 없습니다"),
+    ALIM_TALK_SEND_ERROR(801, "알림톡 전송 실패")
     ;
 
     private final int code;

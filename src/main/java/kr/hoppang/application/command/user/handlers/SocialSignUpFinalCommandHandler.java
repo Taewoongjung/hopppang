@@ -3,12 +3,14 @@ package kr.hoppang.application.command.user.handlers;
 import static kr.hoppang.adapter.common.exception.ErrorType.FAIL_WHILE_LOGIN;
 import static kr.hoppang.adapter.common.exception.ErrorType.NOT_VERIFIED_PHONE;
 import static kr.hoppang.adapter.common.util.CheckUtil.check;
+import static kr.hoppang.domain.alimtalk.AlimTalkTemplateType.COMPLETE_SIGNUP;
 
 import kr.hoppang.abstraction.domain.ICommandHandler;
 import kr.hoppang.adapter.common.exception.custom.HoppangLoginException;
 import kr.hoppang.adapter.outbound.cache.dto.TearDownBucketByKey;
 import kr.hoppang.adapter.outbound.cache.sms.CacheSmsValidationRedisRepository;
 import kr.hoppang.adapter.outbound.cache.user.CacheUserRedisRepository;
+import kr.hoppang.application.command.alimtalk.event.events.SignUpWelcomeAlimTalkSendEvent;
 import kr.hoppang.application.command.user.commands.SocialSignUpFinalCommand;
 import kr.hoppang.domain.user.User;
 import kr.hoppang.domain.user.repository.UserRepository;
@@ -55,6 +57,14 @@ public class SocialSignUpFinalCommandHandler implements ICommandHandler<SocialSi
 
             // 마지막 회원가입 프로세스 완료 후 새로고침 하기 위한 기존 버킷 삭제
             cacheUserRedisRepository.deleteBucketByKey(updatedUser.getEmail());
+
+            // 회원가입 알림톡 발송
+            eventPublisher.publishEvent(
+                    SignUpWelcomeAlimTalkSendEvent.builder()
+                            .receiverPhoneNumber(command.userPhoneNumber())
+                            .templateCode(COMPLETE_SIGNUP)
+                            .build()
+            );
 
             return updatedUser.getName();
         }
