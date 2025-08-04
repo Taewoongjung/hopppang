@@ -101,6 +101,13 @@ sms:
     key: ${ALIGO_KEY}
     user-id: ${ALIGO_USER_ID}
 
+kakao:
+  aligo:
+    key: ${ALIGO_KEY}
+    user-id: ${ALIGO_USER_ID}
+    sender-key: ${ALIGO_SENDER_KEY}
+
+
 ---
 
 server:
@@ -224,3 +231,9 @@ sms:
   aligo:
     key: ${ALIGO_KEY}
     user-id: ${ALIGO_USER_ID}
+
+kakao:
+  aligo:
+    key: ${ALIGO_KEY}
+    user-id: ${ALIGO_USER_ID}
+    sender-key: ${ALIGO_SENDER_KEY}
