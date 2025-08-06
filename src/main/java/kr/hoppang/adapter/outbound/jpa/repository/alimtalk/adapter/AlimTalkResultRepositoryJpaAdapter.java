@@ -8,6 +8,7 @@ import kr.hoppang.domain.alimtalk.repository.AlimTalkResultRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Primary
 @Repository
@@ -18,6 +19,7 @@ public class AlimTalkResultRepositoryJpaAdapter implements AlimTalkResultReposit
 
 
     @Override
+    @Transactional
     public void save(final AlimTalkResult alimTalkResult) {
 
         alimTalkResultJpaRepository.save(toEntity(alimTalkResult));
