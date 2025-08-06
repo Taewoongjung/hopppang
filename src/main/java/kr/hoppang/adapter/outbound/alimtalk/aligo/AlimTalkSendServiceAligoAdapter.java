@@ -132,11 +132,15 @@ public class AlimTalkSendServiceAligoAdapter implements AlimTalkSendService {
                     e.toString());
         }
 
+        log.info("response: {}", response);
+
         if (response == null) {
             return;
         }
 
         Map<String, String> res = parseSendResult(response);
+
+        log.info("res: {}", res);
 
         alimTalkResultRepository.save(
                 AlimTalkResult.builder()
