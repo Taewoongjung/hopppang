@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -49,7 +50,7 @@ public class AlimTalkSendServiceAligoAdapter implements AlimTalkSendService {
     private final WebClient webClient;
     private final AlimTalkResultRepository alimTalkResultRepository;
 
-    public void aaa() {
+    public void syncTemplate() {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("apikey", KEY);
         formData.add("userid", USER_ID);
@@ -93,6 +94,7 @@ public class AlimTalkSendServiceAligoAdapter implements AlimTalkSendService {
 
 
     @Override
+    @Transactional
     public void send(
             final String receiverPhoneNumber,
             final AlimTalkTemplate alimTalkTemplate

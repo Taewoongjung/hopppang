@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Primary
@@ -21,7 +20,6 @@ public class AlimTalkResultRepositoryJpaAdapter implements AlimTalkResultReposit
 
 
     @Override
-    @Transactional
     public void save(final AlimTalkResult alimTalkResult) {
 
         log.info("save alimtalk result : {}", alimTalkResult);
