@@ -24,7 +24,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -80,7 +79,6 @@ public class AlimTalkSendServiceAligoAdapter implements AlimTalkSendService {
     }
 
     private List<Map<String, Object>> parseSuccessString(final String target) {
-        System.out.println("? = " + target);
         // Gson 인스턴스 생성
         Gson gson = new Gson();
 
@@ -94,7 +92,6 @@ public class AlimTalkSendServiceAligoAdapter implements AlimTalkSendService {
 
 
     @Override
-    @Transactional
     public void send(
             final String receiverPhoneNumber,
             final AlimTalkTemplate alimTalkTemplate
@@ -115,8 +112,6 @@ public class AlimTalkSendServiceAligoAdapter implements AlimTalkSendService {
             formData.add("button_1", alimTalkTemplate.getButtonInfo());
         }
 
-        log.info("formData: {}", formData);
-
         Mono<String> responseMono;
         String response = null;
         try {
@@ -134,15 +129,11 @@ public class AlimTalkSendServiceAligoAdapter implements AlimTalkSendService {
                     e.toString());
         }
 
-        log.info("response: {}", response);
-
         if (response == null) {
             return;
         }
 
         Map<String, String> res = parseSendResult(response);
-
-        log.info("res: {}", res);
 
         alimTalkResultRepository.save(
                 AlimTalkResult.builder()

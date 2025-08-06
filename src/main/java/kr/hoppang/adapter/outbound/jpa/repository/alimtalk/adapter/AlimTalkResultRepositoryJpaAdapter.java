@@ -25,8 +25,6 @@ public class AlimTalkResultRepositoryJpaAdapter implements AlimTalkResultReposit
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void save(final AlimTalkResult alimTalkResult) {
 
-        log.info("save alimtalk result : {}", alimTalkResult);
-
         alimTalkResultJpaRepository.save(toEntity(alimTalkResult));
     }
 }
