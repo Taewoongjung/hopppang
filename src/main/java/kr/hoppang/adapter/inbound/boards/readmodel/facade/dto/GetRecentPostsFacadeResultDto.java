@@ -1,5 +1,6 @@
 package kr.hoppang.adapter.inbound.boards.readmodel.facade.dto;
 
+import java.time.LocalDateTime;
 import lombok.Builder;
 
 @Builder
@@ -8,7 +9,7 @@ public record GetRecentPostsFacadeResultDto(
         String title,
         String contents,
         String boardName,
-        String createdTime, // 00:00
+        LocalDateTime createdTime,
         long viewCount,
         long replyCount
 ) { }

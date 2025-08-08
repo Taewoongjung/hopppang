@@ -70,7 +70,7 @@ public class GetRecentPostsFacade {
                                     boardInfo.map(FindBoardsQueryResult::name)
                                             .orElse(null)
                             )
-                            .createdTime(getCreatedTime(post.getCreatedAt()))
+                            .createdTime(post.getCreatedAt())
                             .viewCount(
                                     viewCountOfEachPosts.get(post.getId()) != null ?
                                             viewCountOfEachPosts.get(post.getId()) : 0
@@ -82,9 +82,5 @@ public class GetRecentPostsFacade {
                             .build();
                 })
                 .collect(Collectors.toList());
-    }
-
-    private String getCreatedTime(final LocalDateTime createdAt) {
-        return createdAt.getHour() + ":" + createdAt.getMinute();
     }
 }
