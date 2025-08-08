@@ -1,5 +1,7 @@
 package kr.hoppang.adapter.inbound.boards.readmodel.facade.dto;
 
+import static kr.hoppang.domain.boards.BoardUtil.getAuthorName;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -70,21 +72,5 @@ public record GetPostsByConditionFacadeResultDto(
                                 .toList()
                 )
                 .build();
-    }
-
-    private static String getAuthorName(final User author, final BoolType isAnonymous) {
-        if (author == null) {
-            return "알수없음";
-        }
-
-        if (author.isDeleted()) {
-            return "탈퇴유저";
-        }
-
-        if (BoolType.T.equals(isAnonymous)) {
-            return "익명";
-        }
-
-        return author.getName();
     }
 }

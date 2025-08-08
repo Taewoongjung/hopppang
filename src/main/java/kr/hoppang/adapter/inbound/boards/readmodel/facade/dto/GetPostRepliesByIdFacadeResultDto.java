@@ -1,10 +1,13 @@
 package kr.hoppang.adapter.inbound.boards.readmodel.facade.dto;
 
+import static kr.hoppang.domain.boards.BoardUtil.getAuthorName;
+
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import kr.hoppang.domain.boards.PostsReply;
 import kr.hoppang.domain.user.User;
@@ -59,19 +62,19 @@ public record GetPostRepliesByIdFacadeResultDto(
             final List<User> users
     ) {
         // 1. 사용자 매핑
-        Map<Long, String> userIdToName = users.stream()
-                .collect(Collectors.toMap(User::getId, User::getName));
+        Map<Long, User> userIdToUser = users.stream()
+                .collect(Collectors.toMap(User::getId, Function.identity()));
 
         // 2. 자식 댓글을 rootReplyId 기준으로 그룹핑
         Map<Long, List<PostsBranchReplyFacadeDto>> groupedBranchReplies = branchReplies.stream()
-                .map(reply -> toBranchDto(reply, userIdToName))
+                .map(reply -> toBranchDto(reply, userIdToUser))
                 .sorted(Comparator.comparing(PostsBranchReplyFacadeDto::createdAt))
                 .collect(Collectors.groupingBy(PostsBranchReplyFacadeDto::rootReplyId));
 
         // 3. 루트 댓글 변환 및 자식 댓글 매칭
         List<PostsRootReplyFacadeDto> rootDtos = rootReplies.stream()
                 .map(reply -> {
-                    PostsRootReplyFacadeDto rootDto = toRootDto(reply, userIdToName);
+                    PostsRootReplyFacadeDto rootDto = toRootDto(reply, userIdToUser);
                     List<PostsBranchReplyFacadeDto> children = groupedBranchReplies.getOrDefault(rootDto.getId(), List.of());
                     rootDto.setPostsChildReplyList(children);
                     return rootDto;
@@ -83,7 +86,7 @@ public record GetPostRepliesByIdFacadeResultDto(
 
     private static PostsRootReplyFacadeDto toRootDto(
             final PostsReply reply,
-            final Map<Long, String> userMap
+            final Map<Long, User> userMap
     ) {
         boolean isRevised =
                 !reply.getCreatedAt().truncatedTo(ChronoUnit.SECONDS)
@@ -95,7 +98,7 @@ public record GetPostRepliesByIdFacadeResultDto(
                 .postId(reply.getPostId())
                 .contents(reply.getContents())
                 .registerId(reply.getRegisterId())
-                .registerName(userMap.get(reply.getRegisterId()))
+                .registerName(getAuthorName(userMap.get(reply.getRegisterId()), BoolType.F))
                 .anonymous(BoolType.convertToBoolean(reply.getIsAnonymous()))
                 .revised(isRevised)
                 .deleted(BoolType.convertToBoolean(reply.getIsDeleted()))
@@ -107,7 +110,7 @@ public record GetPostRepliesByIdFacadeResultDto(
 
     private static PostsBranchReplyFacadeDto toBranchDto(
             final PostsReply reply,
-            final Map<Long, String> userMap
+            final Map<Long, User> userMap
     ) {
         boolean isRevised =
                 !reply.getCreatedAt().truncatedTo(ChronoUnit.SECONDS)
@@ -120,7 +123,7 @@ public record GetPostRepliesByIdFacadeResultDto(
                 .rootReplyId(reply.getRootReplyId())
                 .contents(reply.getContents())
                 .registerId(reply.getRegisterId())
-                .registerName(userMap.get(reply.getRegisterId()))
+                .registerName(getAuthorName(userMap.get(reply.getRegisterId()), BoolType.F))
                 .anonymous(BoolType.convertToBoolean(reply.getIsAnonymous()))
                 .revised(isRevised)
                 .deleted(BoolType.convertToBoolean(reply.getIsDeleted()))
