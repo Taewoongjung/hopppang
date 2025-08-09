@@ -1,5 +1,7 @@
 package kr.hoppang.adapter.inbound.boards.readmodel.facade;
 
+import static kr.hoppang.domain.boards.BoardUtil.getAuthorName;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -96,7 +98,7 @@ public class GetPostByIdFacade {
                 .id(posts.getId())
                 .boardId(boards.getId())
                 .boardName(boards.getName())
-                .registerName(user.getName())
+                .registerName(getAuthorName(user, posts.getIsAnonymous()))
                 .registerId(user.getId())
                 .title(posts.getTitle())
                 .contents(posts.getContents())
